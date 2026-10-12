@@ -79,4 +79,5 @@ Skills: `/impeccable` and `/ui-ux-pro-max` aren't installed. I substituted `next
 
 ## Netlify
 - [fixed] Created a separate project `ryzon-funnel-preview` (the existing `ryzon-automation` project was left untouched, per the owner). Added netlify.toml.
-- [deferred] Upload blocked: this cloud environment's network policy denies netlify-mcp.netlify.app and api.netlify.com (proxy 403). Owner needs to either connect the GitHub branch in Netlify, or allow those hosts.
+- [fixed] Owner allowed the Netlify API hosts. First deploy was "ready" but broken: no functions and pages under server/app (Next.js runtime didn't run). Fixed by adding @netlify/plugin-nextjs 5.16.0 to netlify.toml + devDependencies. Redeploy 6acd1b26b5160ff3c0367b71: plugin_state success, Next.js Server Handler function deployed, 3 redirect + 1 header rules.
+- [not-verified] Live URL in a browser: this container can't reach ryzon-funnel-preview.netlify.app (only the Netlify API hosts are allowed). Verified via the Netlify deploy record only.
