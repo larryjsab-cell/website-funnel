@@ -20,7 +20,7 @@ export function TrustStrip() {
         ))}
         {t.placeholders.map((p) => (
           <li key={p.token} data-placeholder-text={p.token} className={`${cell} last:col-span-2 md:col-span-3 md:last:col-span-3 xl:col-span-1 xl:last:col-span-1`}>
-            <p className="break-all font-display text-lg font-bold text-accent display-tight">{p.token}</p>
+            <p className="break-all font-display text-base font-bold text-accent display-ui ui-condensed">{p.token}</p>
             <p className="mt-1 text-base text-muted">{p.label}</p>
           </li>
         ))}
