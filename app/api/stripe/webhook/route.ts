@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { recordSession, retrieveEvent } from "@/lib/server/stripe";
+import { recordSession, retrieveEvent, StripeError } from "@/lib/server/stripe";
 
 /**
  * Backup for the success page: if a customer closes the tab after paying, Stripe
@@ -20,6 +20,8 @@ export async function POST(request: Request) {
     const result = await recordSession(event.data.object);
     return NextResponse.json(result);
   } catch (e) {
+    // Stripe doesn't know this event: it didn't come from Stripe.
+    if (e instanceof StripeError && e.status === 404) return NextResponse.json({ error: "unknown event" }, { status: 400 });
     console.error("stripe webhook failed", e);
     // 500 makes Stripe retry later.
     return NextResponse.json({ error: "failed" }, { status: 500 });

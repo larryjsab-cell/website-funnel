@@ -10,12 +10,22 @@ type Lookup = { found: boolean; id: string; email: string; paid: boolean; offer_
  * The /go-live form posts here. Re-checks the offer is still active for this
  * customer, then sends them to Stripe Checkout with the token in the metadata.
  */
+async function fields(request: Request): Promise<Record<string, string>> {
+  // The page posts a plain form (works without JS); JSON is accepted for scripted checks.
+  if (request.headers.get("content-type")?.includes("application/json")) {
+    const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+    return Object.fromEntries(Object.entries(body).map(([k, v]) => [k, String(v ?? "")]));
+  }
+  const form = await request.formData().catch(() => new FormData());
+  return Object.fromEntries([...form.entries()].map(([k, v]) => [k, String(v)]));
+}
+
 export async function POST(request: Request) {
-  const form = await request.formData();
-  const token = String(form.get("t") ?? "").slice(0, 100);
-  const offer = String(form.get("offer") ?? "");
-  const plan = String(form.get("plan") ?? "");
-  const intervalRaw = String(form.get("interval") ?? "");
+  const form = await fields(request);
+  const token = (form.t ?? "").slice(0, 100);
+  const offer = form.offer ?? "";
+  const plan = form.plan ?? "";
+  const intervalRaw = form.interval ?? "";
   const origin = originOf(request);
   const back = (error: string) =>
     NextResponse.redirect(`${origin}/go-live?t=${encodeURIComponent(token)}&offer=${encodeURIComponent(offer)}&error=${error}`, 303);
