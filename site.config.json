@@ -34,7 +34,6 @@
     "url": "[SITE_URL]",
     "locale": "en_US",
     "analyticsId": "[ANALYTICS_ID]",
-    "formWebhookUrl": "[N8N_WEBHOOK_URL]",
     "formEndpoint": "/api/lead"
   },
   "offer": {

@@ -1,3 +1,4 @@
+import { attribution } from "@/lib/attribution";
 import { forms } from "@/lib/content";
 import { fill, HONEYPOT, type FieldErrorKind, type FormType } from "@/lib/forms";
 import { site } from "@/lib/site";
@@ -20,6 +21,7 @@ export async function submitLead(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        ...attribution(),
         ...data,
         form_type: formType,
         page: `${window.location.pathname}#${formType === "demo" ? "demo" : "contact"}`,

@@ -1,16 +1,12 @@
 import { NextResponse } from "next/server";
 import { checkAll, contactFields, demoFields, HONEYPOT, limits, type FormType } from "@/lib/forms";
-import { isPlaceholder, site } from "@/lib/site";
+import { edge, edgeConfigured, EdgeError } from "@/lib/server/edge";
 
 /**
- * Validates a form submission and forwards it to the n8n webhook.
- * The webhook URL stays server-side (N8N_WEBHOOK_URL, else site.config).
+ * Validates a form submission and saves it to Supabase (ryzon_landing_submissions).
+ * Saving queues the confirmation and alert emails; the database tells n8n to send them.
  */
-function webhookUrl(): string | null {
-  const fromEnv = process.env.N8N_WEBHOOK_URL;
-  if (fromEnv) return fromEnv;
-  return isPlaceholder(site.site.formWebhookUrl) ? null : site.site.formWebhookUrl;
-}
+const text = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
 
 export async function POST(request: Request) {
   let body: Record<string, unknown>;
@@ -20,7 +16,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid" }, { status: 400 });
   }
 
-  // Bots fill the hidden field. Pretend success, send nothing.
+  // Bots fill the hidden field. Pretend success, save nothing.
   if (typeof body[HONEYPOT] === "string" && body[HONEYPOT]) {
     return NextResponse.json({ ok: true });
   }
@@ -32,38 +28,43 @@ export async function POST(request: Request) {
 
   const fields = formType === "demo" ? demoFields : contactFields;
   const data: Record<string, string> = {};
-  for (const f of fields) {
-    const v = body[f];
-    data[f] = typeof v === "string" ? v.trim().slice(0, limits[f] ?? 500) : "";
-  }
+  for (const f of fields) data[f] = text(body[f], limits[f] ?? 500);
 
   const errors = checkAll(fields, data);
   if (Object.keys(errors).length) {
     return NextResponse.json({ error: "validation", fields: errors }, { status: 422 });
   }
-
-  const url = webhookUrl();
-  if (!url) {
+  if (!edgeConfigured()) {
     return NextResponse.json({ error: "not_configured" }, { status: 503 });
   }
 
-  const page = typeof body.page === "string" ? body.page.slice(0, 200) : "/";
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        form_type: formType,
-        page,
-        submitted_at: new Date().toISOString(),
-        ...data,
-      }),
-      signal: AbortSignal.timeout(10_000),
-    });
-    if (!res.ok) return NextResponse.json({ error: "upstream" }, { status: 502 });
-  } catch {
-    return NextResponse.json({ error: "upstream" }, { status: 502 });
-  }
+  const submission = {
+    form_type: formType,
+    name: data.name,
+    email: data.email,
+    phone: data.phone,
+    business_name: data.businessName,
+    industry: data.industry,
+    style: data.style,
+    current_site: data.website,
+    goals: data.notes,
+    message: data.message,
+    timezone: text(body.timezone, 64),
+    source_page: text(body.page, 200) || "/",
+    referrer: text(body.referrer, 500),
+    utm_source: text(body.utm_source, 200),
+    utm_medium: text(body.utm_medium, 200),
+    utm_campaign: text(body.utm_campaign, 200),
+    utm_term: text(body.utm_term, 200),
+    utm_content: text(body.utm_content, 200),
+    form_answers: { landing_page: text(body.landing_page, 300) },
+  };
 
+  try {
+    await edge("submit", { data: submission });
+  } catch (e) {
+    const status = e instanceof EdgeError ? e.status : 502;
+    return NextResponse.json({ error: status === 503 ? "not_configured" : "upstream" }, { status: status === 503 ? 503 : 502 });
+  }
   return NextResponse.json({ ok: true });
 }

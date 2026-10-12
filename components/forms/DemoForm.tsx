@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "r
 import { Field } from "@/components/forms/Field";
 import { Honeypot } from "@/components/forms/Honeypot";
 import { track } from "@/lib/analytics";
+import { rememberAttribution } from "@/lib/attribution";
 import { forms } from "@/lib/content";
 import { checkAll, checkField, fill, type DemoField, type FieldErrorKind } from "@/lib/forms";
 import { errorText, submitLead } from "@/lib/submitLead";
@@ -34,6 +35,9 @@ export function DemoForm() {
   const stepHeadingRef = useRef<HTMLHeadingElement>(null);
   const successRef = useRef<HTMLHeadingElement>(null);
   const moved = useRef(false);
+
+  // Note UTM tags and referrer on arrival, before anchors change the URL.
+  useEffect(() => rememberAttribution(), []);
 
   // Example cards carry data-industry; clicking one pre-selects it here.
   useEffect(() => {
