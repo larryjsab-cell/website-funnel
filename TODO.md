@@ -22,7 +22,24 @@ Every item below appears in the site or config. Nothing here was invented.
 
 ## Integrations
 - [ ] `[ANALYTICS_ID]`: analytics provider + ID
-- [ ] `N8N_WEBHOOK_URL`: set in Phase 7. Until then the forms show "not connected yet, call or email".
+- [x] Forms → Supabase → n8n → Gmail (done; see "Client pipeline" below). `N8N_WEBHOOK_URL` is no longer used.
+
+## Client pipeline (from the Client Pipeline & Email Automation Plan)
+Live on the preview site. Supabase project `woejhqidgykrcdyktuio` holds the pipeline; n8n only sends email.
+- **Dashboard:** `/admin`, login larryjsab@gmail.com (password given in chat; change it under Account).
+- **Database:** `supabase/migrations/*` (tables, security, state machine, email queue). Email copy: `scripts/emails/templates.mjs` → `node scripts/emails/templates.mjs` regenerates `supabase/seed/ryzon_landing_email_templates.sql`, then run that SQL in Supabase.
+- **Edge function:** `supabase/functions/ryzon-landing` (token in `ryzon_landing_config.edge_token`).
+- **Sending:** Supabase calls the n8n webhook the moment an email is due (pg_net) and pg_cron checks every minute for scheduled ones; day-21 closes run hourly. n8n: "Ryzon Landing – Email sender" and "Ryzon Landing – Errors" (owner alert, max 1/hour per failure). Generators in `n8n/`.
+- **Stripe (test mode):** prices, coupons and the webhook were created by `POST /api/stripe/setup` (needs the `x-ryzon-token` header). Netlify env: `RYZON_EDGE_TOKEN`, `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`.
+
+Owner to-dos:
+- [ ] Do the test payment: open the "your new website is ready" email for Setup Test Co → Get my website live → card 4242 4242 4242 4242, any future date, any CVC. Then try the change form, Ready to launch and Live from the dashboard.
+- [ ] Delete the Setup Test Co test lead when done (ask, or run `delete from ryzon_landing_submissions where email = 'larryjsab@gmail.com' and business_name = 'Setup Test Co'` in Supabase).
+- [ ] Rotate the Stripe test keys (they were pasted in chat), and use live keys only when launching: update `STRIPE_SECRET_KEY` / `STRIPE_PUBLISHABLE_KEY` in Netlify, redeploy, then `POST /api/stripe/setup` once on the live domain.
+- [ ] In Netlify, mark `STRIPE_SECRET_KEY` and `RYZON_EDGE_TOKEN` as secret (the API used here couldn't save secrets).
+- [ ] Optional hardening: move the two tokens in the n8n email sender into an n8n Header Auth credential; turn on Supabase Auth leaked-password protection; move the `pg_net` extension to the `extensions` schema from the Supabase dashboard.
+- [ ] Not built: Cloudflare Turnstile on the request form (needs a Cloudflare site key; the honeypot is in place), email open/click tracking (Gmail has no event webhook), file attachments on the change form (customers reply with files instead).
+- [ ] When the real domain is live: update `site_url` in `ryzon_landing_config` (email links) and `[SITE_URL]` in `site.config.json`.
 
 ## Legal (/privacy and /terms are real pages, draft copy from your terms; have a lawyer review)
 - [ ] Privacy: analytics provider (once chosen), how long form submissions are kept
