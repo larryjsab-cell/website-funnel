@@ -67,6 +67,8 @@ export default async function GoLivePage({ searchParams }: { searchParams: Promi
           </p>
         )}
 
+        <GetStarted files={offer === "files99"} />
+
         <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:items-start">
           <DemoPreview sub={sub} />
           {offer === "files99" ? (
@@ -96,6 +98,35 @@ export default async function GoLivePage({ searchParams }: { searchParams: Promi
         <p className="mt-8 text-sm text-muted">Secure checkout by Stripe. Questions first? Call {site.business.phone}, 9am to 10pm, 7 days a week.</p>
       </div>
     </Container>
+  );
+}
+
+/** The highlighted "what happens after you pay" box, so the next step never feels like a leap. */
+function GetStarted({ files }: { files: boolean }) {
+  const steps = files
+    ? ["Pay the one-time $99 securely.", "We package your design files.", "Your download link arrives by email."]
+    : ["Choose your plan and pay securely.", "Tell us your changes, by form or a quick call.", "We get your website ready to launch."];
+  return (
+    <section aria-labelledby="get-started" className="mt-8 rounded-card border-2 border-ink bg-ink p-5 text-on-ink shadow-hard md:p-6">
+      <h2 id="get-started" className="font-display text-2xl font-heavy display-tight md:text-3xl">
+        Get started now
+      </h2>
+      <p className="mt-2 max-w-measure text-lg">
+        {files
+          ? "Once your payment goes through, we email you the design files for your new website."
+          : "Once your payment goes through, we start on your changes and get your website ready to launch."}
+      </p>
+      <ol className="mt-5 grid gap-3 md:grid-cols-3">
+        {steps.map((step, i) => (
+          <li key={step} className="flex items-start gap-3 rounded-ui border-2 border-on-ink p-3">
+            <span aria-hidden="true" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-ui bg-on-ink font-display font-heavy text-ink">
+              {i + 1}
+            </span>
+            <span className="font-semibold">{step}</span>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
 
@@ -148,8 +179,8 @@ function PlanCard({ tier, interval, offer, token }: { tier: (typeof tiers)[numbe
           <li key={i}>✓ {i}</li>
         ))}
       </ul>
-      <button type="submit" className={`${tier.featured ? primaryButton : secondaryButton} mt-5 w-full`}>
-        Choose {tier.name.split(" ")[0]}
+      <button type="submit" aria-label={`Get started now with ${tier.name}`} className={`${(tier.featured ? primaryButton : secondaryButton).replace("px-6", "px-2")} mt-5 w-full whitespace-nowrap`}>
+        Get started now
       </button>
     </form>
   );
@@ -171,7 +202,7 @@ function FilesCard({ token }: { token: string }) {
         <li>✓ No subscription</li>
       </ul>
       <button type="submit" className={`${primaryButton} mt-6 w-full`}>
-        Get my design files
+        Get started now
       </button>
       <p className="mt-4 text-sm text-muted">Prefer us to host and run it? Plans start at {site.offer.startingPrice}. Call us to switch.</p>
     </form>

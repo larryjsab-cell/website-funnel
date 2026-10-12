@@ -17,12 +17,16 @@ function useTimezone() {
   );
 }
 
+/** Days shown at once. The rest are a "More dates" click away, so the row never scrolls sideways. */
+const DAYS_PER_PAGE = 6;
+
 const control = "mt-2 block w-full min-h-12 rounded-ui border-2 border-ink bg-canvas px-3 text-base text-ink";
 const label = "block font-display text-sm font-bold display-ui";
 
 export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
   const tz = useTimezone();
   const [day, setDay] = useState("");
+  const [page, setPage] = useState(0);
   const [time, setTime] = useState("");
   const [method, setMethod] = useState<"meet" | "phone" | "">("");
   const [phone, setPhone] = useState(knownPhone);
@@ -58,6 +62,14 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
   );
   const activeDay = day || days[0]?.key || "";
   const daySlots = days.find((d) => d.key === activeDay)?.slots ?? [];
+  const pages = Math.max(1, Math.ceil(days.length / DAYS_PER_PAGE));
+  const current = Math.min(page, pages - 1);
+  const pageDays = days.slice(current * DAYS_PER_PAGE, (current + 1) * DAYS_PER_PAGE);
+  const goToPage = (next: number) => {
+    setPage(next);
+    setDay(days[next * DAYS_PER_PAGE]?.key ?? "");
+    setTime("");
+  };
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
@@ -109,8 +121,8 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
       <Honeypot value={trap} onChange={setTrap} />
       <fieldset>
         <legend className={label}>Day</legend>
-        <div className="mt-2 flex gap-2 overflow-x-auto pb-2">
-          {days.map((d) => (
+        <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-6">
+          {pageDays.map((d) => (
             <button
               key={d.key}
               type="button"
@@ -119,12 +131,35 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
                 setDay(d.key);
                 setTime("");
               }}
-              className={`min-h-12 shrink-0 rounded-ui border-2 border-ink px-3 font-display text-sm font-bold ${d.key === activeDay ? "bg-ink text-on-ink" : "bg-canvas"}`}
+              className={`min-h-12 rounded-ui border-2 border-ink px-2 font-display text-sm font-bold ${d.key === activeDay ? "bg-ink text-on-ink" : "bg-canvas"}`}
             >
               {d.label}
             </button>
           ))}
         </div>
+        {pages > 1 && (
+          <div className="mt-3 grid grid-cols-2 items-center gap-2 md:grid-cols-[auto_1fr_auto]">
+            <p className="col-span-2 text-center text-sm text-muted md:order-2 md:col-span-1" aria-live="polite">
+              Showing {pageDays[0]?.label} – {pageDays[pageDays.length - 1]?.label}
+            </p>
+            <button
+              type="button"
+              disabled={current === 0}
+              onClick={() => goToPage(current - 1)}
+              className="min-h-11 rounded-ui border-2 border-ink bg-canvas px-3 font-display text-sm font-bold disabled:cursor-not-allowed disabled:opacity-40 md:order-1"
+            >
+              ← Earlier<span className="hidden sm:inline">&nbsp;dates</span>
+            </button>
+            <button
+              type="button"
+              disabled={current >= pages - 1}
+              onClick={() => goToPage(current + 1)}
+              className="min-h-11 rounded-ui border-2 border-ink bg-canvas px-3 font-display text-sm font-bold disabled:cursor-not-allowed disabled:opacity-40 md:order-3"
+            >
+              Next<span className="hidden sm:inline">&nbsp;dates</span> →
+            </button>
+          </div>
+        )}
       </fieldset>
 
       <fieldset>

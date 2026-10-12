@@ -195,13 +195,8 @@ function Board({ subs, reload }: { subs: Submission[]; reload: () => Promise<voi
   const [over, setOver] = useState<Status | null>(null);
   const [note, setNote] = useState<{ message?: string; error?: string }>({});
 
-  const drop = async (e: DragEvent, to: Status) => {
-    e.preventDefault();
-    setOver(null);
-    const id = e.dataTransfer.getData("text/plain") || dragId;
-    setDragId(null);
-    const s = subs.find((x) => x.id === id);
-    if (!s || s.status === to) return;
+  const move = async (s: Submission, to: Status) => {
+    if (s.status === to) return;
     if (to === "demo_review" && !s.demo_url) {
       return setNote({ error: `Add the demo link on ${displayName(s)}'s page to start Demo review.` });
     }
@@ -214,11 +209,22 @@ function Board({ subs, reload }: { subs: Submission[]; reload: () => Promise<voi
     }
   };
 
+  const drop = (e: DragEvent, to: Status) => {
+    e.preventDefault();
+    setOver(null);
+    const id = e.dataTransfer.getData("text/plain") || dragId;
+    setDragId(null);
+    const s = subs.find((x) => x.id === id);
+    if (s) move(s, to);
+  };
+
   return (
     <>
-      <p className="mb-3 text-sm text-muted">Drag a card to another column to change its status. Each card also opens its page, where status can be changed from a list.</p>
+      <p className="mb-3 text-sm text-muted">
+        Drag a card to another column to change its status. On a phone, use the &ldquo;Move to&rdquo; list on the card. Each card also opens its page.
+      </p>
       <Notice {...note} />
-      <div className="mt-3 flex gap-3 overflow-x-auto pb-4">
+      <div className="mt-3 grid grid-cols-1 items-start gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {STATUSES.map((col) => {
           const cards = subs.filter((s) => s.status === col.id);
           return (
@@ -231,12 +237,13 @@ function Board({ subs, reload }: { subs: Submission[]; reload: () => Promise<voi
               }}
               onDragLeave={() => setOver((o) => (o === col.id ? null : o))}
               onDrop={(e) => drop(e, col.id)}
-              className={`flex w-64 shrink-0 flex-col rounded-card border-2 bg-surface ${over === col.id ? "border-accent" : "border-ink"}`}
+              className={`flex min-w-0 flex-col rounded-card border-2 bg-surface ${over === col.id ? "border-accent" : "border-ink"}`}
             >
-              <h2 className="flex items-center justify-between border-b-2 border-ink px-3 py-2 font-display text-sm font-heavy display-ui">
-                <span title={col.label}>{col.short}</span> <span>{cards.length}</span>
+              <h2 className="flex items-center justify-between gap-2 border-b-2 border-ink px-3 py-2 font-display text-sm font-heavy display-ui">
+                <span>{col.label}</span> <span>{cards.length}</span>
               </h2>
-              <ul className="flex min-h-24 flex-col gap-2 p-2">
+              {cards.length === 0 && <p className="p-3 text-sm text-muted">Empty. Drop a card here.</p>}
+              <ul className={`flex flex-col gap-2 ${cards.length ? "p-2" : ""}`}>
                 {cards.map((s) => (
                   <li
                     key={s.id}
@@ -261,6 +268,24 @@ function Board({ subs, reload }: { subs: Submission[]; reload: () => Promise<voi
                         {s.unsubscribed_at && <Tag>Unsubscribed</Tag>}
                       </p>
                     )}
+                    <div className="mt-2 md:hidden">
+                      <label htmlFor={`move-${s.id}`} className="sr-only">
+                        Move {displayName(s)} to
+                      </label>
+                      <select
+                        id={`move-${s.id}`}
+                        value=""
+                        onChange={(e) => e.target.value && move(s, e.target.value as Status)}
+                        className="block min-h-11 w-full rounded-ui border-2 border-ink bg-surface px-2 text-base"
+                      >
+                        <option value="">Move to…</option>
+                        {STATUSES.filter((x) => x.id !== s.status).map((x) => (
+                          <option key={x.id} value={x.id}>
+                            {x.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </li>
                 ))}
               </ul>
