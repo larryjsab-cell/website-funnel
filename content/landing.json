@@ -1,0 +1,175 @@
+{
+  "meta": {
+    "title": "Websites from $40/mo, $0 Design Fee | Ryzon Automation",
+    "description": "Professional websites for small businesses from $40/month. $0 design fee. Get a free design demo before you pay anything.",
+    "ogImage": "/opengraph-image"
+  },
+  "hero": {
+    "headline": "A website that wins you more customers.",
+    "subhead": "We design a free preview of your new site first. You see it before you pay anything, and you decide from there.",
+    "ctaLabel": "Get My Free Demo",
+    "mockup": {
+      "label": "Sample design for a local lawn care business, on desktop and phone.",
+      "url": "yourbusiness.com",
+      "siteName": "Your business",
+      "siteHeadline": "Fresh cuts. Clean edges. Every week.",
+      "siteButton": "Get a free quote",
+      "siteNav": [
+        "Services",
+        "Reviews",
+        "Contact"
+      ],
+      "imagePrompt": "Bright daylight photo of a freshly mowed suburban front lawn with crisp edging along a concrete path, low camera angle, soft morning light, natural greens, polished small-business website hero image",
+      "annotations": {
+        "width": "Fits any screen",
+        "cta": "One clear button",
+        "speed": "Built to load fast"
+      }
+    }
+  },
+  "trust": {
+    "heading": "Why owners pick Ryzon",
+    "facts": [
+      {
+        "value": "Next day",
+        "label": "Your demo can be ready as soon as the next day"
+      },
+      {
+        "value": "7 days",
+        "label": "Open 9am–10pm, every day of the week"
+      },
+      {
+        "value": "Nationwide",
+        "label": "Working with small businesses across the US"
+      }
+    ],
+    "placeholders": [
+      {
+        "token": "[REVIEW_COUNT]",
+        "label": "Reviews"
+      },
+      {
+        "token": "[SITES_LAUNCHED]",
+        "label": "Sites launched"
+      }
+    ],
+    "logosToken": "[CLIENT_LOGOS]"
+  },
+  "problem": {
+    "heading": "No website, or an old one, sends customers to someone else.",
+    "intro": "People look you up before they call. What they find decides whether they pick you.",
+    "points": [
+      {
+        "title": "They can’t find you",
+        "body": "If you don’t show up when someone searches, the business that does gets the call."
+      },
+      {
+        "title": "Your site looks out of date",
+        "body": "A dated site makes a great business look closed, careless, or cheap. First impressions happen online now."
+      },
+      {
+        "title": "It’s hard to use on a phone",
+        "body": "Most people browse on their phone. If the menu is tiny and the number is buried, they leave."
+      },
+      {
+        "title": "The upfront bill keeps you stuck",
+        "body": "A big design invoice before anything is built is why many owners put this off for years."
+      }
+    ],
+    "ctaLabel": "See My Free Design"
+  },
+  "offer": {
+    "heading": "Everything you need to look professional online. $40 a month to start.",
+    "intro": "No big invoice before work starts. We design it, you see it, then you pick a plan.",
+    "compare": {
+      "columns": [
+        "The usual way",
+        "Ryzon Starter"
+      ],
+      "rows": [
+        {
+          "label": "Design fee",
+          "usual": "Often a large fee, paid upfront",
+          "ours": "$0"
+        },
+        {
+          "label": "See it first",
+          "usual": "Usually after you pay a deposit",
+          "ours": "Free demo before you pay"
+        },
+        {
+          "label": "Monthly cost",
+          "usual": "Varies, often billed separately",
+          "ours": "From $40/month"
+        },
+        {
+          "label": "SEO optimization",
+          "usual": "Often an extra service",
+          "ours": "Included"
+        },
+        {
+          "label": "Analytics",
+          "usual": "Often set up later, if at all",
+          "ours": "Included"
+        }
+      ],
+      "note": "“The usual way” describes common agency pricing in general, not any specific company."
+    },
+    "yearly": "Pay yearly and get 2 months free on every plan."
+  },
+  "steps": {
+    "heading": "How it works",
+    "intro": "Three steps. The free demo comes first.",
+    "items": [
+      {
+        "title": "Request your free demo",
+        "body": "Fill out a short form about your business. No credit card, no commitment."
+      },
+      {
+        "title": "Review your design",
+        "body": "We design a preview of your new site, ready as soon as the next day. Look it over."
+      },
+      {
+        "title": "Go live",
+        "body": "Love it? Pick a plan and we launch your site. Not for you? Walk away. You owe nothing."
+      }
+    ],
+    "linkLabel": "See the full process and timeline",
+    "ctaLabel": "Start My Free Demo",
+    "stepLabel": "Step"
+  },
+  "examples": {
+    "heading": "Designs built for local businesses",
+    "intro": "Sample designs for the kinds of businesses we work with. Yours is designed around your business.",
+    "linkLabel": "Browse all example designs",
+    "ctaLabel": "See My Free Design"
+  },
+  "testimonials": {
+    "heading": "What owners say"
+  },
+  "pricingTeaser": {
+    "heading": "Simple monthly pricing",
+    "body": "Plans start at $40/month with a $0 design fee. Need automations, dashboards, or lifetime changes? There are plans for that too.",
+    "linkLabel": "Compare all three plans"
+  },
+  "risk": {
+    "heading": "See your design before you pay a cent.",
+    "body": "We build your demo first. Like it? Pick a plan. Not for you? Walk away. No cost, no commitment.",
+    "ctaLabel": "Get My Free Demo"
+  },
+  "faqTeaser": {
+    "heading": "Questions owners ask first",
+    "ids": [
+      "catch",
+      "included",
+      "demo-time",
+      "dont-like"
+    ],
+    "linkLabel": "Read every answer in the FAQ"
+  },
+  "finalCta": {
+    "heading": "Ready to see your new website?",
+    "body": "Tell us about your business. We’ll design a free preview, often by the next day.",
+    "ctaLabel": "Get My Free Demo"
+  }
+}

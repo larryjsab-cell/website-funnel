@@ -1,0 +1,7 @@
+{
+  "items": [
+    { "quote": "[TESTIMONIAL]", "name": "[CUSTOMER_NAME]", "business": "[BUSINESS_TYPE, CITY]" },
+    { "quote": "[TESTIMONIAL]", "name": "[CUSTOMER_NAME]", "business": "[BUSINESS_TYPE, CITY]" },
+    { "quote": "[TESTIMONIAL]", "name": "[CUSTOMER_NAME]", "business": "[BUSINESS_TYPE, CITY]" }
+  ]
+}

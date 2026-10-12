@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+    scroll-padding-bottom: 6rem;
+  }
+
+  @media (min-width: 768px) {
+    html {
+      scroll-padding-bottom: 0;
+    }
+  }
+
+  body {
+    @apply bg-canvas font-sans text-base text-ink antialiased;
+  }
+
+  ::selection {
+    @apply bg-accent text-on-accent;
+  }
+
+  /* One focus style everywhere: blueprint ring, offset so it clears hard shadows. */
+  :focus-visible {
+    outline: 3px solid theme("colors.accent");
+    outline-offset: 3px;
+  }
+
+  .bg-ink :focus-visible {
+    outline-color: theme("colors.on-ink");
+  }
+
+  a,
+  button,
+  summary {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  summary {
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+@layer utilities {
+  /* Martian Mono width axis. 75 = condensed headlines, 87.5 = UI text. */
+  .mono-condensed {
+    font-variation-settings: "wdth" 75;
+  }
+
+  .mono-semi {
+    font-variation-settings: "wdth" 87.5;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* ---------- FAQ disclosure ---------- */
+.faq-toggle {
+  transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+details[open] > summary .faq-toggle {
+  transform: rotate(45deg);
+}
+
+/* ---------- Hero mockup: the one orchestrated moment ----------
+   Default state is the finished design. Animation is enhancement only:
+   wireframe overlays fade out while each block settles in. */
+@keyframes build-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes wire-out {
+  0%,
+  40% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes scan {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(var(--scan-distance, 24rem));
+    opacity: 0;
+  }
+}
+
+@keyframes draw-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.build-block {
+  position: relative;
+}
+
+.build-block > .build-content {
+  animation: build-in 480ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--d, 0) * 1ms + 300ms);
+}
+
+.build-block::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px dashed theme("colors.accent");
+  pointer-events: none;
+  opacity: 0;
+  animation: wire-out 900ms ease-out both;
+  animation-delay: calc(var(--d, 0) * 1ms);
+}
+
+.build-scan {
+  animation: scan 1400ms cubic-bezier(0.4, 0, 0.2, 1) 200ms both;
+}
+
+.draw-x {
+  transform-origin: left;
+  animation: draw-x 600ms cubic-bezier(0.2, 0.7, 0.2, 1) 1200ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .build-scan {
+    display: none;
+  }
+}

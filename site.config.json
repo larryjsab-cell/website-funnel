@@ -1,0 +1,126 @@
+{
+  "business": {
+    "name": "Ryzon Automation",
+    "shortName": "Ryzon",
+    "tagline": "Websites for local small businesses, from $40/month.",
+    "email": "larryjsab@gmail.com",
+    "phone": "(248) 974-4220",
+    "phoneHref": "tel:+12489744220",
+    "address": {
+      "street": "3230 Glen Iris Drive",
+      "city": "Commerce Township",
+      "region": "MI",
+      "postalCode": "[ZIP]",
+      "country": "US"
+    },
+    "serviceArea": "Nationwide (United States)",
+    "hours": {
+      "label": "9am–10pm, 7 days a week",
+      "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "opens": "09:00",
+      "closes": "22:00"
+    },
+    "logo": null
+  },
+  "site": {
+    "url": "[SITE_URL]",
+    "locale": "en_US",
+    "analyticsId": "[ANALYTICS_ID]",
+    "formWebhookUrl": "[N8N_WEBHOOK_URL]"
+  },
+  "offer": {
+    "startingPrice": "$40/month",
+    "designFee": "$0 design fee",
+    "demo": "Free design demo",
+    "line": ["$40/mo", "$0 design fee", "Free demo"],
+    "demoTurnaround": "as soon as the next day",
+    "yearlyDiscount": "Pay yearly and get 2 months free on every plan.",
+    "ownership": "We own and manage the site for the first year. After that, if you decide to leave, we export your site files and deliver them to you to manage."
+  },
+  "pricing": {
+    "tiers": [
+      {
+        "id": "starter",
+        "name": "Starter Website",
+        "monthly": 40,
+        "yearly": 400,
+        "upfront": "$0 design fee",
+        "summary": "A professional website with no design fee.",
+        "includes": ["Professional website", "No design fee", "SEO optimization", "Analytics"],
+        "inheritsFrom": null,
+        "featured": false
+      },
+      {
+        "id": "growth",
+        "name": "Growth Package",
+        "monthly": 100,
+        "yearly": 1000,
+        "upfront": "$0 setup",
+        "summary": "Everything in Starter, plus automations and tracking.",
+        "includes": [
+          "Business automations",
+          "Custom dashboards",
+          "Traffic tracking",
+          "Google Search Console tracking",
+          "Bing Webmaster tracking"
+        ],
+        "inheritsFrom": "Starter",
+        "featured": true
+      },
+      {
+        "id": "complete",
+        "name": "Complete Package",
+        "monthly": 200,
+        "yearly": 2000,
+        "upfront": null,
+        "summary": "Everything in Growth, plus custom design and lifetime changes.",
+        "includes": ["Custom website design", "Free changes and additions for the life of your site"],
+        "inheritsFrom": "Growth",
+        "featured": false
+      }
+    ]
+  },
+  "cta": {
+    "primary": { "label": "Get My Free Demo", "href": "/demo" },
+    "primaryVariants": ["See My Free Design", "Start My Free Demo"],
+    "secondary": { "label": "See Pricing", "href": "/pricing" },
+    "microcopy": "No credit card. No commitment."
+  },
+  "nav": [
+    { "label": "Pricing", "href": "/pricing" },
+    { "label": "Examples", "href": "/examples" },
+    { "label": "How it works", "href": "/how-it-works" },
+    { "label": "FAQ", "href": "/faq" },
+    { "label": "Contact", "href": "/contact" }
+  ],
+  "legal": [
+    { "label": "Privacy", "href": "/privacy" },
+    { "label": "Terms", "href": "/terms" }
+  ],
+  "pages": [
+    { "route": "/", "name": "Home", "inNav": false },
+    { "route": "/pricing", "name": "Pricing", "inNav": true },
+    { "route": "/examples", "name": "Examples", "inNav": true },
+    { "route": "/how-it-works", "name": "How it works", "inNav": true },
+    { "route": "/faq", "name": "FAQ", "inNav": true },
+    { "route": "/demo", "name": "Free demo", "inNav": false },
+    { "route": "/demo/thank-you", "name": "Thank you", "inNav": false, "noindex": true },
+    { "route": "/contact", "name": "Contact", "inNav": true },
+    { "route": "/privacy", "name": "Privacy", "inNav": false },
+    { "route": "/terms", "name": "Terms", "inNav": false }
+  ],
+  "colors": {
+    "concrete": "#E4E5E0",
+    "surface": "#FFFFFF",
+    "ink": "#000000",
+    "graphite": "#45483F",
+    "rule": "#A3A69E",
+    "blueprint": "#1A33E8",
+    "signal": "#FF4F00"
+  },
+  "social": [
+    { "label": "Facebook", "href": "[SOCIAL_FACEBOOK]" },
+    { "label": "Instagram", "href": "[SOCIAL_INSTAGRAM]" },
+    { "label": "LinkedIn", "href": "[SOCIAL_LINKEDIN]" }
+  ]
+}

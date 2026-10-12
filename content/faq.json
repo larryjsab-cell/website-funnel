@@ -1,0 +1,73 @@
+{
+  "meta": {
+    "title": "FAQ: $40/mo Websites, Free Demo | Ryzon Automation",
+    "description": "Straight answers about pricing, the free design demo, site ownership, edits, and cancelling.",
+    "ogImage": "/opengraph-image"
+  },
+  "heading": "Questions, answered",
+  "groups": [
+    {
+      "id": "offer",
+      "title": "The offer",
+      "items": [
+        {
+          "id": "catch",
+          "q": "What’s the catch?",
+          "a": "There isn’t one. Instead of a big design bill upfront, you pay a simple monthly plan. We design your demo first, for free, so you see exactly what you’re getting before you pay anything."
+        },
+        {
+          "id": "included",
+          "q": "What’s included for $40 a month?",
+          "a": "The Starter Website plan includes a professional website, SEO optimization, and analytics, with no design fee. Growth and Complete add automations, tracking, custom design, and lifetime changes."
+        },
+        {
+          "id": "yearly",
+          "q": "Is there a discount for paying yearly?",
+          "a": "Yes. Pay yearly and you get 2 months free on every plan. Starter is $400/year instead of $480."
+        }
+      ]
+    },
+    {
+      "id": "demo",
+      "title": "The free demo",
+      "items": [
+        {
+          "id": "demo-time",
+          "q": "How long does the demo take?",
+          "a": "Your demo can be ready as soon as the next day after you send the form."
+        },
+        {
+          "id": "dont-like",
+          "q": "What if I don’t like it?",
+          "a": "Then you don’t pay anything. The demo is free and there’s no commitment. You only move forward if you want to."
+        }
+      ]
+    },
+    {
+      "id": "after",
+      "title": "After you launch",
+      "items": [
+        {
+          "id": "own",
+          "q": "Do I own my site?",
+          "a": "We own and manage the site for the first year. After that, if you decide to leave, we export your site files and deliver them to you to manage."
+        },
+        {
+          "id": "cancel",
+          "q": "Can I cancel?",
+          "a": "[PLACEHOLDER: cancellation and contract terms]"
+        },
+        {
+          "id": "edits",
+          "q": "Do you do edits?",
+          "a": "Yes. On the Complete Package, changes and additions are free for the life of your site. [PLACEHOLDER: edit policy for Starter and Growth]"
+        },
+        {
+          "id": "area",
+          "q": "Do you work with businesses outside Michigan?",
+          "a": "Yes. We work with small businesses nationwide."
+        }
+      ]
+    }
+  ]
+}
