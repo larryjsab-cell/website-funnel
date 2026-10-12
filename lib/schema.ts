@@ -3,7 +3,7 @@
  * so structured data can never drift from what visitors read.
  */
 import { allFaqItems, landing } from "@/lib/content";
-import { site, siteUrl } from "@/lib/site";
+import { formatPrice, site, siteUrl } from "@/lib/site";
 
 const b = site.business;
 const id = (frag: string) => `${siteUrl}/#${frag}`;
@@ -31,11 +31,20 @@ function business() {
       addressCountry: b.address.country,
     },
     areaServed: { "@type": "Country", name: "United States" },
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "sales",
+      telephone: "+1-248-974-4220",
+      email: b.email,
+      areaServed: "US",
+      availableLanguage: "English",
+      hoursAvailable: { "@type": "OpeningHoursSpecification", dayOfWeek: b.hours.days, opens: b.hours.opens, closes: b.hours.closes },
+    },
     openingHours: `${b.hours.days.map((d) => DAY[d as keyof typeof DAY]).join(",")} ${b.hours.opens}-${b.hours.closes}`,
     openingHoursSpecification: [
       { "@type": "OpeningHoursSpecification", dayOfWeek: b.hours.days, opens: b.hours.opens, closes: b.hours.closes },
     ],
-    priceRange: `$${Math.min(...tiers.map((t) => t.monthly))}–$${Math.max(...tiers.map((t) => t.monthly))}/month`,
+    priceRange: `${formatPrice(Math.min(...tiers.map((t) => t.monthly)))}–${formatPrice(Math.max(...tiers.map((t) => t.monthly)))}/month`,
     currenciesAccepted: "USD",
     knowsAbout: ["Small business websites", "Website design", "Website hosting", "Local SEO", "Business automation"],
     hasOfferCatalog: { "@id": id("plans") },

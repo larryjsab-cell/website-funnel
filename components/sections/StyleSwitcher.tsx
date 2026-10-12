@@ -76,6 +76,7 @@ export function StyleSwitcher() {
               >
                 <input
                   type="radio"
+                  id={`site-style-${o.id}`}
                   name="site-style"
                   value={o.id}
                   checked={active === o.id}

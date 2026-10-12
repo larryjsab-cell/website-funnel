@@ -10,6 +10,7 @@ import { checkAll, checkField, fill, type DemoField, type FieldErrorKind } from 
 import { errorText, submitLead } from "@/lib/submitLead";
 import { styleName } from "@/lib/theme";
 import { useActiveStyle } from "@/lib/useActiveStyle";
+import { useHydrated } from "@/lib/useHydrated";
 import { useUnsavedWarning } from "@/lib/useUnsavedWarning";
 import styles from "@/content/styles.json";
 
@@ -37,6 +38,7 @@ export function DemoForm() {
   const stepHeadingRef = useRef<HTMLHeadingElement>(null);
   const successRef = useRef<HTMLHeadingElement>(null);
   const moved = useRef(false);
+  const js = useHydrated();
 
   // Typed text only: a preset industry or style isn't worth a leave-page prompt.
   useUnsavedWarning(status !== "success" && TYPED.some((f) => values[f].trim() !== ""));
@@ -163,24 +165,30 @@ export function DemoForm() {
 
   const busy = status === "sending";
   return (
+    // Without JavaScript this posts straight to /api/lead with both steps shown
+    // (see the noscript styles in the root layout) and the browser's own validation.
     <form
       ref={formRef}
+      action="/api/lead"
+      method="post"
       onSubmit={onSubmit}
-      noValidate
+      noValidate={js}
       aria-label={copy.label}
       aria-busy={busy}
       className="rz-form relative rounded-card border-2 border-ink bg-surface p-5 shadow-hard md:p-8"
     >
       <Honeypot value={trap} onChange={setTrap} />
+      <input type="hidden" name="form_type" value="demo" />
+      <input type="hidden" name="page" value="/#demo" />
 
-      <p className="font-display text-sm text-muted display-ui" aria-live="polite">
+      <p className="nojs-hide font-display text-sm text-muted display-ui" aria-live="polite">
         {fill(copy.stepOf, { step: String(step) })}
       </p>
       <h3 ref={stepHeadingRef} tabIndex={-1} className="mt-1 font-display text-xl font-heavy display-tight md:text-2xl">
         {step === 1 ? copy.step1Title : copy.step2Title}
       </h3>
 
-      <div className={step === 1 ? "mt-6 grid gap-5" : "hidden"}>
+      <div className={`mt-6 gap-5 ${step === 1 ? "grid" : "hidden"}`}>
         <Field
           id="demo-name"
           name="name"
@@ -209,7 +217,8 @@ export function DemoForm() {
         />
       </div>
 
-      <div className={step === 2 ? "mt-6 grid gap-5" : "hidden"}>
+      <div className={`mt-6 gap-5 ${step === 2 ? "grid" : "hidden nojs-grid"}`}>
+        <h3 className="hidden nojs-block mt-4 font-display text-xl font-heavy display-tight md:text-2xl">{copy.step2Title}</h3>
         <Field
           id="demo-business"
           name="businessName"
@@ -315,7 +324,16 @@ export function DemoForm() {
           className="rz-btn rz-btn-primary inline-flex min-h-14 items-center justify-center gap-3 rounded-ui border-2 border-ink bg-cta px-8 font-display text-lg font-bold text-on-cta shadow-hard transition-button duration-fast ease-out display-ui hover:-translate-x-lift-x hover:-translate-y-lift-y hover:shadow-hard-lg active:translate-x-lift-x active:translate-y-lift-y active:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:cursor-wait disabled:shadow-none"
         >
           {busy && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />}
-          {busy ? copy.sending : step === 1 ? copy.next : copy.submit}
+          {busy ? (
+            copy.sending
+          ) : step === 1 ? (
+            <>
+              <span className="nojs-hide">{copy.next}</span>
+              <span className="hidden nojs-inline">{copy.submit}</span>
+            </>
+          ) : (
+            copy.submit
+          )}
         </button>
       </div>
       <p className="mt-3 font-display text-sm text-muted display-ui">{copy.microcopy}</p>

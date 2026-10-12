@@ -105,8 +105,7 @@
     "summary": "Fix the highlighted field to continue.",
     "notConfigured": "This form isn’t connected yet. Call {phone} or email {email} and we’ll set up your demo.",
     "network": "We couldn’t send that. Check your connection and try again, or call {phone}.",
-    "server": "Something went wrong on our end. Try again, or call {phone} or email {email}.",
-    "noScript": "This form needs JavaScript. Call {phone} or email {email} and we’ll set up your free demo."
+    "server": "Something went wrong on our end. Try again, or call {phone} or email {email}."
   },
   "honeypotLabel": "Leave this field empty"
 }

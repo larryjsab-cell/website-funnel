@@ -186,7 +186,7 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
         <div className="mt-2 flex flex-wrap gap-3">
           {(["meet", "phone"] as const).map((m) => (
             <label key={m} className={`flex min-h-12 cursor-pointer items-center gap-2 rounded-ui border-2 border-ink px-4 font-display text-sm font-bold ${method === m ? "bg-ink text-on-ink" : "bg-canvas"}`}>
-              <input type="radio" name="method" value={m} checked={method === m} onChange={() => setMethod(m)} className="h-5 w-5" />
+              <input type="radio" id={`b-method-${m}`} name="method" value={m} checked={method === m} onChange={() => setMethod(m)} className="h-5 w-5" />
               {m === "meet" ? "Google Meet (video)" : "Phone call"}
             </label>
           ))}

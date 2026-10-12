@@ -97,6 +97,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
+        {/* JavaScript off: show the whole demo form at once so it still posts in one go. */}
+        <noscript>
+          <style>{".nojs-hide{display:none!important}.nojs-grid{display:grid!important}.nojs-block{display:block!important}.nojs-inline{display:inline!important}"}</style>
+        </noscript>
       </head>
       <body>
         <SkipLink />

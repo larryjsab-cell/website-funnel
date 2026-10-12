@@ -7,6 +7,7 @@ import { track } from "@/lib/analytics";
 import forms from "@/content/forms.json";
 import { checkAll, checkField, contactFields, fill, type ContactField, type FieldErrorKind } from "@/lib/forms";
 import { errorText, submitLead } from "@/lib/submitLead";
+import { useHydrated } from "@/lib/useHydrated";
 import { useUnsavedWarning } from "@/lib/useUnsavedWarning";
 
 const copy = forms.contact;
@@ -20,6 +21,7 @@ export function ContactForm() {
   const [formError, setFormError] = useState("");
   const [trap, setTrap] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+  const js = useHydrated();
   useUnsavedWarning(!sent && Object.values(values).some((v) => v.trim() !== ""));
 
   const label = (f: ContactField) => copy.fields[f].label;
@@ -73,13 +75,17 @@ export function ContactForm() {
   return (
     <form
       ref={formRef}
+      action="/api/lead"
+      method="post"
       onSubmit={onSubmit}
-      noValidate
+      noValidate={js}
       aria-label={copy.label}
       aria-busy={sending}
       className="rz-form relative grid gap-5 rounded-card border-2 border-ink bg-surface p-5 md:p-6"
     >
       <Honeypot value={trap} onChange={setTrap} />
+      <input type="hidden" name="form_type" value="contact" />
+      <input type="hidden" name="page" value="/#contact" />
       <div className="grid gap-5 sm:grid-cols-2">
         <Field
           id="contact-name"

@@ -2,9 +2,7 @@ import { DemoForm } from "@/components/forms/DemoForm";
 import { Heading } from "@/components/ui/Heading";
 import { OfferLine } from "@/components/ui/OfferLine";
 import { Section } from "@/components/ui/Section";
-import { fill } from "@/lib/forms";
-import { site } from "@/lib/site";
-import { forms, landing } from "@/lib/content";
+import { landing } from "@/lib/content";
 
 /** The conversion point. Every primary CTA on the page lands here. */
 export function DemoSection() {
@@ -29,11 +27,6 @@ export function DemoSection() {
         </div>
         <div className="lg:col-span-7">
           <DemoForm />
-          <noscript>
-            <p className="mt-4 rounded-card border-2 border-ink bg-surface p-4 text-base">
-              {fill(forms.errors.noScript, { phone: site.business.phone, email: site.business.email })}
-            </p>
-          </noscript>
         </div>
       </div>
     </Section>
