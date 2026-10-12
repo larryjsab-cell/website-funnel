@@ -1,31 +1,40 @@
-// Crawl every internal link from "/" and report non-200s and orphans.
+// Crawl every internal link from "/", check each page returns 200 and every
+// "#anchor" points at an element id that exists on the target page.
 // Usage: node scripts/check-links.mjs [baseUrl]
 const base = process.argv[2] ?? "http://localhost:3000";
-const seen = new Map(); // path -> status
-const linkedFrom = new Map(); // path -> Set(source)
+const pages = new Map(); // path -> { status, ids }
+const anchors = []; // { from, path, id }
 const queue = ["/"];
 
 while (queue.length) {
   const path = queue.shift();
-  if (seen.has(path)) continue;
+  if (pages.has(path)) continue;
   const res = await fetch(base + path, { redirect: "manual" });
-  seen.set(path, res.status);
+  const entry = { status: res.status, ids: new Set() };
+  pages.set(path, entry);
   if (res.status !== 200 || !(res.headers.get("content-type") ?? "").includes("text/html")) continue;
   const html = await res.text();
+  for (const [, id] of html.matchAll(/\bid="([^"]+)"/g)) entry.ids.add(id);
   for (const [, href] of html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/g)) {
-    if (!href.startsWith("/") || href.startsWith("//")) continue;
-    const target = href.split("#")[0].split("?")[0] || "/";
-    if (!linkedFrom.has(target)) linkedFrom.set(target, new Set());
-    linkedFrom.get(target).add(path);
-    if (!seen.has(target)) queue.push(target);
+    const isLocal = href.startsWith("/") && !href.startsWith("//");
+    if (!isLocal && !href.startsWith("#")) continue;
+    const [rawPath, id] = href.split("#");
+    const target = (isLocal ? rawPath.split("?")[0] : path) || "/";
+    if (id) anchors.push({ from: path, path: target, id });
+    if (!pages.has(target)) queue.push(target);
   }
 }
 
-const broken = [...seen].filter(([, s]) => s !== 200);
-console.log(`Crawled ${seen.size} pages from ${base}`);
-for (const [p, s] of seen) console.log(`  ${s}  ${p}  (linked from ${[...(linkedFrom.get(p) ?? [])].length} pages)`);
-if (broken.length) {
-  console.error(`BROKEN: ${broken.map(([p, s]) => `${p} → ${s}`).join(", ")}`);
+const broken = [...pages].filter(([, p]) => p.status !== 200).map(([path, p]) => `${path} → ${p.status}`);
+const missing = anchors.filter((a) => !pages.get(a.path)?.ids.has(a.id)).map((a) => `${a.path}#${a.id} (from ${a.from})`);
+const uniqueAnchors = [...new Set(anchors.map((a) => `${a.path}#${a.id}`))];
+
+console.log(`Crawled ${pages.size} pages, ${uniqueAnchors.length} unique anchors from ${base}`);
+for (const [p, e] of pages) console.log(`  ${e.status}  ${p}`);
+console.log(`  anchors: ${uniqueAnchors.join("  ")}`);
+if (broken.length || missing.length) {
+  if (broken.length) console.error(`BROKEN PAGES: ${broken.join(", ")}`);
+  if (missing.length) console.error(`MISSING ANCHORS: ${[...new Set(missing)].join(", ")}`);
   process.exit(1);
 }
-console.log("No broken internal links.");
+console.log("No broken internal links or anchors.");

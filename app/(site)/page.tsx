@@ -4,12 +4,13 @@ import { TrustStrip } from "@/components/sections/TrustStrip";
 import { ProblemSection } from "@/components/sections/ProblemSection";
 import { OfferStack } from "@/components/sections/OfferStack";
 import { HowItWorks } from "@/components/sections/HowItWorks";
-import { ExamplesTeaser } from "@/components/sections/ExamplesTeaser";
+import { Examples } from "@/components/sections/Examples";
 import { Testimonials } from "@/components/sections/Testimonials";
-import { PricingTeaser } from "@/components/sections/PricingTeaser";
+import { Pricing } from "@/components/sections/Pricing";
 import { RiskReversal } from "@/components/sections/RiskReversal";
-import { FaqTeaser } from "@/components/sections/FaqTeaser";
-import { FinalCta } from "@/components/sections/FinalCta";
+import { Faq } from "@/components/sections/Faq";
+import { DemoSection } from "@/components/sections/DemoSection";
+import { ContactSection } from "@/components/sections/ContactSection";
 import { landing } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export const metadata: Metadata = {
   },
 };
 
+/** Single-page funnel. Nav links scroll to sections; every primary CTA lands on #demo. */
 export default function HomePage() {
   return (
     <>
@@ -32,12 +34,13 @@ export default function HomePage() {
       <ProblemSection />
       <OfferStack />
       <HowItWorks />
-      <ExamplesTeaser />
+      <Examples />
       <Testimonials />
-      <PricingTeaser />
+      <Pricing />
       <RiskReversal />
-      <FaqTeaser />
-      <FinalCta />
+      <Faq />
+      <DemoSection />
+      <ContactSection />
     </>
   );
 }

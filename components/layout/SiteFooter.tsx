@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { Wordmark } from "@/components/ui/Wordmark";
-import { site, formatAddress, isPlaceholder } from "@/lib/site";
+import { site, formatAddress } from "@/lib/site";
 import { ui } from "@/lib/content";
 
 const linkClass =
@@ -36,7 +36,7 @@ export function SiteFooter() {
           </ul>
         </nav>
 
-        <div className="md:col-span-3">
+        <div className="md:col-span-5">
           <h2 className="font-mono text-sm font-bold mono-semi">{ui.footer.contactHeading}</h2>
           <address className="mt-3 grid gap-1 text-base not-italic">
             <span>{site.business.name}</span>
@@ -52,24 +52,6 @@ export function SiteFooter() {
           <p className="mt-2 text-base">{site.business.hours.label}</p>
         </div>
 
-        <div className="md:col-span-2">
-          <h2 className="font-mono text-sm font-bold mono-semi">{ui.footer.socialHeading}</h2>
-          <ul className="mt-3 font-mono text-sm">
-            {site.social.map((s) =>
-              isPlaceholder(s.href) ? (
-                <li key={s.label} data-placeholder-text={s.href} className="flex min-h-11 flex-wrap items-center gap-x-2">
-                  {s.label} <span className="break-all">{s.href}</span>
-                </li>
-              ) : (
-                <li key={s.label}>
-                  <a href={s.href} rel="noopener noreferrer" target="_blank" className={linkClass}>
-                    {s.label}
-                  </a>
-                </li>
-              ),
-            )}
-          </ul>
-        </div>
       </Container>
 
       <Container>

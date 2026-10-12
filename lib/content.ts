@@ -3,8 +3,9 @@ import faq from "@/content/faq.json";
 import testimonials from "@/content/testimonials.json";
 import examples from "@/content/examples.json";
 import ui from "@/content/ui.json";
+import forms from "@/content/forms.json";
 
-export { landing, faq, testimonials, examples, ui };
+export { landing, faq, testimonials, examples, ui, forms };
 
 export type FaqItem = (typeof faq)["groups"][number]["items"][number];
 export type ExampleItem = (typeof examples)["items"][number];

@@ -1,22 +1,17 @@
 import { CtaButton } from "@/components/ui/CtaButton";
 import { Heading } from "@/components/ui/Heading";
 import { Section } from "@/components/ui/Section";
-import { TextLink } from "@/components/ui/TextLink";
 import { landing } from "@/lib/content";
 
-type Props = { showPageLink?: boolean; headingLevel?: "h1" | "h2" };
-
 /** The 3-step process. A real sequence, so it gets numbers. */
-export function HowItWorks({ showPageLink = true, headingLevel = "h2" }: Props) {
+export function HowItWorks() {
   const s = landing.steps;
   return (
     <Section id="how-it-works">
-      <Heading as={headingLevel} id="how-it-works-heading">
-        {s.heading}
-      </Heading>
+      <Heading id="how-it-works-heading">{s.heading}</Heading>
       <p className="mt-4 max-w-measure text-lg">{s.intro}</p>
 
-      <ol className="mt-10 grid gap-0 md:grid-cols-3">
+      <ol className="mt-10 grid md:grid-cols-3">
         {s.items.map((step, i) => (
           <li
             key={step.title}
@@ -34,9 +29,22 @@ export function HowItWorks({ showPageLink = true, headingLevel = "h2" }: Props) 
         ))}
       </ol>
 
-      <div className="mt-10 flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+      <div className="mt-12 border-2 border-ink bg-surface">
+        <h3 className="border-b-2 border-ink px-4 py-3 font-mono text-lg font-heavy mono-condensed md:px-6">
+          {s.timelineHeading}
+        </h3>
+        <dl className="grid md:grid-cols-3">
+          {s.timeline.map((t, i) => (
+            <div key={t.when} className={`px-4 py-4 md:px-6 ${i > 0 ? "border-t-2 border-ink md:border-l-2 md:border-t-0" : ""}`}>
+              <dt className="font-mono text-base font-bold mono-semi">{t.when}</dt>
+              <dd className="mt-1 text-base text-muted">{t.what}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
+      <div className="mt-10">
         <CtaButton location="how_it_works" label={s.ctaLabel} />
-        {showPageLink && <TextLink href="/how-it-works">{s.linkLabel}</TextLink>}
       </div>
     </Section>
   );

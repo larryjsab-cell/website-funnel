@@ -12,10 +12,6 @@ type Props = {
   drawerFooter: ReactNode;
 };
 
-function isActive(pathname: string, href: string) {
-  return pathname === href || pathname.startsWith(`${href}/`);
-}
-
 export function SiteNav({ items, labels, drawerFooter }: Props) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -69,22 +65,16 @@ export function SiteNav({ items, labels, drawerFooter }: Props) {
     <>
       <nav aria-label={labels.label} className="hidden lg:block">
         <ul className="flex items-center gap-1 xl:gap-2">
-          {items.map((item) => {
-            const active = isActive(pathname, item.href);
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  aria-current={active ? "page" : undefined}
-                  className={`flex min-h-11 items-center px-2 font-mono text-sm font-medium mono-semi underline-offset-4 transition-colors duration-fast hover:text-accent xl:px-3 ${
-                    active ? "underline decoration-2" : ""
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            );
-          })}
+          {items.map((item) => (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                className="flex min-h-11 items-center px-2 font-mono text-sm font-medium underline-offset-4 transition-colors duration-fast mono-semi hover:text-accent hover:underline hover:decoration-2 xl:px-3"
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
         </ul>
       </nav>
 
@@ -111,23 +101,17 @@ export function SiteNav({ items, labels, drawerFooter }: Props) {
       >
         <nav aria-label={labels.label} className="px-4 py-6">
           <ul className="border-t-2 border-ink">
-            {items.map((item) => {
-              const active = isActive(pathname, item.href);
-              return (
-                <li key={item.href} className="border-b-2 border-ink">
-                  <Link
-                    href={item.href}
-                    aria-current={active ? "page" : undefined}
-                    onClick={() => close(false)}
-                    className={`flex min-h-14 items-center font-mono text-xl font-heavy mono-condensed ${
-                      active ? "underline decoration-2 underline-offset-4" : ""
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              );
-            })}
+            {items.map((item) => (
+              <li key={item.href} className="border-b-2 border-ink">
+                <Link
+                  href={item.href}
+                  onClick={() => close(false)}
+                  className="flex min-h-14 items-center font-mono text-xl font-heavy mono-condensed"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
           </ul>
           <div className="mt-8">{drawerFooter}</div>
         </nav>

@@ -1,0 +1,106 @@
+{
+  "demo": {
+    "label": "Free demo request",
+    "stepOf": "Step {step} of 2",
+    "step1Title": "Where should we send your demo?",
+    "step2Title": "Tell us about your business",
+    "next": "Next: About Your Business",
+    "back": "Back",
+    "submit": "Get My Free Demo",
+    "sending": "Sending…",
+    "microcopy": "No credit card. No commitment.",
+    "fields": {
+      "name": {
+        "label": "Your name",
+        "placeholder": "Jordan Smith…"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "you@yourbusiness.com…"
+      },
+      "businessName": {
+        "label": "Business name",
+        "placeholder": "Smith Lawn Care…"
+      },
+      "phone": {
+        "label": "Phone",
+        "placeholder": "(555) 123-4567…"
+      },
+      "industry": {
+        "label": "Industry",
+        "placeholder": "Choose your industry"
+      },
+      "website": {
+        "label": "Current website",
+        "optional": "(optional)",
+        "placeholder": "yourbusiness.com…",
+        "hint": "Leave blank if you don’t have one yet."
+      },
+      "notes": {
+        "label": "Anything we should know?",
+        "optional": "(optional)",
+        "placeholder": "Colors you like, services to feature, sites you admire…"
+      }
+    },
+    "industries": [
+      "Landscaping and lawn care",
+      "Hair salon or beauty",
+      "Café or restaurant",
+      "Plumbing or HVAC",
+      "Auto repair",
+      "Cleaning",
+      "Contractor or trades",
+      "Retail shop",
+      "Health or wellness",
+      "Professional services",
+      "Other"
+    ],
+    "success": {
+      "heading": "Got it. Your free demo is in the works.",
+      "body": "Thanks, {name}. We’ve got everything we need to start designing.",
+      "nextHeading": "What happens next",
+      "next": [
+        "We design a preview of your new site around your business.",
+        "Your demo can be ready as soon as the next day. We’ll email it to {email}.",
+        "Look it over. If you love it, pick a plan. If not, you owe nothing."
+      ],
+      "whileYouWait": "While you wait, browse example designs"
+    }
+  },
+  "contact": {
+    "label": "Send a message",
+    "submit": "Send Message",
+    "sending": "Sending…",
+    "fields": {
+      "name": {
+        "label": "Your name",
+        "placeholder": "Jordan Smith…"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "you@yourbusiness.com…"
+      },
+      "message": {
+        "label": "Your question",
+        "placeholder": "Ask us anything about the plans or the demo…"
+      }
+    },
+    "success": {
+      "heading": "Message sent.",
+      "body": "Thanks, {name}. We’ll reply to {email} as soon as we can."
+    }
+  },
+  "errors": {
+    "required": "Enter your {field}.",
+    "email": "Enter an email like name@example.com.",
+    "phone": "Enter a 10-digit phone number, like (555) 123-4567.",
+    "url": "Enter a web address like yourbusiness.com, or leave it blank.",
+    "select": "Choose the closest industry, or pick Other.",
+    "summary": "Fix the highlighted field to continue.",
+    "notConfigured": "This form isn’t connected yet. Call {phone} or email {email} and we’ll set up your demo.",
+    "network": "We couldn’t send that. Check your connection and try again, or call {phone}.",
+    "server": "Something went wrong on our end. Try again, or call {phone} or email {email}.",
+    "noScript": "This form needs JavaScript. Call {phone} or email {email} and we’ll set up your free demo."
+  },
+  "honeypotLabel": "Leave this field empty"
+}

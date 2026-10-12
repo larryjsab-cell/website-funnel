@@ -1,8 +1,6 @@
 {
   "meta": {
-    "title": "Example Website Designs for Small Business | Ryzon",
-    "description": "Sample website designs for landscapers, salons, cafés, contractors and more. See yours free before you pay.",
-    "ogImage": "/opengraph-image"
+    "note": "Examples are a section of the single page now."
   },
   "note": "Sample designs created to show our style. Not client sites.",
   "items": [
@@ -12,7 +10,8 @@
       "title": "Lawn care and landscaping",
       "aspect": "4/3",
       "prompt": "Polished landscaping company website shown on a silver laptop with a matching phone beside it, deep green and white design, hero photo of a manicured lawn, bold quote button, clean desk, soft daylight",
-      "alt": "Sample lawn care and landscaping website design shown on a laptop and phone"
+      "alt": "Sample lawn care and landscaping website design shown on a laptop and phone",
+      "formIndustry": "Landscaping and lawn care"
     },
     {
       "id": "salon",
@@ -20,7 +19,8 @@
       "title": "Hair salon",
       "aspect": "4/3",
       "prompt": "Polished hair salon website on a laptop and phone, warm neutral palette, hero photo of a bright modern salon chair area, booking button, soft daylight on a light desk",
-      "alt": "Sample hair salon website design shown on a laptop and phone"
+      "alt": "Sample hair salon website design shown on a laptop and phone",
+      "formIndustry": "Hair salon or beauty"
     },
     {
       "id": "cafe",
@@ -28,7 +28,8 @@
       "title": "Neighborhood café",
       "aspect": "4/3",
       "prompt": "Polished neighborhood cafe website on a laptop and phone, cream and espresso-brown design, hero photo of latte and pastries on a counter, menu and order buttons, soft daylight",
-      "alt": "Sample neighborhood café website design shown on a laptop and phone"
+      "alt": "Sample neighborhood café website design shown on a laptop and phone",
+      "formIndustry": "Café or restaurant"
     },
     {
       "id": "plumbing",
@@ -36,7 +37,8 @@
       "title": "Plumbing and HVAC",
       "aspect": "4/3",
       "prompt": "Polished plumbing company website on a laptop and phone, navy and white design with a large call-now button, hero photo of a technician's clean service van, soft daylight",
-      "alt": "Sample plumbing and HVAC website design shown on a laptop and phone"
+      "alt": "Sample plumbing and HVAC website design shown on a laptop and phone",
+      "formIndustry": "Plumbing or HVAC"
     },
     {
       "id": "auto",
@@ -44,7 +46,8 @@
       "title": "Auto repair shop",
       "aspect": "4/3",
       "prompt": "Polished auto repair shop website on a laptop and phone, charcoal and red design, hero photo of a clean service bay, book-a-service button, soft daylight",
-      "alt": "Sample auto repair shop website design shown on a laptop and phone"
+      "alt": "Sample auto repair shop website design shown on a laptop and phone",
+      "formIndustry": "Auto repair"
     },
     {
       "id": "cleaning",
@@ -52,7 +55,8 @@
       "title": "Home cleaning service",
       "aspect": "4/3",
       "prompt": "Polished home cleaning service website on a laptop and phone, fresh teal and white design, hero photo of a bright tidy kitchen, get-a-quote button, soft daylight",
-      "alt": "Sample home cleaning service website design shown on a laptop and phone"
+      "alt": "Sample home cleaning service website design shown on a laptop and phone",
+      "formIndustry": "Cleaning"
     }
   ]
 }

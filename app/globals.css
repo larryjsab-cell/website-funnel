@@ -5,7 +5,8 @@
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
-    scroll-padding-top: 5rem;
+    scroll-behavior: smooth;
+    scroll-padding-top: 4rem;
     scroll-padding-bottom: 6rem;
   }
 

@@ -127,49 +127,89 @@
       },
       {
         "title": "Review your design",
-        "body": "We design a preview of your new site, ready as soon as the next day. Look it over."
+        "body": "We design a preview of your new site, ready as soon as the next day. Want a completely different look before you decide? Just ask."
       },
       {
         "title": "Go live",
         "body": "Love it? Pick a plan and we launch your site. Not for you? Walk away. You owe nothing."
       }
     ],
-    "linkLabel": "See the full process and timeline",
     "ctaLabel": "Start My Free Demo",
-    "stepLabel": "Step"
+    "stepLabel": "Step",
+    "timeline": [
+      {
+        "when": "Today",
+        "what": "Send the short form. Takes a few minutes."
+      },
+      {
+        "when": "As soon as tomorrow",
+        "what": "Your free demo is ready to review."
+      },
+      {
+        "when": "When you’re ready",
+        "what": "Pick a plan and we launch your site."
+      }
+    ],
+    "timelineHeading": "What to expect"
   },
   "examples": {
     "heading": "Designs built for local businesses",
     "intro": "Sample designs for the kinds of businesses we work with. Yours is designed around your business.",
-    "linkLabel": "Browse all example designs",
-    "ctaLabel": "See My Free Design"
+    "ctaLabel": "See My Free Design",
+    "cardCta": "Get a design like this"
   },
   "testimonials": {
     "heading": "What owners say"
-  },
-  "pricingTeaser": {
-    "heading": "Simple monthly pricing",
-    "body": "Plans start at $40/month with a $0 design fee. Need automations, dashboards, or lifetime changes? There are plans for that too.",
-    "linkLabel": "Compare all three plans"
   },
   "risk": {
     "heading": "See your design before you pay a cent.",
     "body": "We build your demo first. Like it? Pick a plan. Not for you? Walk away. No cost, no commitment.",
     "ctaLabel": "Get My Free Demo"
   },
-  "faqTeaser": {
-    "heading": "Questions owners ask first",
-    "ids": [
-      "catch",
-      "included",
-      "demo-time",
-      "dont-like"
-    ],
-    "linkLabel": "Read every answer in the FAQ"
+  "pricing": {
+    "heading": "Simple monthly pricing",
+    "intro": "Every plan starts with a free demo. Pick a plan only after you’ve seen your design.",
+    "limitedTime": "Limited-time offer: $0 upfront on every plan.",
+    "perMonth": "/mo",
+    "perYear": "/yr",
+    "orYearly": "or {price} paid yearly",
+    "everything": "Everything in {plan}, plus:",
+    "featuredLabel": "Most picked",
+    "ctaLabel": "Start My Free Demo",
+    "terms": [
+      {
+        "title": "Cancel anytime",
+        "body": "If you cancel before your first year is up, the design files are not included."
+      },
+      {
+        "title": "Your files after year one",
+        "body": "After your first year, if you decide to leave, we export your site files and deliver them to you."
+      },
+      {
+        "title": "Edits",
+        "body": "Complete includes free changes for life. On Starter and Growth, simple tasks may be free depending on how long you’ve been with us. Everything else is quoted at $20/hour, well below typical agency rates."
+      }
+    ]
   },
-  "finalCta": {
-    "heading": "Ready to see your new website?",
-    "body": "Tell us about your business. We’ll design a free preview, often by the next day.",
-    "ctaLabel": "Get My Free Demo"
+  "faq": {
+    "heading": "Questions, answered"
+  },
+  "demo": {
+    "heading": "Get your free demo",
+    "intro": "Tell us about your business. We’ll design a free preview of your new site, ready as soon as the next day.",
+    "recap": [
+      "No credit card",
+      "No commitment",
+      "$0 upfront on every plan"
+    ]
+  },
+  "contact": {
+    "heading": "Questions first? Talk to a person.",
+    "intro": "Call, email, or send a quick message. We’re open 9am–10pm, 7 days a week.",
+    "callLabel": "Call",
+    "emailLabel": "Email",
+    "hoursLabel": "Hours",
+    "addressLabel": "Address",
+    "areaLabel": "Service area"
   }
 }

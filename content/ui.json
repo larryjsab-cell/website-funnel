@@ -10,10 +10,9 @@
   },
   "offerLineLabel": "The offer",
   "footer": {
-    "pagesHeading": "Pages",
+    "pagesHeading": "On this page",
     "contactHeading": "Contact",
     "hoursHeading": "Hours",
-    "socialHeading": "Follow",
     "legalLabel": "Legal",
     "serviceArea": "Serving small businesses nationwide",
     "rights": "All rights reserved."
@@ -21,36 +20,9 @@
   "placeholder": {
     "label": "Image to come"
   },
-  "faqTeaser": {
-    "toggleHint": "Show answer"
-  },
   "stubs": {
-    "note": "This page is part of the funnel and gets built after the landing page is approved.",
+    "note": "Placeholder: privacy policy and terms copy is pending review. See TODO.md.",
     "pages": {
-      "/pricing": {
-        "title": "Pricing",
-        "description": "Website plans from $40/month with a $0 design fee."
-      },
-      "/examples": {
-        "title": "Example designs",
-        "description": "Sample website designs for local small businesses."
-      },
-      "/how-it-works": {
-        "title": "How it works",
-        "description": "Request a free demo, review your design, go live."
-      },
-      "/faq": {
-        "title": "FAQ",
-        "description": "Answers about pricing, the free demo, ownership and edits."
-      },
-      "/demo": {
-        "title": "Get your free demo",
-        "description": "Tell us about your business and we’ll design a free preview of your site."
-      },
-      "/contact": {
-        "title": "Contact",
-        "description": "Questions? Reach Ryzon Automation 9am–10pm, 7 days a week."
-      },
       "/privacy": {
         "title": "Privacy policy",
         "description": "How Ryzon Automation handles your information."

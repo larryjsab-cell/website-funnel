@@ -1,20 +1,26 @@
 import Link from "next/link";
 import { Placeholder } from "@/components/ui/Placeholder";
+import { site } from "@/lib/site";
 import type { ExampleItem } from "@/lib/content";
 
-type Props = { item: ExampleItem; href: string };
+type Props = { item: ExampleItem; ctaLabel: string };
 
-export function ExampleCard({ item, href }: Props) {
+/** Each example ends in the demo: the whole card links to #demo and pre-selects the industry. */
+export function ExampleCard({ item, ctaLabel }: Props) {
   return (
-    <article className="group relative border-2 border-ink bg-surface">
+    <article id={`example-${item.id}`} className="group relative flex flex-col border-2 border-ink bg-surface">
       <Placeholder prompt={item.prompt} alt={item.alt} aspect="4/3" />
-      <div className="border-t-2 border-ink p-4">
-        <h3 className="font-mono text-lg font-heavy mono-condensed">
-          <Link href={href} className="after:absolute after:inset-0 group-hover:underline group-hover:decoration-2 group-hover:underline-offset-4">
-            {item.title}
-          </Link>
-        </h3>
-        <p className="mt-1 text-base text-muted">{item.industry}</p>
+      <div className="flex flex-1 flex-col border-t-2 border-ink p-3 md:p-4">
+        <h3 className="font-mono text-lg font-heavy mono-condensed">{item.title}</h3>
+        <Link
+          href={site.cta.primary.href}
+          data-cta={`example_${item.id}`}
+          data-industry={item.formIndustry}
+          className="mt-auto inline-flex min-h-11 items-center pt-2 font-mono text-sm font-bold underline decoration-2 underline-offset-4 mono-semi after:absolute after:inset-0 group-hover:text-accent"
+        >
+          {ctaLabel}
+          <span className="sr-only">: {item.title}</span>
+        </Link>
       </div>
     </article>
   );

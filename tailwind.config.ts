@@ -12,6 +12,7 @@ const palette = {
   graphite: "#45483F",
   rule: "#A3A69E",
   grid: "#C4C6BF",
+  error: "#A1251B",
   blueprint: "#1A33E8",
   signal: "#FF4F00",
 };
@@ -37,6 +38,7 @@ const config: Config = {
       muted: palette.graphite,
       rule: palette.rule,
       grid: palette.grid,
+      danger: palette.error,
       accent: palette.blueprint,
       cta: palette.signal,
       "on-ink": palette.concrete,
