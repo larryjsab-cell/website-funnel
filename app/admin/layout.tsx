@@ -3,7 +3,7 @@ import { AdminShell } from "@/components/admin/AdminShell";
 
 export const metadata: Metadata = {
   title: "Pipeline",
-  description: "Ryzon Automation's private dashboard for demo requests, payments and launches.",
+  description: "Ryzon Automation’s private dashboard for demo requests, payments and launches.",
   robots: { index: false, follow: false },
 };
 

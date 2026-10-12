@@ -89,7 +89,7 @@ function LoginForm() {
     setError("");
     const { error } = await supabase().auth.signInWithPassword({ email: email.trim(), password });
     setBusy(false);
-    if (error) setError(error.message === "Invalid login credentials" ? "That email and password don't match." : error.message);
+    if (error) setError(error.message === "Invalid login credentials" ? "That email and password don’t match." : error.message);
   };
 
   return (
@@ -101,7 +101,7 @@ function LoginForm() {
           <label htmlFor="admin-email" className={labelClass}>
             Email
           </label>
-          <input id="admin-email" type="email" autoComplete="username" required value={email} onChange={(e) => setEmail(e.target.value)} className={`${inputClass} mt-2`} />
+          <input id="admin-email" name="email" type="email" autoComplete="username" spellCheck={false} autoCapitalize="off" required value={email} onChange={(e) => setEmail(e.target.value)} className={`${inputClass} mt-2`} />
         </div>
         <div>
           <label htmlFor="admin-password" className={labelClass}>
@@ -109,6 +109,7 @@ function LoginForm() {
           </label>
           <input
             id="admin-password"
+            name="password"
             type="password"
             autoComplete="current-password"
             required
@@ -148,7 +149,7 @@ function AccountMenu({ email }: { email: string }) {
         Account
       </Button>
       {open && (
-        <div className="absolute right-0 z-header mt-2 w-80 rounded-card border-2 border-ink bg-surface p-4 shadow-hard">
+        <div className="absolute right-0 z-header mt-2 w-[min(20rem,calc(100vw-2rem))] rounded-card border-2 border-ink bg-surface p-4 shadow-hard">
           <p className="text-sm text-muted">Signed in as {email}</p>
           <form onSubmit={change} className="mt-4">
             <label htmlFor="new-password" className={labelClass}>
@@ -156,6 +157,7 @@ function AccountMenu({ email }: { email: string }) {
             </label>
             <input
               id="new-password"
+              name="new-password"
               type="password"
               autoComplete="new-password"
               value={password}

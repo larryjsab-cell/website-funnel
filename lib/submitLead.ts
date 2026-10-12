@@ -39,5 +39,6 @@ export async function submitLead(
 }
 
 export function errorText(kind: FieldErrorKind, label: string) {
-  return fill(forms.errors[kind], { field: label.toLowerCase() });
+  // "Enter your {field}" + "Your name" should read "Enter your name", not "your your name".
+  return fill(forms.errors[kind], { field: label.toLowerCase().replace(/^your\s+/, "") });
 }

@@ -20,7 +20,7 @@ export function Button({ tone = "plain", busy, className = "", children, disable
       {...rest}
       disabled={disabled || busy}
       aria-busy={busy || undefined}
-      className={`inline-flex min-h-11 items-center justify-center rounded-ui border-2 px-4 font-display text-sm font-bold display-ui transition-colors duration-fast disabled:cursor-not-allowed disabled:opacity-60 ${look} ${className}`}
+      className={`inline-flex min-h-11 items-center justify-center rounded-ui border-2 px-4 font-display text-sm font-bold display-ui transition-colors duration-fast disabled:cursor-not-allowed disabled:border-dashed disabled:border-muted disabled:bg-surface disabled:text-muted ${look} ${className}`}
     >
       {busy ? "Working…" : children}
     </button>

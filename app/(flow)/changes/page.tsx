@@ -7,7 +7,7 @@ import { lookup } from "@/lib/server/lookup";
 
 export const metadata: Metadata = {
   title: "Request your changes",
-  description: "Tell Ryzon Automation what to change on your website demo, and we'll get it ready to launch.",
+  description: "Tell Ryzon Automation what to change on your website demo, and we’ll get it ready to launch.",
 };
 
 const PLAN_STATUSES = ["converted_full", "converted_50_month", "converted_50_year", "call_scheduled", "changes_received", "in_build", "ready_to_launch", "live"];
@@ -18,7 +18,7 @@ export default async function ChangesPage({ searchParams }: { searchParams: Prom
 
   if (!sub) {
     return (
-      <Message title="This link isn't working">
+      <Message title="This link isn’t working">
         <p>It may be old or cut off. Reply to any of our emails with your changes, or call us.</p>
       </Message>
     );

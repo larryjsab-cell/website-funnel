@@ -1,4 +1,4 @@
-import { site, type PricingTier } from "@/lib/site";
+import { formatPrice, site, type PricingTier } from "@/lib/site";
 
 /**
  * The four offers a demo customer can be sent (see the pipeline plan):
@@ -30,7 +30,7 @@ export function quote(tier: PricingTier, interval: Interval, offer: OfferCode): 
     const off = tier.monthly / 2;
     return interval === "month"
       ? { first: price - off, then: price, deal: "50% off your first month" }
-      : { first: price - off, then: price, deal: `$${off} off (half of your first month)` };
+      : { first: price - off, then: price, deal: `${formatPrice(off)} off (half of your first month)` };
   }
   if (offer === "host50-year") {
     return interval === "month"

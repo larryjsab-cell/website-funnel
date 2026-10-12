@@ -5,8 +5,8 @@ import { recordSession, retrieveSession, type Recorded } from "@/lib/server/stri
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "You're in",
-  description: "Your payment went through. Next, tell us your changes and we'll get your website ready to launch.",
+  title: "You’re in",
+  description: "Your payment went through. Next, tell us your changes and we’ll get your website ready to launch.",
 };
 
 /**
@@ -51,7 +51,7 @@ export default async function SuccessPage({ searchParams }: { searchParams: Prom
 
   return (
     <Message
-      title="You're in! Welcome to Ryzon"
+      title="You’re in! Welcome to Ryzon"
       actions={
         result?.token ? (
           <>

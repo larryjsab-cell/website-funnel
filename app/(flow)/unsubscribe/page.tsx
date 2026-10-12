@@ -13,14 +13,14 @@ export default async function UnsubscribePage({ searchParams }: { searchParams: 
 
   if (done) {
     return (
-      <Message title="You're unsubscribed" actions={<HomeLink />}>
+      <Message title="You’re unsubscribed" actions={<HomeLink />}>
         <p>You won&rsquo;t get any more offer emails from us. If you buy anything, we&rsquo;ll still email you about it.</p>
       </Message>
     );
   }
   if (!valid || error) {
     return (
-      <Message title="We couldn't update your preferences">
+      <Message title="We couldn’t update your preferences">
         <p>The link may be old or cut off. Reply &ldquo;unsubscribe&rdquo; to any of our emails and we&rsquo;ll take care of it.</p>
       </Message>
     );

@@ -25,6 +25,11 @@ export function formatAddress(): string {
   return `${a.street}, ${a.city}, ${a.region} ${a.postalCode}`;
 }
 
+const usd = (digits: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: digits, maximumFractionDigits: digits });
+const whole = usd(0);
+const cents = usd(2);
+
+/** "$40", or "$20.50" when there are cents. */
 export function formatPrice(amount: number): string {
-  return `$${amount.toLocaleString("en-US")}`;
+  return (Number.isInteger(amount) ? whole : cents).format(amount);
 }

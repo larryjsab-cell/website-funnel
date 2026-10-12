@@ -10,12 +10,14 @@ import { checkAll, checkField, fill, type DemoField, type FieldErrorKind } from 
 import { errorText, submitLead } from "@/lib/submitLead";
 import { styleName } from "@/lib/theme";
 import { useActiveStyle } from "@/lib/useActiveStyle";
+import { useUnsavedWarning } from "@/lib/useUnsavedWarning";
 import styles from "@/content/styles.json";
 
 const copy = forms.demo;
 const STEP1: DemoField[] = ["name", "email"];
 const STEP2: DemoField[] = ["businessName", "phone", "industry", "style", "website", "notes"];
 const empty: Record<DemoField, string> = { name: "", email: "", businessName: "", phone: "", industry: "", style: "", website: "", notes: "" };
+const TYPED: DemoField[] = ["name", "email", "businessName", "phone", "website", "notes"];
 const styleOptions = styles.options.map((o) => o.name);
 
 type Status = "idle" | "sending" | "success";
@@ -35,6 +37,9 @@ export function DemoForm() {
   const stepHeadingRef = useRef<HTMLHeadingElement>(null);
   const successRef = useRef<HTMLHeadingElement>(null);
   const moved = useRef(false);
+
+  // Typed text only: a preset industry or style isn't worth a leave-page prompt.
+  useUnsavedWarning(status !== "success" && TYPED.some((f) => values[f].trim() !== ""));
 
   // Note UTM tags and referrer on arrival, before anchors change the URL.
   useEffect(() => rememberAttribution(), []);

@@ -5,6 +5,7 @@ import { useRef, useState, type FormEvent } from "react";
 import { primaryButton, secondaryButton } from "@/components/flow/Message";
 import { Honeypot } from "@/components/forms/Honeypot";
 import { site } from "@/lib/site";
+import { useUnsavedWarning } from "@/lib/useUnsavedWarning";
 
 export function ChangesForm({ token, bookHref }: { token: string; bookHref: string }) {
   const [details, setDetails] = useState("");
@@ -12,6 +13,7 @@ export function ChangesForm({ token, bookHref }: { token: string; bookHref: stri
   const [state, setState] = useState<"idle" | "sending" | "done">("idle");
   const [error, setError] = useState("");
   const doneRef = useRef<HTMLHeadingElement>(null);
+  useUnsavedWarning(state !== "done" && details.trim() !== "");
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
@@ -29,7 +31,7 @@ export function ChangesForm({ token, bookHref }: { token: string; bookHref: stri
       requestAnimationFrame(() => doneRef.current?.focus());
     } catch {
       setState("idle");
-      setError(`That didn't send. Try again, or email your changes to ${site.business.email}.`);
+      setError(`That didn’t send. Try again, or email your changes to ${site.business.email}.`);
     }
   };
 
@@ -52,12 +54,14 @@ export function ChangesForm({ token, bookHref }: { token: string; bookHref: stri
       </label>
       <textarea
         id="changes"
+        name="details"
         rows={10}
+        autoComplete="off"
         value={details}
         onChange={(e) => setDetails(e.target.value)}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? "changes-error" : "changes-hint"}
-        placeholder={"• Use our new logo (I'll reply with it)\n• Change hours to Mon–Sat 8–6\n• Add a page for emergency service"}
+        placeholder={"• Use our new logo (I’ll reply with it)\n• Change hours to Mon–Sat 8–6\n• Add a page for emergency service…"}
         className="mt-2 block w-full rounded-ui border-2 border-ink bg-canvas px-3 py-3 text-base text-ink placeholder:text-muted"
       />
       {error ? (

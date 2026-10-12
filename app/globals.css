@@ -44,9 +44,26 @@
     outline-color: var(--c-on-band);
   }
 
+  /* Desktop: no rubber-band bounce. Touch screens keep pull-to-refresh. */
+  @media (pointer: fine) {
+    html {
+      overscroll-behavior: none;
+    }
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
   a,
   button,
-  summary {
+  summary,
+  label,
+  input,
+  select,
+  textarea {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }

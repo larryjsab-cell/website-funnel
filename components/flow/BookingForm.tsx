@@ -4,6 +4,7 @@ import { useMemo, useRef, useState, useSyncExternalStore, type FormEvent } from 
 import { primaryButton } from "@/components/flow/Message";
 import { Honeypot } from "@/components/forms/Honeypot";
 import { site } from "@/lib/site";
+import { useUnsavedWarning } from "@/lib/useUnsavedWarning";
 
 type Props = { token: string; purpose: string; slots: string[]; knownPhone: string };
 
@@ -39,6 +40,7 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
   const [error, setError] = useState("");
   const [taken, setTaken] = useState<string[]>([]);
   const doneRef = useRef<HTMLHeadingElement>(null);
+  useUnsavedWarning(state !== "done" && (time !== "" || [notes, name, email, business].some((v) => v.trim() !== "")));
 
   const days = useMemo(() => {
     if (!tz) return [];
@@ -96,7 +98,7 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
       requestAnimationFrame(() => doneRef.current?.focus());
     } catch {
       setState("idle");
-      setError(`That didn't go through. Try again, or call ${site.business.phone}.`);
+      setError(`That didn’t go through. Try again, or call ${site.business.phone}.`);
     }
   };
 
@@ -108,7 +110,7 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
         </h2>
         <p className="mt-3 text-lg">
           {fullLabel?.format(new Date(time))}, by {method === "meet" ? "Google Meet" : "phone"}.{" "}
-          {method === "meet" ? "We'll send a calendar invite with the Meet link." : `We'll call you at ${phone}.`} A confirmation is in your inbox.
+          {method === "meet" ? "We’ll send a calendar invite with the Meet link." : `We’ll call you at ${phone}.`} A confirmation is in your inbox.
         </p>
       </div>
     );
@@ -146,7 +148,7 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
               type="button"
               disabled={current === 0}
               onClick={() => goToPage(current - 1)}
-              className="min-h-11 rounded-ui border-2 border-ink bg-canvas px-3 font-display text-sm font-bold disabled:cursor-not-allowed disabled:opacity-40 md:order-1"
+              className="min-h-11 rounded-ui border-2 border-ink bg-canvas px-3 font-display text-sm font-bold disabled:cursor-not-allowed disabled:border-dashed disabled:border-muted disabled:text-muted md:order-1"
             >
               ← Earlier<span className="hidden sm:inline">&nbsp;dates</span>
             </button>
@@ -154,7 +156,7 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
               type="button"
               disabled={current >= pages - 1}
               onClick={() => goToPage(current + 1)}
-              className="min-h-11 rounded-ui border-2 border-ink bg-canvas px-3 font-display text-sm font-bold disabled:cursor-not-allowed disabled:opacity-40 md:order-3"
+              className="min-h-11 rounded-ui border-2 border-ink bg-canvas px-3 font-display text-sm font-bold disabled:cursor-not-allowed disabled:border-dashed disabled:border-muted disabled:text-muted md:order-3"
             >
               Next<span className="hidden sm:inline">&nbsp;dates</span> →
             </button>
@@ -197,19 +199,19 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
             <label htmlFor="b-name" className={label}>
               Your name
             </label>
-            <input id="b-name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} className={control} />
+            <input id="b-name" name="name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} className={control} />
           </div>
           <div>
             <label htmlFor="b-email" className={label}>
               Email
             </label>
-            <input id="b-email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className={control} />
+            <input id="b-email" name="email" type="email" autoComplete="email" spellCheck={false} autoCapitalize="off" value={email} onChange={(e) => setEmail(e.target.value)} className={control} />
           </div>
           <div className="md:col-span-2">
             <label htmlFor="b-business" className={label}>
               Business name <span className="font-normal text-muted">(optional)</span>
             </label>
-            <input id="b-business" autoComplete="organization" value={business} onChange={(e) => setBusiness(e.target.value)} className={control} />
+            <input id="b-business" name="business" autoComplete="organization" value={business} onChange={(e) => setBusiness(e.target.value)} className={control} />
           </div>
         </div>
       )}
@@ -218,14 +220,14 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
         <label htmlFor="b-phone" className={label}>
           Phone {method !== "phone" && <span className="font-normal text-muted">(optional for Meet)</span>}
         </label>
-        <input id="b-phone" type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className={control} />
+        <input id="b-phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className={control} />
       </div>
 
       <div>
         <label htmlFor="b-notes" className={label}>
           Anything we should know first? <span className="font-normal text-muted">(optional)</span>
         </label>
-        <textarea id="b-notes" rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} className={`${control} py-3`} />
+        <textarea id="b-notes" name="notes" rows={3} autoComplete="off" value={notes} onChange={(e) => setNotes(e.target.value)} className={`${control} py-3`} />
       </div>
 
       {error && (

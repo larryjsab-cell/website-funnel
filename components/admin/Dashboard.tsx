@@ -76,7 +76,7 @@ export function Dashboard() {
   const view = params.get("view") ?? "today";
   const { data, error, reload } = useDashboardData();
 
-  if (error) return <Notice error={`Couldn't load the pipeline: ${error}`} />;
+  if (error) return <Notice error={`Couldn’t load the pipeline: ${error}`} />;
   if (!data) return <p className="text-muted">Loading the pipeline…</p>;
 
   return (
@@ -162,7 +162,7 @@ function TodayGroup({ title, hint, count, children }: { title: string; hint: str
   return (
     <section className="rounded-card border-2 border-ink bg-surface p-4 sm:p-5">
       <h2 className="flex items-center gap-2 font-display text-lg font-heavy display-tight">
-        {title} <span className="rounded-ui bg-ink px-2 text-on-ink">{count}</span>
+        {title} <span className="rounded-ui bg-ink px-2 tabular-nums text-on-ink">{count}</span>
       </h2>
       <p className="mt-1 text-sm text-muted">{hint}</p>
       {count === 0 ? <p className="mt-3 text-sm">Nothing here.</p> : <ul className="mt-3">{children}</ul>}
@@ -198,7 +198,7 @@ function Board({ subs, reload }: { subs: Submission[]; reload: () => Promise<voi
   const move = async (s: Submission, to: Status) => {
     if (s.status === to) return;
     if (to === "demo_review" && !s.demo_url) {
-      return setNote({ error: `Add the demo link on ${displayName(s)}'s page to start Demo review.` });
+      return setNote({ error: `Add the demo link on ${displayName(s)}’s page to start Demo review.` });
     }
     try {
       await adminRpc("ryzon_landing_admin_set_status", { p_id: s.id, p_status: to, p_note: "Moved on the board" });
@@ -221,7 +221,7 @@ function Board({ subs, reload }: { subs: Submission[]; reload: () => Promise<voi
   return (
     <>
       <p className="mb-3 text-sm text-muted">
-        Drag a card to another column to change its status. On a phone, use the &ldquo;Move to&rdquo; list on the card. Each card also opens its page.
+        Drag a card to another column, or use the &ldquo;Move to&rdquo; list on the card, to change its status. Each card also opens its page.
       </p>
       <Notice {...note} />
       <div className="mt-3 grid grid-cols-1 items-start gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -240,7 +240,7 @@ function Board({ subs, reload }: { subs: Submission[]; reload: () => Promise<voi
               className={`flex min-w-0 flex-col rounded-card border-2 bg-surface ${over === col.id ? "border-accent" : "border-ink"}`}
             >
               <h2 className="flex items-center justify-between gap-2 border-b-2 border-ink px-3 py-2 font-display text-sm font-heavy display-ui">
-                <span>{col.label}</span> <span>{cards.length}</span>
+                <span>{col.label}</span> <span className="tabular-nums">{cards.length}</span>
               </h2>
               {cards.length === 0 && <p className="p-3 text-sm text-muted">Empty. Drop a card here.</p>}
               <ul className={`flex flex-col gap-2 ${cards.length ? "p-2" : ""}`}>
@@ -252,7 +252,8 @@ function Board({ subs, reload }: { subs: Submission[]; reload: () => Promise<voi
                       e.dataTransfer.setData("text/plain", s.id);
                       setDragId(s.id);
                     }}
-                    className="cursor-grab rounded-ui border-2 border-ink bg-canvas p-2 active:cursor-grabbing"
+                    onDragEnd={() => setDragId(null)}
+                    className={`cursor-grab select-none rounded-ui border-2 border-ink bg-canvas p-2 active:cursor-grabbing ${dragId === s.id ? "opacity-50" : ""}`}
                   >
                     <Link href={`/admin/s/${s.id}`} className="font-bold underline-offset-4 hover:underline">
                       {displayName(s)}
@@ -268,15 +269,16 @@ function Board({ subs, reload }: { subs: Submission[]; reload: () => Promise<voi
                         {s.unsubscribed_at && <Tag>Unsubscribed</Tag>}
                       </p>
                     )}
-                    <div className="mt-2 md:hidden">
+                    <div className="mt-2">
                       <label htmlFor={`move-${s.id}`} className="sr-only">
                         Move {displayName(s)} to
                       </label>
                       <select
                         id={`move-${s.id}`}
+                        name="move"
                         value=""
                         onChange={(e) => e.target.value && move(s, e.target.value as Status)}
-                        className="block min-h-11 w-full rounded-ui border-2 border-ink bg-surface px-2 text-base"
+                        className="block min-h-11 w-full rounded-ui border-2 border-ink bg-surface px-2 text-base text-ink"
                       >
                         <option value="">Move to…</option>
                         {STATUSES.filter((x) => x.id !== s.status).map((x) => (
@@ -299,13 +301,28 @@ function Board({ subs, reload }: { subs: Submission[]; reload: () => Promise<voi
 
 // ---------------------------------------------------------------- Table
 
+const FILTERS = ["q", "status", "plan", "offer", "from", "to"] as const;
+
 function TableView({ subs }: { subs: Submission[] }) {
-  const [q, setQ] = useState("");
-  const [status, setStatus] = useState("");
-  const [plan, setPlan] = useState("");
-  const [offer, setOffer] = useState("");
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+  // Filters start from the URL and write back to it, so a filtered list can be bookmarked or shared.
+  const params = useSearchParams();
+  const [q, setQ] = useState(() => params.get("q") ?? "");
+  const [status, setStatus] = useState(() => params.get("status") ?? "");
+  const [plan, setPlan] = useState(() => params.get("plan") ?? "");
+  const [offer, setOffer] = useState(() => params.get("offer") ?? "");
+  const [from, setFrom] = useState(() => params.get("from") ?? "");
+  const [to, setTo] = useState(() => params.get("to") ?? "");
+
+  useEffect(() => {
+    const values = { q: q.trim(), status, plan, offer, from, to };
+    const next = new URLSearchParams(window.location.search);
+    for (const k of FILTERS) {
+      if (values[k]) next.set(k, values[k]);
+      else next.delete(k);
+    }
+    const query = next.toString();
+    if (query !== window.location.search.slice(1)) window.history.replaceState(window.history.state, "", query ? `?${query}` : window.location.pathname);
+  }, [q, status, plan, offer, from, to]);
 
   const rows = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -338,7 +355,7 @@ function TableView({ subs }: { subs: Submission[] }) {
           <label htmlFor="f-q" className={labelClass}>
             Search
           </label>
-          <input id="f-q" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Name, email, business, phone" className={`${inputClass} mt-1`} />
+          <input id="f-q" name="q" type="search" autoComplete="off" spellCheck={false} value={q} onChange={(e) => setQ(e.target.value)} placeholder="Name, email, business, phone…" className={`${inputClass} mt-1`} />
         </div>
         <FilterSelect id="f-status" label="Status" value={status} onChange={setStatus} options={STATUSES.map((s) => [s.id, s.label])} />
         <FilterSelect id="f-plan" label="Plan" value={plan} onChange={setPlan} options={Object.entries(PLANS)} />
@@ -348,19 +365,19 @@ function TableView({ subs }: { subs: Submission[] }) {
             <label htmlFor="f-from" className={labelClass}>
               From
             </label>
-            <input id="f-from" type="date" value={from} onChange={(e) => setFrom(e.target.value)} className={`${inputClass} mt-1 px-1`} />
+            <input id="f-from" name="from" type="date" value={from} onChange={(e) => setFrom(e.target.value)} className={`${inputClass} mt-1 px-1`} />
           </div>
           <div>
             <label htmlFor="f-to" className={labelClass}>
               To
             </label>
-            <input id="f-to" type="date" value={to} onChange={(e) => setTo(e.target.value)} className={`${inputClass} mt-1 px-1`} />
+            <input id="f-to" name="to" type="date" value={to} onChange={(e) => setTo(e.target.value)} className={`${inputClass} mt-1 px-1`} />
           </div>
         </div>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm">
+        <p className="text-sm tabular-nums">
           {rows.length} of {subs.length} submissions
         </p>
         <Button onClick={download} disabled={rows.length === 0}>
@@ -369,7 +386,7 @@ function TableView({ subs }: { subs: Submission[] }) {
       </div>
 
       <div className="mt-3 overflow-x-auto rounded-card border-2 border-ink bg-surface">
-        <table className="w-full min-w-[56rem] border-collapse text-left text-sm">
+        <table className="w-full min-w-[56rem] border-collapse text-left text-sm tabular-nums">
           <thead>
             <tr className="border-b-2 border-ink font-display">
               {["Received", "Business", "Contact", "Status", "Plan", "Offer", "Paid", "Source"].map((h) => (
@@ -425,7 +442,7 @@ function FilterSelect({ id, label, value, onChange, options }: { id: string; lab
       <label htmlFor={id} className={labelClass}>
         {label}
       </label>
-      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} className={`${inputClass} mt-1`}>
+      <select id={id} name={id.replace(/^f-/, "")} value={value} onChange={(e) => onChange(e.target.value)} className={`${inputClass} mt-1`}>
         <option value="">All</option>
         {options.map(([v, l]) => (
           <option key={v} value={v}>

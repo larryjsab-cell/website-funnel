@@ -7,6 +7,7 @@ import { track } from "@/lib/analytics";
 import forms from "@/content/forms.json";
 import { checkAll, checkField, contactFields, fill, type ContactField, type FieldErrorKind } from "@/lib/forms";
 import { errorText, submitLead } from "@/lib/submitLead";
+import { useUnsavedWarning } from "@/lib/useUnsavedWarning";
 
 const copy = forms.contact;
 const empty: Record<ContactField, string> = { name: "", email: "", message: "" };
@@ -19,6 +20,7 @@ export function ContactForm() {
   const [formError, setFormError] = useState("");
   const [trap, setTrap] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+  useUnsavedWarning(!sent && Object.values(values).some((v) => v.trim() !== ""));
 
   const label = (f: ContactField) => copy.fields[f].label;
 

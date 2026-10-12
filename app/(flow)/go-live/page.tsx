@@ -22,7 +22,7 @@ export default async function GoLivePage({ searchParams }: { searchParams: Promi
 
   if (!sub) {
     return (
-      <Message title="This link isn't working">
+      <Message title="This link isn’t working">
         <p>It may be old or cut off. Call or email us and we&rsquo;ll get you sorted in a minute.</p>
       </Message>
     );
@@ -40,7 +40,7 @@ export default async function GoLivePage({ searchParams }: { searchParams: Promi
   }
   if (!sub.offer_active) {
     return (
-      <Message title={`Let's talk about ${sub.business_name}`}>
+      <Message title={`Let’s talk about ${sub.business_name}`}>
         <p>Hi {sub.first_name}, this offer is no longer available online. We&rsquo;d still love to get your website live: give us a call or send an email and we&rsquo;ll find the best option for you.</p>
       </Message>
     );
@@ -66,7 +66,7 @@ export default async function GoLivePage({ searchParams }: { searchParams: Promi
         {notice && <p className="mt-4 font-semibold">{notice}</p>}
         {q.error && (
           <p role="alert" className="mt-4 font-semibold text-danger">
-            {q.error === "unavailable" ? "That offer just changed. Here is what's available now." : `We couldn't open checkout. Please try again, or call ${site.business.phone}.`}
+            {q.error === "unavailable" ? "That offer just changed. Here is what’s available now." : `We couldn’t open checkout. Please try again, or call ${site.business.phone}.`}
           </p>
         )}
 
@@ -223,7 +223,7 @@ function AlreadyPaid({ sub, token }: { sub: Lookup; token: string }) {
   const files = sub.offer === "files99";
   return (
     <Message
-      title="You're all set"
+      title="You’re all set"
       actions={
         files ? undefined : (
           <>
@@ -240,7 +240,7 @@ function AlreadyPaid({ sub, token }: { sub: Lookup; token: string }) {
       <p>
         Thanks, {sub.first_name}. Your payment for <strong>{sub.business_name}</strong> already went through, so there&rsquo;s nothing more to pay.
       </p>
-      <p>{files ? "Your design files arrive by email with a download link." : "Next step: tell us what you'd like changed on your demo, and we'll get it ready to launch."}</p>
+      <p>{files ? "Your design files arrive by email with a download link." : "Next step: tell us what you’d like changed on your demo, and we’ll get it ready to launch."}</p>
     </Message>
   );
 }

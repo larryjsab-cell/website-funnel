@@ -20,6 +20,7 @@ import {
   type Template,
 } from "@/lib/admin/model";
 import { adminRpc, FILES_BUCKET, supabase } from "@/lib/admin/supabase";
+import { useUnsavedWarning } from "@/lib/useUnsavedWarning";
 
 type Detail = { s: Submission; queue: QueueRow[]; history: HistoryRow[]; changes: ChangeRequest[]; payments: Payment[]; templates: Map<string, Template> };
 type Note = { message?: string; error?: string };
@@ -38,7 +39,7 @@ async function fetchDetail(id: string): Promise<{ detail?: Detail; error?: strin
   ]);
   const err = s.error || queue.error || history.error || changes.error || payments.error || templates.error;
   if (err) return { error: err.message };
-  if (!s.data) return { error: "This submission doesn't exist." };
+  if (!s.data) return { error: "This submission doesn’t exist." };
   return {
     detail: {
       s: s.data as unknown as Submission,
@@ -163,13 +164,13 @@ function DemoPanel({ s, action }: { s: Submission; action: Action }) {
           <label htmlFor="demo-url" className={labelClass}>
             Demo URL
           </label>
-          <input id="demo-url" type="url" required placeholder="https://" value={url} onChange={(e) => setUrl(e.target.value)} className={`${inputClass} mt-2`} />
+          <input id="demo-url" name="demo_url" type="url" required autoComplete="off" spellCheck={false} autoCapitalize="off" placeholder="https://…" value={url} onChange={(e) => setUrl(e.target.value)} className={`${inputClass} mt-2`} />
         </div>
         <div>
           <label htmlFor="demo-image" className={labelClass}>
             Screenshot URL <span className="font-normal text-muted">(optional, shown in the emails)</span>
           </label>
-          <input id="demo-image" type="url" placeholder="https://" value={image} onChange={(e) => setImage(e.target.value)} className={`${inputClass} mt-2`} />
+          <input id="demo-image" name="demo_image_url" type="url" autoComplete="off" spellCheck={false} autoCapitalize="off" placeholder="https://…" value={image} onChange={(e) => setImage(e.target.value)} className={`${inputClass} mt-2`} />
         </div>
         <Button type="submit" tone="primary" busy={action.busy === "demo"}>
           {again ? "Save new demo link" : "Save demo and start emails"}
@@ -187,7 +188,7 @@ function FilesPanel({ s, action }: { s: Submission; action: Action }) {
   const sign = async (path: string) => {
     const db = supabase();
     const { data, error } = await db.storage.from(FILES_BUCKET).createSignedUrl(path, FILE_LINK_DAYS * 86_400, { download: true });
-    if (error || !data) throw new Error(error?.message ?? "Couldn't create the download link");
+    if (error || !data) throw new Error(error?.message ?? "Couldn’t create the download link");
     const expires = new Date(Date.now() + FILE_LINK_DAYS * 86_400_000).toISOString();
     await adminRpc("ryzon_landing_admin_set_files", { p_id: s.id, p_path: path, p_url: data.signedUrl, p_expires: expires });
   };
@@ -222,7 +223,7 @@ function FilesPanel({ s, action }: { s: Submission; action: Action }) {
           <label htmlFor="files-zip" className={labelClass}>
             ZIP file
           </label>
-          <input id="files-zip" type="file" accept=".zip,application/zip" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="mt-2 block w-full text-base" />
+          <input id="files-zip" name="files" type="file" accept=".zip,application/zip" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="mt-2 block w-full text-base" />
         </div>
         <div className="flex flex-wrap gap-2">
           <Button type="submit" tone="primary" disabled={!file} busy={action.busy === "files"}>
@@ -267,7 +268,7 @@ function StatusPanel({ s, action }: { s: Submission; action: Action }) {
           <label htmlFor="status" className={labelClass}>
             Move to
           </label>
-          <select id="status" value={status} onChange={(e) => setStatus(e.target.value)} className={`${inputClass} mt-2`}>
+          <select id="status" name="status" value={status} onChange={(e) => setStatus(e.target.value)} className={`${inputClass} mt-2`}>
             {STATUSES.map((x) => (
               <option key={x.id} value={x.id}>
                 {x.label}
@@ -287,14 +288,14 @@ function StatusPanel({ s, action }: { s: Submission; action: Action }) {
             <label htmlFor="live-url" className={labelClass}>
               Live URL
             </label>
-            <input id="live-url" type="url" placeholder="https://" value={live} onChange={(e) => setLive(e.target.value)} className={`${inputClass} mt-2`} />
+            <input id="live-url" name="live_url" type="url" autoComplete="off" spellCheck={false} autoCapitalize="off" placeholder="https://…" value={live} onChange={(e) => setLive(e.target.value)} className={`${inputClass} mt-2`} />
           </div>
         )}
         <div>
           <label htmlFor="status-note" className={labelClass}>
             Note for the history <span className="font-normal text-muted">(optional)</span>
           </label>
-          <input id="status-note" value={note} onChange={(e) => setNote(e.target.value)} className={`${inputClass} mt-2`} />
+          <input id="status-note" name="note" autoComplete="off" value={note} onChange={(e) => setNote(e.target.value)} className={`${inputClass} mt-2`} />
         </div>
         <Button type="submit" tone="primary" busy={action.busy === "status"} disabled={status === s.status && !note.trim()}>
           Save status
@@ -327,6 +328,7 @@ function StatusPanel({ s, action }: { s: Submission; action: Action }) {
 
 function NotesPanel({ s, action }: { s: Submission; action: Action }) {
   const [notes, setNotes] = useState(s.admin_notes ?? "");
+  useUnsavedWarning(notes !== (s.admin_notes ?? ""));
   return (
     <Panel title="Private notes">
       <form
@@ -338,7 +340,7 @@ function NotesPanel({ s, action }: { s: Submission; action: Action }) {
         <label htmlFor="notes" className="sr-only">
           Private notes
         </label>
-        <textarea id="notes" rows={5} value={notes} onChange={(e) => setNotes(e.target.value)} className={`${inputClass} py-2`} />
+        <textarea id="notes" name="notes" rows={5} autoComplete="off" value={notes} onChange={(e) => setNotes(e.target.value)} className={`${inputClass} py-2`} />
         <p className="mt-2 text-sm text-muted">Never emailed or shown to the customer.</p>
         <Button type="submit" className="mt-3" busy={action.busy === "notes"}>
           Save notes
@@ -382,16 +384,24 @@ function EmailsPanel({ detail, action }: { detail: Detail; action: Action }) {
               <div className="flex gap-2">
                 {q.state === "pending" && (
                   <>
-                    <Button busy={action.busy === `now-${q.id}`} onClick={() => action.run(`now-${q.id}`, () => adminRpc("ryzon_landing_admin_send_now", { p_queue_id: q.id }), "Sending now.")}>
+                    <Button aria-label={`Send now: ${label(q.template_key)}`} busy={action.busy === `now-${q.id}`} onClick={() => action.run(`now-${q.id}`, () => adminRpc("ryzon_landing_admin_send_now", { p_queue_id: q.id }), "Sending now.")}>
                       Send now
                     </Button>
-                    <Button tone="danger" busy={action.busy === `cancel-${q.id}`} onClick={() => action.run(`cancel-${q.id}`, () => adminRpc("ryzon_landing_admin_cancel_email", { p_queue_id: q.id }), "Cancelled.")}>
+                    <Button
+                      tone="danger"
+                      aria-label={`Cancel: ${label(q.template_key)}`}
+                      busy={action.busy === `cancel-${q.id}`}
+                      onClick={() => {
+                        if (window.confirm(`Cancel “${label(q.template_key)}”? It won’t send unless you press Resend later.`))
+                          action.run(`cancel-${q.id}`, () => adminRpc("ryzon_landing_admin_cancel_email", { p_queue_id: q.id }), "Cancelled.");
+                      }}
+                    >
                       Cancel
                     </Button>
                   </>
                 )}
                 {(q.state === "sent" || q.state === "failed" || q.state === "cancelled") && (
-                  <Button busy={action.busy === `resend-${q.id}`} onClick={() => action.run(`resend-${q.id}`, () => adminRpc("ryzon_landing_admin_resend", { p_queue_id: q.id }), "Queued to send again now.")}>
+                  <Button aria-label={`Resend: ${label(q.template_key)}`} busy={action.busy === `resend-${q.id}`} onClick={() => action.run(`resend-${q.id}`, () => adminRpc("ryzon_landing_admin_resend", { p_queue_id: q.id }), "Queued to send again now.")}>
                     Resend
                   </Button>
                 )}
@@ -440,7 +450,7 @@ function ChangesPanel({ changes, action }: { changes: ChangeRequest[]; action: A
                       tone="danger"
                       busy={action.busy === `cancelcall-${c.id}`}
                       onClick={() => {
-                        if (window.confirm("Cancel this call? Its reminder emails are cancelled too. The customer isn't emailed, so let them know."))
+                        if (window.confirm("Cancel this call? Its reminder emails are cancelled too. The customer isn’t emailed, so let them know."))
                           action.run(`cancelcall-${c.id}`, () => adminRpc("ryzon_landing_admin_set_call_status", { p_call_id: c.id, p_status: "cancelled" }), "Call cancelled.");
                       }}
                     >

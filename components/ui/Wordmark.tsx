@@ -9,7 +9,6 @@ export function Wordmark({ onInk = false }: Props) {
   return (
     <Link
       href="/"
-      aria-label={ui.nav.homeLabel}
       className={`rz-wordmark inline-flex min-h-11 min-w-11 items-center gap-2 font-display ${onInk ? "text-on-band" : "text-ink"}`}
     >
       <span
@@ -20,10 +19,13 @@ export function Wordmark({ onInk = false }: Props) {
       >
         {site.business.shortName.charAt(0)}
       </span>
-      <span translate="no" className="hidden text-lg font-heavy tracking-snug display-tight xs:inline">
+      {/* The accessible name is always the full "Ryzon Automation home", and it contains
+          whatever part of the wordmark is visible at this width. */}
+      <span translate="no" className="sr-only text-lg font-heavy tracking-snug display-tight xs:not-sr-only">
         {site.business.shortName}
-        <span className="hidden font-normal xl:inline"> {site.business.name.replace(site.business.shortName, "").trim()}</span>
+        <span className="sr-only font-normal xl:not-sr-only"> {site.business.name.replace(site.business.shortName, "").trim()}</span>
       </span>
+      <span className="sr-only"> {ui.nav.homeLabel.replace(site.business.name, "").trim()}</span>
     </Link>
   );
 }

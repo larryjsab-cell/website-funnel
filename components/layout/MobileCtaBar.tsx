@@ -33,7 +33,7 @@ export function MobileCtaBar() {
     <aside
       aria-label={ui.mobileBarLabel}
       inert={hidden}
-      className={`rz-mobile-bar fixed inset-x-0 bottom-0 z-bar border-t-2 border-ink bg-canvas px-4 py-3 transition-transform duration-base ease-out md:hidden ${
+      className={`rz-mobile-bar fixed inset-x-0 bottom-0 z-bar border-t-2 border-ink bg-canvas px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] transition-transform duration-base ease-out md:hidden ${
         hidden ? "translate-y-full" : ""
       }`}
     >
