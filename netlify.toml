@@ -5,3 +5,7 @@
 [build.environment]
   NODE_VERSION = "22"
   NEXT_TELEMETRY_DISABLED = "1"
+
+# Next.js runtime: server routes (/api/lead), image and font handling.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
