@@ -57,11 +57,26 @@ async function stripe<T>(method: "GET" | "POST", path: string, params: Params = 
 
 type Price = { id: string };
 
-const priceCache = new Map<string, string>();
+/** One in-flight or finished lookup per key, so parallel callers share a single Stripe create. */
+function once<T>(cache: Map<string, Promise<T>>, key: string, make: () => Promise<T>) {
+  let p = cache.get(key);
+  if (!p) {
+    p = make().catch((e) => {
+      cache.delete(key);
+      throw e;
+    });
+    cache.set(key, p);
+  }
+  return p;
+}
 
-async function ensurePrice(lookupKey: string, spec: { name: string; cents: number; interval?: Interval }) {
-  const cached = priceCache.get(lookupKey);
-  if (cached) return cached;
+const priceCache = new Map<string, Promise<string>>();
+
+function ensurePrice(lookupKey: string, spec: { name: string; cents: number; interval?: Interval }) {
+  return once(priceCache, lookupKey, () => findOrCreatePrice(lookupKey, spec));
+}
+
+async function findOrCreatePrice(lookupKey: string, spec: { name: string; cents: number; interval?: Interval }) {
   const found = await stripe<{ data: Price[] }>("GET", "/prices", { lookup_keys: [lookupKey], active: true, limit: 1 });
   let id = found.data[0]?.id;
   if (!id) {
@@ -80,7 +95,6 @@ async function ensurePrice(lookupKey: string, spec: { name: string; cents: numbe
     );
     id = created.id;
   }
-  priceCache.set(lookupKey, id);
   return id;
 }
 
@@ -95,18 +109,18 @@ export function priceFor(plan: string, interval: Interval | "once") {
 
 type CouponSpec = { id: string; name: string; percent_off?: number; amount_off?: number; duration: "once" | "repeating"; duration_in_months?: number };
 
-const couponReady = new Set<string>();
+const couponCache = new Map<string, Promise<string>>();
 
-async function ensureCoupon(spec: CouponSpec) {
-  if (couponReady.has(spec.id)) return spec.id;
-  try {
-    await stripe("GET", `/coupons/${encodeURIComponent(spec.id)}`);
-  } catch (e) {
-    if (!(e instanceof StripeError) || e.status !== 404) throw e;
-    await stripe("POST", "/coupons", { ...spec, currency: spec.amount_off ? "usd" : undefined, metadata: { source: SOURCE } }, `ryzon-coupon-${spec.id}`);
-  }
-  couponReady.add(spec.id);
-  return spec.id;
+function ensureCoupon(spec: CouponSpec) {
+  return once(couponCache, spec.id, async () => {
+    try {
+      await stripe("GET", `/coupons/${encodeURIComponent(spec.id)}`);
+    } catch (e) {
+      if (!(e instanceof StripeError) || e.status !== 404) throw e;
+      await stripe("POST", "/coupons", { ...spec, currency: spec.amount_off ? "usd" : undefined, metadata: { source: SOURCE } }, `ryzon-coupon-${spec.id}`);
+    }
+    return spec.id;
+  });
 }
 
 /** Coupon for an offer on a given plan and billing interval, if the offer has one. */
