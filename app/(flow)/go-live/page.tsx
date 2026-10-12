@@ -6,7 +6,10 @@ import { FILES_PRICE, isOffer, offerHeadline, quote, tiers, type Interval, type 
 import { localDate, lookup, type Lookup } from "@/lib/server/lookup";
 import { formatPrice, site } from "@/lib/site";
 
-export const metadata: Metadata = { title: "Get your website live" };
+export const metadata: Metadata = {
+  title: "Get your website live",
+  description: "Pick a plan for the website we designed for you. $0 upfront, no design fee, cancel anytime.",
+};
 
 type Search = { t?: string; offer?: string; interval?: string; error?: string };
 

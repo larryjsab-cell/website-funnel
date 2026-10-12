@@ -6,7 +6,7 @@ import { TextLink } from "@/components/ui/TextLink";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { ui } from "@/lib/content";
 
-export const metadata: Metadata = { title: ui.notFound.title, robots: { index: false } };
+export const metadata: Metadata = { title: ui.notFound.title, description: ui.notFound.body, robots: { index: false } };
 
 export default function NotFound() {
   return (

@@ -5,7 +5,10 @@ import { Message, primaryButton } from "@/components/flow/Message";
 import { Container } from "@/components/ui/Container";
 import { lookup } from "@/lib/server/lookup";
 
-export const metadata: Metadata = { title: "Request your changes" };
+export const metadata: Metadata = {
+  title: "Request your changes",
+  description: "Tell Ryzon Automation what to change on your website demo, and we'll get it ready to launch.",
+};
 
 const PLAN_STATUSES = ["converted_full", "converted_50_month", "converted_50_year", "call_scheduled", "changes_received", "in_build", "ready_to_launch", "live"];
 

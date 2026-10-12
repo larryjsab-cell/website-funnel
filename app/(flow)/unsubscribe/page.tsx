@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { HomeLink, Message, primaryButton } from "@/components/flow/Message";
 
-export const metadata: Metadata = { title: "Email preferences" };
+export const metadata: Metadata = {
+  title: "Email preferences",
+  description: "Stop offer emails from Ryzon Automation. Emails about anything you buy still come through.",
+};
 
 /** Linked from offer emails. A button, not a bare link, so email scanners can't unsubscribe people. */
 export default async function UnsubscribePage({ searchParams }: { searchParams: Promise<{ t?: string; done?: string; error?: string }> }) {

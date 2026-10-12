@@ -5,7 +5,10 @@ import { Container } from "@/components/ui/Container";
 import { edge, edgeConfigured } from "@/lib/server/edge";
 import { lookup } from "@/lib/server/lookup";
 
-export const metadata: Metadata = { title: "Book a call" };
+export const metadata: Metadata = {
+  title: "Book a call",
+  description: "Pick a time for a quick Google Meet or phone call with Ryzon Automation about your new website.",
+};
 
 const TITLES: Record<string, string> = {
   changes: "Book a call to go over your changes",

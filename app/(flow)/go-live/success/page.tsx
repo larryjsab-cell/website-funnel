@@ -4,7 +4,10 @@ import { Message, primaryButton, secondaryButton } from "@/components/flow/Messa
 import { recordSession, retrieveSession, type Recorded } from "@/lib/server/stripe";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = { title: "You're in" };
+export const metadata: Metadata = {
+  title: "You're in",
+  description: "Your payment went through. Next, tell us your changes and we'll get your website ready to launch.",
+};
 
 /**
  * Stripe sends the customer here after paying. Fetching the session from Stripe

@@ -1,21 +1,20 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { TextLink } from "@/components/ui/TextLink";
 import { site } from "@/lib/site";
 import { legal } from "@/lib/content";
+import { pageGraph } from "@/lib/schema";
+import { pageMeta } from "@/lib/seo";
 
 type Doc = "privacy" | "terms";
 type Block = { body?: string[]; list?: string[] };
 
 export function legalMetadata(doc: Doc): Metadata {
   const page = legal[doc];
-  return {
-    title: page.title,
-    description: page.description,
-    alternates: { canonical: `/${doc}` },
-    openGraph: { title: page.title, description: page.description, url: `/${doc}` },
-  };
+  return pageMeta({ title: `${page.title} | ${site.business.name}`, description: page.description, path: `/${doc}` });
 }
 
 function LegalBlock({ block }: { block: Block }) {
@@ -47,8 +46,22 @@ export function LegalPage({ doc }: { doc: Doc }) {
   const page = legal[doc];
   return (
     <article className="py-16 md:py-24">
+      <JsonLd data={pageGraph(`/${doc}`, page.title, page.description)} />
       <Container>
         <div className="max-w-wide">
+          <nav aria-label="Breadcrumb" className="mb-6 font-display text-sm display-ui">
+            <ol className="flex flex-wrap gap-2">
+              <li>
+                <Link href="/" className="underline underline-offset-4 hover:text-accent">
+                  Home
+                </Link>
+                <span aria-hidden="true" className="ml-2">
+                  /
+                </span>
+              </li>
+              <li aria-current="page">{page.title}</li>
+            </ol>
+          </nav>
           <Heading as="h1" size="display">
             {page.title}
           </Heading>
