@@ -140,7 +140,14 @@ function DemoPreview({ sub }: { sub: Lookup }) {
       {sub.demo_image_url ? (
         <a href={sub.demo_url} target="_blank" rel="noreferrer">
           {/* eslint-disable-next-line @next/next/no-img-element -- remote screenshot URL set per customer */}
-          <img src={sub.demo_image_url} alt={`Preview of the new ${sub.business_name} website`} className="w-full rounded-ui border border-ink" />
+          <img
+            src={sub.demo_image_url}
+            alt={`Preview of the new ${sub.business_name} website`}
+            width={1200}
+            height={750}
+            decoding="async"
+            className="aspect-16/10 h-auto w-full rounded-ui border border-ink object-cover object-top"
+          />
         </a>
       ) : null}
       <figcaption className="mt-3">

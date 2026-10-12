@@ -56,6 +56,8 @@ export function CtaButton({
   return (
     <Link
       href={target}
+      // Same-page anchors: don't prefetch the page we're already on.
+      prefetch={target.startsWith("/#") ? false : undefined}
       data-cta={location}
       className={`rz-btn rz-btn-${variant} rz-btn-${size} ${base} ${look} ${sizes[size]} ${fullWidth ? "w-full" : ""} ${className}`}
     >

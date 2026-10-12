@@ -22,13 +22,13 @@ export function SiteFooter() {
           <h2 className="font-display text-sm font-bold display-ui">{ui.footer.pagesHeading}</h2>
           <ul className="mt-3 font-display text-sm">
             <li>
-              <Link href={site.cta.primary.href} className={linkClass}>
+              <Link href={site.cta.primary.href} prefetch={false} className={linkClass}>
                 {site.cta.primary.label}
               </Link>
             </li>
             {site.nav.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className={linkClass}>
+                <Link href={item.href} prefetch={false} className={linkClass}>
                   {item.label}
                 </Link>
               </li>

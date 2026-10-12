@@ -1,5 +1,5 @@
 import { attribution } from "@/lib/attribution";
-import { forms } from "@/lib/content";
+import forms from "@/content/forms.json";
 import { fill, HONEYPOT, type FieldErrorKind, type FormType } from "@/lib/forms";
 import { site } from "@/lib/site";
 

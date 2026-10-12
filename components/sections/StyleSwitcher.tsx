@@ -1,9 +1,10 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { Heading } from "@/components/ui/Heading";
 import { Container } from "@/components/ui/Container";
 import { track } from "@/lib/analytics";
-import { styles } from "@/lib/content";
+import styles from "@/content/styles.json";
 import { applyStyle } from "@/lib/theme";
 import { useActiveStyle } from "@/lib/useActiveStyle";
 
@@ -13,17 +14,47 @@ import { useActiveStyle } from "@/lib/useActiveStyle";
  * Native radios give arrow-key navigation and screen reader semantics.
  */
 export function StyleSwitcher() {
-  const active = useActiveStyle();
+  const applied = useActiveStyle();
+  const [pending, setPending] = useState<string | null>(null);
+  const active = pending ?? applied;
 
+  // Each preview uses its style's own fonts. Attach those styles only when the section
+  // is near the screen, so the other six font families don't compete with the hero.
+  const sectionRef = useRef<HTMLElement>(null);
+  const [near, setNear] = useState(false);
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setNear(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "800px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Mark the choice right away, then restyle the page in the next task, after that
+  // paint: re-theming the whole page is heavy, and the click shouldn't wait for it.
   function choose(id: string) {
-    applyStyle(id);
-    track({ name: "style_select", style: id });
+    setPending(id);
+    requestAnimationFrame(() =>
+      setTimeout(() => {
+        applyStyle(id);
+        setPending(null);
+        track({ name: "style_select", style: id });
+      }, 0),
+    );
   }
 
   const activeName = styles.options.find((o) => o.id === active)?.name;
 
   return (
-    <section id="styles" aria-labelledby="styles-heading" className="rz-section rz-tone-canvas cv-auto relative border-t-2 border-ink py-16 md:py-24">
+    <section ref={sectionRef} id="styles" aria-labelledby="styles-heading" className="rz-section rz-tone-canvas relative border-t-2 border-ink py-16 md:py-24">
       <Container>
         <div className="grid gap-4 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">
@@ -54,7 +85,7 @@ export function StyleSwitcher() {
                 {/* Scoped live preview of this style's real tokens */}
                 <span
                   aria-hidden="true"
-                  data-theme={o.id}
+                  data-theme={near || o.id === active ? o.id : undefined}
                   className="flex flex-col gap-3 border-b-2 border-ink bg-canvas p-3 text-ink"
                 >
                   <span className="font-display text-4xl font-heavy leading-none tracking-tight display-tight">

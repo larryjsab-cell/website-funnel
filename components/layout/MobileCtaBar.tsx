@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { ui } from "@/lib/content";
+import ui from "@/content/ui.json";
 
 /**
  * Always-reachable demo CTA under md. Slides away while a form section

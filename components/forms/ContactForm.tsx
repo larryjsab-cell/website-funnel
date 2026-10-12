@@ -4,7 +4,7 @@ import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { Field } from "@/components/forms/Field";
 import { Honeypot } from "@/components/forms/Honeypot";
 import { track } from "@/lib/analytics";
-import { forms } from "@/lib/content";
+import forms from "@/content/forms.json";
 import { checkAll, checkField, contactFields, fill, type ContactField, type FieldErrorKind } from "@/lib/forms";
 import { errorText, submitLead } from "@/lib/submitLead";
 

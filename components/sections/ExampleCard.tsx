@@ -14,6 +14,7 @@ export function ExampleCard({ item, ctaLabel }: Props) {
         <h3 className="font-display text-lg font-heavy display-tight">{item.title}</h3>
         <Link
           href={site.cta.primary.href}
+          prefetch={false}
           data-cta={`example_${item.id}`}
           data-industry={item.formIndustry}
           className="mt-auto inline-flex min-h-11 items-center pt-2 font-display text-sm font-bold underline decoration-2 underline-offset-4 display-ui after:absolute after:inset-0 group-hover:text-accent"

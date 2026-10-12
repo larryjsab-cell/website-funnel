@@ -21,6 +21,7 @@ import "./styles/looks/organic.css";
 import "./styles/looks/corporate.css";
 import "./styles/looks/luxury.css";
 import "./styles/looks/playful.css";
+import { Analytics } from "@/components/layout/Analytics";
 import { AnalyticsListener } from "@/components/layout/AnalyticsListener";
 import { GridBackdrop } from "@/components/layout/GridBackdrop";
 import { SkipLink } from "@/components/layout/SkipLink";
@@ -102,6 +103,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <GridBackdrop />
         {children}
         <AnalyticsListener />
+        <Analytics />
       </body>
     </html>
   );

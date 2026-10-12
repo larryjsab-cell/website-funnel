@@ -1,5 +1,5 @@
 import { HONEYPOT } from "@/lib/forms";
-import { forms } from "@/lib/content";
+import forms from "@/content/forms.json";
 
 /** Off-screen trap field. Humans never see or reach it. */
 export function Honeypot({ value, onChange }: { value: string; onChange: (v: string) => void }) {

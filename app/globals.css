@@ -81,12 +81,6 @@
     font-variation-settings: var(--display-variation);
   }
 
-  /* Skip rendering (and font downloads) until the section nears the viewport. */
-  .cv-auto {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 60rem;
-  }
-
   .grid-backdrop {
     opacity: var(--grid-opacity);
   }

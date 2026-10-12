@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { styles } from "@/lib/content";
+import styles from "@/content/styles.json";
 import { currentStyle, STYLE_EVENT } from "@/lib/theme";
 
 function subscribe(onChange: () => void) {

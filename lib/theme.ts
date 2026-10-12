@@ -1,4 +1,4 @@
-import { styles } from "@/lib/content";
+import styles from "@/content/styles.json";
 
 export const STYLE_STORAGE_KEY = "ryzon-style";
 export const STYLE_PARAM = "style";

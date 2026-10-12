@@ -5,12 +5,12 @@ import { Field } from "@/components/forms/Field";
 import { Honeypot } from "@/components/forms/Honeypot";
 import { track } from "@/lib/analytics";
 import { rememberAttribution } from "@/lib/attribution";
-import { forms } from "@/lib/content";
+import forms from "@/content/forms.json";
 import { checkAll, checkField, fill, type DemoField, type FieldErrorKind } from "@/lib/forms";
 import { errorText, submitLead } from "@/lib/submitLead";
 import { styleName } from "@/lib/theme";
 import { useActiveStyle } from "@/lib/useActiveStyle";
-import { styles } from "@/lib/content";
+import styles from "@/content/styles.json";
 
 const copy = forms.demo;
 const STEP1: DemoField[] = ["name", "email"];
