@@ -35,7 +35,7 @@ export default async function ThankYouPage({ searchParams }: { searchParams: Pro
         title="A few details need fixing"
         actions={
           <Link href={back} className={primaryButton}>
-            Back to the form
+            Back to the Form
           </Link>
         }
       >
@@ -65,7 +65,7 @@ export default async function ThankYouPage({ searchParams }: { searchParams: Pro
         title={forms.contact.success.heading}
         actions={
           <Link href="/" className={secondaryButton}>
-            Back to the home page
+            Back to the Home Page
           </Link>
         }
       >
@@ -80,7 +80,7 @@ export default async function ThankYouPage({ searchParams }: { searchParams: Pro
       title={s.heading}
       actions={
         <Link href="/#examples" className={secondaryButton}>
-          {s.whileYouWait}
+          Browse Example Designs
         </Link>
       }
     >

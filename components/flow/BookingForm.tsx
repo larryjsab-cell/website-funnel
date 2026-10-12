@@ -150,7 +150,7 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
               onClick={() => goToPage(current - 1)}
               className="min-h-11 rounded-ui border-2 border-ink bg-canvas px-3 font-display text-sm font-bold disabled:cursor-not-allowed disabled:border-dashed disabled:border-muted disabled:text-muted md:order-1"
             >
-              ← Earlier<span className="hidden sm:inline">&nbsp;dates</span>
+              ← Earlier<span className="hidden sm:inline">&nbsp;Dates</span>
             </button>
             <button
               type="button"
@@ -158,7 +158,7 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
               onClick={() => goToPage(current + 1)}
               className="min-h-11 rounded-ui border-2 border-ink bg-canvas px-3 font-display text-sm font-bold disabled:cursor-not-allowed disabled:border-dashed disabled:border-muted disabled:text-muted md:order-3"
             >
-              Next<span className="hidden sm:inline">&nbsp;dates</span> →
+              Next<span className="hidden sm:inline">&nbsp;Dates</span> →
             </button>
           </div>
         )}
@@ -236,7 +236,7 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
         </p>
       )}
       <button type="submit" disabled={state === "sending"} className={`${primaryButton} w-full md:w-auto`}>
-        {state === "sending" ? "Booking…" : time ? `Book ${timeLabel?.format(new Date(time))}` : "Book my call"}
+        {state === "sending" ? "Booking…" : time ? `Book ${timeLabel?.format(new Date(time))}` : "Book My Call"}
       </button>
     </form>
   );

@@ -190,9 +190,13 @@ function SubmissionLine({ s }: { s: Submission }) {
 
 // ---------------------------------------------------------------- Board
 
+const PAGE = 30;
+
 function Board({ subs, reload }: { subs: Submission[]; reload: () => Promise<void> }) {
   const [dragId, setDragId] = useState<string | null>(null);
   const [over, setOver] = useState<Status | null>(null);
+  // Long columns (closed leads pile up) render 30 cards at a time.
+  const [shown, setShown] = useState<Partial<Record<Status, number>>>({});
   const [note, setNote] = useState<{ message?: string; error?: string }>({});
 
   const move = async (s: Submission, to: Status) => {
@@ -244,7 +248,7 @@ function Board({ subs, reload }: { subs: Submission[]; reload: () => Promise<voi
               </h2>
               {cards.length === 0 && <p className="p-3 text-sm text-muted">Empty. Drop a card here.</p>}
               <ul className={`flex flex-col gap-2 ${cards.length ? "p-2" : ""}`}>
-                {cards.map((s) => (
+                {cards.slice(0, shown[col.id] ?? PAGE).map((s) => (
                   <li
                     key={s.id}
                     draggable
@@ -291,6 +295,13 @@ function Board({ subs, reload }: { subs: Submission[]; reload: () => Promise<voi
                   </li>
                 ))}
               </ul>
+              {cards.length > (shown[col.id] ?? PAGE) && (
+                <div className="p-2 pt-0">
+                  <Button className="w-full" onClick={() => setShown((m) => ({ ...m, [col.id]: (m[col.id] ?? PAGE) + PAGE }))}>
+                    Show {Math.min(PAGE, cards.length - (shown[col.id] ?? PAGE))} More
+                  </Button>
+                </div>
+              )}
             </section>
           );
         })}
@@ -302,6 +313,7 @@ function Board({ subs, reload }: { subs: Submission[]; reload: () => Promise<voi
 // ---------------------------------------------------------------- Table
 
 const FILTERS = ["q", "status", "plan", "offer", "from", "to"] as const;
+const TABLE_PAGE = 100;
 
 function TableView({ subs }: { subs: Submission[] }) {
   // Filters start from the URL and write back to it, so a filtered list can be bookmarked or shared.
@@ -312,6 +324,7 @@ function TableView({ subs }: { subs: Submission[] }) {
   const [offer, setOffer] = useState(() => params.get("offer") ?? "");
   const [from, setFrom] = useState(() => params.get("from") ?? "");
   const [to, setTo] = useState(() => params.get("to") ?? "");
+  const [limit, setLimit] = useState(TABLE_PAGE);
 
   useEffect(() => {
     const values = { q: q.trim(), status, plan, offer, from, to };
@@ -397,7 +410,7 @@ function TableView({ subs }: { subs: Submission[] }) {
             </tr>
           </thead>
           <tbody>
-            {rows.map((s) => (
+            {rows.slice(0, limit).map((s) => (
               <tr key={s.id} className="border-t border-rule align-top">
                 <td className="whitespace-nowrap px-3 py-2">{day(s.created_at)}</td>
                 <td className="px-3 py-2">
@@ -423,6 +436,14 @@ function TableView({ subs }: { subs: Submission[] }) {
           </tbody>
         </table>
       </div>
+      {rows.length > limit && (
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <Button onClick={() => setLimit((n) => n + TABLE_PAGE)}>Show {Math.min(TABLE_PAGE, rows.length - limit)} More</Button>
+          <p className="text-sm tabular-nums text-muted">
+            Showing {limit} of {rows.length}. The CSV has all of them.
+          </p>
+        </div>
+      )}
     </>
   );
 }

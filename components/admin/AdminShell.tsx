@@ -44,7 +44,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
         <h1 className="font-display text-2xl font-heavy display-tight">No dashboard access</h1>
         <p className="mt-3">{session?.user.email} is signed in but is not a Ryzon admin.</p>
         <Button className="mt-6" onClick={() => supabase().auth.signOut()}>
-          Sign out
+          Sign Out
         </Button>
       </div>
     );
@@ -119,7 +119,7 @@ function LoginForm() {
           />
         </div>
         <Button type="submit" tone="primary" busy={busy} className="w-full">
-          Sign in
+          Sign In
         </Button>
         <Notice error={error} />
       </form>
@@ -165,12 +165,12 @@ function AccountMenu({ email }: { email: string }) {
               className={`${inputClass} mt-2`}
             />
             <Button type="submit" busy={busy} className="mt-3 w-full">
-              Change password
+              Change Password
             </Button>
             <Notice {...note} />
           </form>
           <Button tone="danger" className="mt-4 w-full" onClick={() => supabase().auth.signOut()}>
-            Sign out
+            Sign Out
           </Button>
         </div>
       )}

@@ -4,7 +4,7 @@
 
 ## Business
 - **Name:** Ryzon Automation
-- **Location:** 3230 Glen Iris Drive, Commerce Township, MI [ZIP]
+- **Location:** 3230 Glen Iris Drive, Commerce Township, MI 48382
 - **Service area:** Nationwide (US)
 - **Contact:** larryjsab@gmail.com · (248) 974-4220
 - **Hours:** 9am–10pm, 7 days a week

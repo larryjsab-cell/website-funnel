@@ -32,7 +32,7 @@ export default async function UnsubscribePage({ searchParams }: { searchParams: 
         <form action="/api/unsubscribe" method="post">
           <input type="hidden" name="t" value={t} />
           <button type="submit" className={primaryButton}>
-            Unsubscribe from offers
+            Unsubscribe from Offers
           </button>
         </form>
       }

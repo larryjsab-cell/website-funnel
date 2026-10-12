@@ -173,7 +173,7 @@ function DemoPanel({ s, action }: { s: Submission; action: Action }) {
           <input id="demo-image" name="demo_image_url" type="url" autoComplete="off" spellCheck={false} autoCapitalize="off" placeholder="https://…" value={image} onChange={(e) => setImage(e.target.value)} className={`${inputClass} mt-2`} />
         </div>
         <Button type="submit" tone="primary" busy={action.busy === "demo"}>
-          {again ? "Save new demo link" : "Save demo and start emails"}
+          {again ? "Save New Demo Link" : "Save Demo and Start Emails"}
         </Button>
         <Notice {...action.noteFor("demo")} />
       </form>
@@ -227,11 +227,11 @@ function FilesPanel({ s, action }: { s: Submission; action: Action }) {
         </div>
         <div className="flex flex-wrap gap-2">
           <Button type="submit" tone="primary" disabled={!file} busy={action.busy === "files"}>
-            Upload and email the link
+            Upload and Email the Link
           </Button>
           {s.files_path && (
             <Button busy={action.busy === "relink"} onClick={() => action.run("relink", () => sign(s.files_path!), "A fresh link is on its way.")}>
-              Email a fresh link
+              Email a Fresh Link
             </Button>
           )}
         </div>
@@ -298,7 +298,7 @@ function StatusPanel({ s, action }: { s: Submission; action: Action }) {
           <input id="status-note" name="note" autoComplete="off" value={note} onChange={(e) => setNote(e.target.value)} className={`${inputClass} mt-2`} />
         </div>
         <Button type="submit" tone="primary" busy={action.busy === "status"} disabled={status === s.status && !note.trim()}>
-          Save status
+          Save Status
         </Button>
         <Notice {...action.noteFor("status")} />
       </form>
@@ -318,7 +318,7 @@ function StatusPanel({ s, action }: { s: Submission; action: Action }) {
             )
           }
         >
-          {s.automations_paused ? "Resume automations" : "Pause automations"}
+          {s.automations_paused ? "Resume Automations" : "Pause Automations"}
         </Button>
         <Notice {...action.noteFor("pause")} />
       </div>
@@ -343,7 +343,7 @@ function NotesPanel({ s, action }: { s: Submission; action: Action }) {
         <textarea id="notes" name="notes" rows={5} autoComplete="off" value={notes} onChange={(e) => setNotes(e.target.value)} className={`${inputClass} py-2`} />
         <p className="mt-2 text-sm text-muted">Never emailed or shown to the customer.</p>
         <Button type="submit" className="mt-3" busy={action.busy === "notes"}>
-          Save notes
+          Save Notes
         </Button>
         <Notice {...action.noteFor("notes")} />
       </form>
@@ -385,7 +385,7 @@ function EmailsPanel({ detail, action }: { detail: Detail; action: Action }) {
                 {q.state === "pending" && (
                   <>
                     <Button aria-label={`Send now: ${label(q.template_key)}`} busy={action.busy === `now-${q.id}`} onClick={() => action.run(`now-${q.id}`, () => adminRpc("ryzon_landing_admin_send_now", { p_queue_id: q.id }), "Sending now.")}>
-                      Send now
+                      Send Now
                     </Button>
                     <Button
                       tone="danger"
@@ -444,7 +444,7 @@ function ChangesPanel({ changes, action }: { changes: ChangeRequest[]; action: A
                 {c.call_status === "scheduled" && (
                   <div className="mt-2 flex gap-2">
                     <Button busy={action.busy === `done-${c.id}`} onClick={() => action.run(`done-${c.id}`, () => adminRpc("ryzon_landing_admin_set_call_status", { p_call_id: c.id, p_status: "done" }), "Marked done.")}>
-                      Mark done
+                      Mark Done
                     </Button>
                     <Button
                       tone="danger"
@@ -454,7 +454,7 @@ function ChangesPanel({ changes, action }: { changes: ChangeRequest[]; action: A
                           action.run(`cancelcall-${c.id}`, () => adminRpc("ryzon_landing_admin_set_call_status", { p_call_id: c.id, p_status: "cancelled" }), "Call cancelled.");
                       }}
                     >
-                      Cancel call
+                      Cancel Call
                     </Button>
                   </div>
                 )}

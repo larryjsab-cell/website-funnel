@@ -22,7 +22,7 @@ export function Message({ title, children, actions }: { title: string; children:
                 Call {site.business.phone}
               </a>
               <a href={`mailto:${site.business.email}`} className={secondaryButton}>
-                Email us
+                Email Us
               </a>
             </>
           )}

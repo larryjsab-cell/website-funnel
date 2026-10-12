@@ -19,6 +19,7 @@ Every item below appears in the site or config. Nothing here was invented.
 - [ ] `[REVIEW_COUNT]`: real review count + source
 - [ ] `[SITES_LAUNCHED]`: real number
 - [ ] `[CLIENT_LOGOS]`: client logos (with permission)
+- [ ] Images: the 6 example design cards and the hero mockup show labeled placeholders. Each slot's image prompt is in `content/examples.json` / `content/landing.json`; drop in real screenshots or generated images (keep 4:3 and 16:10).
 
 ## Integrations
 - [ ] `[ANALYTICS_ID]`: analytics provider + ID
@@ -44,3 +45,11 @@ Owner to-dos:
 ## Legal (/privacy and /terms are real pages, draft copy from your terms; have a lawyer review)
 - [ ] Privacy: analytics provider (once chosen), how long form submissions are kept
 - [ ] Terms: billing method and renewal terms, confirm Michigan as governing law
+
+## Launch (Phases 8–12)
+- [ ] **Netlify deploys are paused:** the latest deploy was skipped with "account credit usage exceeded". The preview still runs the older build. Add credits or upgrade the Netlify plan, then redeploy `claude/inspiring-hypatia-187oth`.
+- [ ] Once the domain is set, submit `https://<domain>/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
+- Security headers (CSP, HSTS, nosniff, frame-deny, referrer and permissions policies) are set in `next.config.ts`. A new third-party script, font or API needs its origin added to the CSP there.
+- `/llms.txt` is generated from `site.config.json` and the content files, so it updates itself.
+- Forms work without JavaScript: they post to `/api/lead` and land on `/thank-you` (noindex).
+- Design system and conventions: `DESIGN.md`.

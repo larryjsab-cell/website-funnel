@@ -75,10 +75,10 @@ export function ChangesForm({ token, bookHref }: { token: string; bookHref: stri
       )}
       <div className="mt-5 flex flex-wrap gap-3">
         <button type="submit" disabled={state === "sending"} className={primaryButton}>
-          {state === "sending" ? "Sending…" : "Send my changes"}
+          {state === "sending" ? "Sending…" : "Send My Changes"}
         </button>
         <Link href={bookHref} className={secondaryButton}>
-          Rather talk it through? Book a call
+          Book a Call Instead
         </Link>
       </div>
     </form>

@@ -87,7 +87,7 @@ export default async function GoLivePage({ searchParams }: { searchParams: Promi
                   aria-current={interval === "year" ? "true" : undefined}
                   className={`min-h-11 px-4 py-2 font-display text-sm font-bold ${interval === "year" ? "bg-ink text-on-ink" : ""}`}
                 >
-                  Yearly (2 months free)
+                  Yearly (2 Months Free)
                 </Link>
               </div>
               <div className="grid gap-4 md:grid-cols-3">
@@ -112,7 +112,7 @@ function GetStarted({ files }: { files: boolean }) {
   return (
     <section aria-labelledby="get-started" className="mt-8 rounded-card border-2 border-ink bg-ink p-5 text-on-ink shadow-hard md:p-6">
       <h2 id="get-started" className="font-display text-2xl font-heavy display-tight md:text-3xl">
-        Get started now
+        Get Started Now
       </h2>
       <p className="mt-2 max-w-measure text-lg">
         {files
@@ -146,6 +146,7 @@ function DemoPreview({ sub }: { sub: Lookup }) {
             width={1200}
             height={750}
             decoding="async"
+            fetchPriority="high"
             className="aspect-16/10 h-auto w-full rounded-ui border border-ink object-cover object-top"
           />
         </a>
@@ -189,8 +190,8 @@ function PlanCard({ tier, interval, offer, token }: { tier: (typeof tiers)[numbe
           <li key={i}>✓ {i}</li>
         ))}
       </ul>
-      <button type="submit" aria-label={`Get started now with ${tier.name}`} className={`${(tier.featured ? primaryButton : secondaryButton).replace("px-6", "px-2")} mt-5 w-full whitespace-nowrap`}>
-        Get started now
+      <button type="submit" aria-label={`Get Started Now with ${tier.name}`} className={`${(tier.featured ? primaryButton : secondaryButton).replace("px-6", "px-2")} mt-5 w-full whitespace-nowrap`}>
+        Get Started Now
       </button>
     </form>
   );
@@ -212,7 +213,7 @@ function FilesCard({ token }: { token: string }) {
         <li>✓ No subscription</li>
       </ul>
       <button type="submit" className={`${primaryButton} mt-6 w-full`}>
-        Get started now
+        Get Started Now
       </button>
       <p className="mt-4 text-sm text-muted">Prefer us to host and run it? Plans start at {site.offer.startingPrice}. Call us to switch.</p>
     </form>
@@ -228,7 +229,7 @@ function AlreadyPaid({ sub, token }: { sub: Lookup; token: string }) {
         files ? undefined : (
           <>
             <Link href={`/changes?t=${encodeURIComponent(token)}`} className={primaryButton}>
-              Request my changes
+              Request My Changes
             </Link>
             <a href={site.business.phoneHref} className={secondaryButton}>
               Call {site.business.phone}

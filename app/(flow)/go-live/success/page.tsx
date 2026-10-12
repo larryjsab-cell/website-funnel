@@ -56,10 +56,10 @@ export default async function SuccessPage({ searchParams }: { searchParams: Prom
         result?.token ? (
           <>
             <Link href={`/changes?t=${encodeURIComponent(result.token)}`} className={primaryButton}>
-              Request my changes
+              Request My Changes
             </Link>
             <Link href={`/book?t=${encodeURIComponent(result.token)}&purpose=changes`} className={secondaryButton}>
-              Book a call instead
+              Book a Call Instead
             </Link>
           </>
         ) : undefined

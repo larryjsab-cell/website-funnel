@@ -30,7 +30,7 @@ export default async function ChangesPage({ searchParams }: { searchParams: Prom
         actions={
           sub.status === "demo_review" ? (
             <Link href={`/go-live?t=${t}`} className={primaryButton}>
-              See the plans
+              See the Plans
             </Link>
           ) : undefined
         }
