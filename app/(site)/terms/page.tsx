@@ -1,7 +1,7 @@
-import { StubPage, stubMetadata } from "@/components/sections/StubPage";
+import { LegalPage, legalMetadata } from "@/components/sections/LegalPage";
 
-export const metadata = stubMetadata("/terms");
+export const metadata = legalMetadata("terms");
 
 export default function Page() {
-  return <StubPage route="/terms" />;
+  return <LegalPage doc="terms" />;
 }

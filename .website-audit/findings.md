@@ -61,3 +61,7 @@ Skills: `/impeccable` and `/ui-ux-pro-max` aren't installed. I substituted `next
 - [fixed] Luxury: Cormorant old-style numerals → lining figures sitewide; small UI text uses a separate UI face (Jost / Franklin / Karla) so labels stay legible.
 - [fixed] Verified per style at 1440 and 375: correct theme applied, no horizontal scroll, no console errors.
 - [deferred] Hero mockup, examples and placeholders are style-neutral illustrations. Phase 6 images are one photoshoot, so they won't change with the style.
+
+## Legal pages (owner: "/privacy and /terms can be pages")
+- [fixed] /privacy and /terms are real, indexable pages (StubPage removed). Copy comes from content/legal.json and is written only from the owner's stated terms. Unknowns are marked [CONFIRM] (analytics provider, retention period, billing/renewal, governing law). A draft notice recommends legal review.
+- [fixed] Verified: no overflow at 9 widths, links OK, renders in all styles.

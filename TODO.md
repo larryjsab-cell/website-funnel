@@ -24,5 +24,6 @@ Every item below appears in the site or config. Nothing here was invented.
 - [ ] `[ANALYTICS_ID]`: analytics provider + ID
 - [ ] `N8N_WEBHOOK_URL`: set in Phase 7. Until then the forms show "not connected yet, call or email".
 
-## Legal
-- [ ] Privacy policy and terms copy (/privacy, /terms are footer-only placeholder pages)
+## Legal (/privacy and /terms are real pages, draft copy from your terms; have a lawyer review)
+- [ ] Privacy: analytics provider (once chosen), how long form submissions are kept
+- [ ] Terms: billing method and renewal terms, confirm Michigan as governing law

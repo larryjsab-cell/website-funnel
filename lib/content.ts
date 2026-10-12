@@ -5,8 +5,9 @@ import examples from "@/content/examples.json";
 import ui from "@/content/ui.json";
 import forms from "@/content/forms.json";
 import styles from "@/content/styles.json";
+import legal from "@/content/legal.json";
 
-export { landing, faq, testimonials, examples, ui, forms, styles };
+export { landing, faq, testimonials, examples, ui, forms, styles, legal };
 
 export type FaqItem = (typeof faq)["groups"][number]["items"][number];
 export type ExampleItem = (typeof examples)["items"][number];

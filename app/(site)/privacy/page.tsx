@@ -1,7 +1,7 @@
-import { StubPage, stubMetadata } from "@/components/sections/StubPage";
+import { LegalPage, legalMetadata } from "@/components/sections/LegalPage";
 
-export const metadata = stubMetadata("/privacy");
+export const metadata = legalMetadata("privacy");
 
 export default function Page() {
-  return <StubPage route="/privacy" />;
+  return <LegalPage doc="privacy" />;
 }

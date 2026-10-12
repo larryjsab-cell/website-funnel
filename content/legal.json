@@ -1,0 +1,189 @@
+{
+  "draftNotice": "Draft written from Ryzon Automation’s stated terms. Have it reviewed by a lawyer before launch.",
+  "updatedLabel": "Last updated",
+  "updated": "October 12, 2026",
+  "contactLabel": "Questions about this page? Email",
+  "privacy": {
+    "title": "Privacy policy",
+    "description": "What Ryzon Automation collects when you request a demo or contact us, why, and how to ask us to delete it.",
+    "intro": "This page explains what information Ryzon Automation (“we”, “us”) collects through this website, what we do with it, and the choices you have.",
+    "sections": [
+      {
+        "heading": "What we collect",
+        "blocks": [
+          {
+            "body": [
+              "We only collect what you type into our forms:"
+            ]
+          },
+          {
+            "list": [
+              "Demo request: your name, email, business name, phone number, industry, the website style you picked, your current website (optional), and any notes you add (optional).",
+              "Contact form: your name, email, and your message.",
+              "With each form we also record which form you used, the page it came from, and the time it was sent."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Why we collect it",
+        "blocks": [
+          {
+            "list": [
+              "To design your free demo and send it to you.",
+              "To answer your questions.",
+              "To follow up about the demo or a plan you asked about."
+            ]
+          },
+          {
+            "body": [
+              "We don’t sell your information, and we don’t share it with anyone for their own marketing."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "How it’s handled",
+        "blocks": [
+          {
+            "body": [
+              "When you send a form, it goes through an automation service (n8n) that emails it to our team (Gmail). Those services process the information only to deliver it to us.",
+              "If we turn on website analytics, it measures things like page visits and button clicks to help us improve the site. [CONFIRM: analytics provider, once chosen]"
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Your choices",
+        "blocks": [
+          {
+            "body": [
+              "You can ask us to see, correct, or delete the information you sent us. Email us at the address below and we’ll take care of it.",
+              "Your browser stores the website style you pick so the page remembers it next time. That stays on your device, and clearing your browser data removes it."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "How long we keep it",
+        "blocks": [
+          {
+            "body": [
+              "[CONFIRM: how long demo and contact submissions are kept]"
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Changes to this policy",
+        "blocks": [
+          {
+            "body": [
+              "If we change this policy, we’ll update this page and the date at the top."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "terms": {
+    "title": "Terms of service",
+    "description": "The terms for Ryzon Automation’s website plans: the free demo, pricing, cancellation, site ownership, and edits.",
+    "intro": "These terms cover Ryzon Automation’s website design plans. By requesting a demo or starting a plan, you agree to them.",
+    "sections": [
+      {
+        "heading": "The free demo",
+        "blocks": [
+          {
+            "list": [
+              "The demo is free, with no obligation to buy anything.",
+              "We design a preview of your site, which can be ready as soon as the next day.",
+              "Once your demo is sent, changes start when you pick a plan. If you’d like to see a completely different design before you decide, just ask."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Plans and pricing",
+        "blocks": [
+          {
+            "body": [
+              "What each plan includes is listed on the pricing section of our home page. [CONFIRM: billing method and renewal terms]"
+            ]
+          },
+          {
+            "list": [
+              "Starter Website: $40/month or $400/year.",
+              "Growth Package: $100/month or $1,000/year.",
+              "Complete Package: $200/month or $2,000/year.",
+              "Paying yearly gets you 2 months free on every plan.",
+              "For a limited time, every plan is $0 upfront."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Cancelling",
+        "blocks": [
+          {
+            "body": [
+              "You can cancel anytime. If you cancel before your first year is up, the design files are not included."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Who owns the site",
+        "blocks": [
+          {
+            "body": [
+              "We own and manage the site for the first year. After that, if you decide to leave, we export your site files and deliver them to you to manage."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Changes and edits",
+        "blocks": [
+          {
+            "list": [
+              "Complete Package: changes and additions are free for the life of your site.",
+              "Starter and Growth: edits are handled per project. Simple tasks may be free depending on how long you’ve been with us. Everything else is quoted at $20/hour before work starts."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Your content",
+        "blocks": [
+          {
+            "body": [
+              "You’re responsible for the text, photos, and logos you give us, and for having the right to use them. We use them only to build and run your site."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Governing law",
+        "blocks": [
+          {
+            "body": [
+              "These terms are governed by the laws of the State of Michigan. [CONFIRM]"
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Changes to these terms",
+        "blocks": [
+          {
+            "body": [
+              "If we change these terms, we’ll update this page and the date at the top."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "homeLabel": "Back to the Ryzon Automation home page"
+}

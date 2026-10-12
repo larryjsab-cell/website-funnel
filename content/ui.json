@@ -20,19 +20,6 @@
   "placeholder": {
     "label": "Image to come"
   },
-  "stubs": {
-    "note": "Placeholder: privacy policy and terms copy is pending review. See TODO.md.",
-    "pages": {
-      "/privacy": {
-        "title": "Privacy policy",
-        "description": "How Ryzon Automation handles your information."
-      },
-      "/terms": {
-        "title": "Terms of service",
-        "description": "The terms for using Ryzon Automation’s services."
-      }
-    }
-  },
   "notFound": {
     "title": "Page not found",
     "heading": "This page doesn’t exist.",
