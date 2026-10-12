@@ -21,7 +21,7 @@ export function Heading({ as: Tag = "h2", id, size = "section", children, classN
   return (
     <Tag
       id={id}
-      className={`font-mono font-heavy tracking-snug text-balance mono-condensed ${sizes[size]} ${className}`}
+      className={`font-display font-heavy tracking-snug text-balance display-tight ${sizes[size]} ${className}`}
     >
       {children}
     </Tag>

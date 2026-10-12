@@ -16,7 +16,7 @@ function Block({ d, children, className = "" }: { d: number; children: ReactNode
 /** Blueprint dimension line: |—— label ——| */
 function Dimension({ label, className = "" }: { label: string; className?: string }) {
   return (
-    <div aria-hidden="true" className={`flex items-center gap-2 font-mono text-sm text-accent mono-semi ${className}`}>
+    <div aria-hidden="true" className={`flex items-center gap-2 font-display text-sm text-accent display-ui ${className}`}>
       <span className="h-4 border-l-2 border-accent" />
       <span className="draw-x h-0 flex-1 border-t-2 border-accent" />
       <span className="shrink-0">{label}</span>
@@ -38,12 +38,12 @@ export function HeroMockup() {
 
       <div aria-hidden="true" className="relative">
         {/* Browser */}
-        <div className="relative border-2 border-ink bg-surface shadow-hard-lg">
+        <div className="relative overflow-hidden rounded-card border-2 border-ink bg-surface shadow-hard-lg">
           <div className="flex h-10 items-center gap-2 border-b-2 border-ink px-3">
             <span className="h-3 w-3 border-2 border-ink" />
             <span className="h-3 w-3 border-2 border-ink" />
             <span className="h-3 w-3 bg-ink" />
-            <span className="ml-2 min-w-0 flex-1 truncate border-2 border-ink px-2 font-mono text-sm leading-tight mono-semi">
+            <span className="ml-2 min-w-0 flex-1 truncate rounded-ui border-2 border-ink px-2 font-display text-sm leading-tight display-ui">
               {m.url}
             </span>
           </div>
@@ -54,8 +54,8 @@ export function HeroMockup() {
             <div className="grid gap-4 p-4 md:p-6">
               <Block d={0} className="flex items-center justify-between border-b-2 border-ink pb-3">
                 <div className="flex w-full items-center justify-between gap-4">
-                  <span className="font-sans text-lg font-bold">{m.siteName}</span>
-                  <span className="hidden gap-4 font-sans text-sm sm:flex">
+                  <span className="font-body text-lg font-bold">{m.siteName}</span>
+                  <span className="hidden gap-4 font-body text-sm sm:flex">
                     {m.siteNav.map((n) => (
                       <span key={n}>{n}</span>
                     ))}
@@ -70,12 +70,12 @@ export function HeroMockup() {
 
               <div className="grid items-center gap-4 sm:grid-cols-2">
                 <Block d={250}>
-                  <p className="font-sans text-xl font-bold leading-tight md:text-2xl">{m.siteHeadline}</p>
+                  <p className="font-body text-xl font-bold leading-tight md:text-2xl">{m.siteHeadline}</p>
                   <div className="mt-4 flex flex-wrap items-center gap-3">
-                    <span className="inline-flex min-h-11 items-center bg-ink px-4 font-sans text-sm font-semibold text-on-ink">
+                    <span className="inline-flex min-h-11 items-center rounded-ui bg-ink px-4 font-body text-sm font-semibold text-on-ink">
                       {m.siteButton}
                     </span>
-                    <span className="flex items-center gap-2 font-mono text-sm text-accent mono-semi">
+                    <span className="flex items-center gap-2 font-display text-sm text-accent display-ui">
                       <span className="draw-x h-0 w-6 border-t-2 border-accent" />
                       {m.annotations.cta}
                     </span>
@@ -89,7 +89,7 @@ export function HeroMockup() {
               <Block d={750} className="hidden sm:block">
                 <div className="grid grid-cols-3 gap-3">
                   {m.siteNav.map((n) => (
-                    <span key={n} className="border-2 border-ink p-3 font-sans text-sm font-semibold">
+                    <span key={n} className="rounded-ui border-2 border-ink p-3 font-body text-sm font-semibold">
                       {n}
                     </span>
                   ))}
@@ -100,7 +100,7 @@ export function HeroMockup() {
         </div>
 
         {/* Phone */}
-        <div className="absolute -bottom-12 -right-4 hidden w-40 border-2 border-ink bg-surface shadow-hard xl:block">
+        <div className="absolute -bottom-12 -right-4 hidden w-40 overflow-hidden rounded-card border-2 border-ink bg-surface shadow-hard xl:block">
           <div className="flex h-6 items-center justify-center border-b-2 border-ink">
             <span className="h-1 w-8 bg-ink" />
           </div>
@@ -109,8 +109,8 @@ export function HeroMockup() {
               <Placeholder prompt={m.imagePrompt} alt="" aspect="4/3" decorative showLabel={false} />
             </Block>
             <Block d={1050}>
-              <p className="font-sans text-sm font-bold leading-tight">{m.siteHeadline}</p>
-              <span className="mt-2 flex min-h-11 items-center justify-center bg-ink font-sans text-sm font-semibold text-on-ink">
+              <p className="font-body text-sm font-bold leading-tight">{m.siteHeadline}</p>
+              <span className="mt-2 flex min-h-11 items-center justify-center rounded-ui bg-ink font-body text-sm font-semibold text-on-ink">
                 {m.siteButton}
               </span>
             </Block>
@@ -118,7 +118,7 @@ export function HeroMockup() {
         </div>
       </div>
 
-      <figcaption className="mt-4 font-mono text-sm text-muted mono-semi xl:mt-16">{m.label}</figcaption>
+      <figcaption className="mt-4 font-display text-sm text-muted display-ui xl:mt-16">{m.label}</figcaption>
     </figure>
   );
 }

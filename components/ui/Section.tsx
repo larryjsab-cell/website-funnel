@@ -7,7 +7,7 @@ const tones: Record<SectionTone, string> = {
   // canvas stays transparent so the background grid shows through
   canvas: "bg-transparent text-ink",
   surface: "bg-surface text-ink",
-  ink: "bg-ink text-on-ink",
+  ink: "bg-band text-on-band",
 };
 
 type Props = {

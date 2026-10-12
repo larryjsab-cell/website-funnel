@@ -20,7 +20,7 @@ export function DemoSection() {
           <OfferLine className="mt-8 max-w-measure" />
           <ul className="mt-6 grid gap-2">
             {d.recap.map((r) => (
-              <li key={r} className="flex gap-3 font-mono text-base font-bold mono-semi">
+              <li key={r} className="flex gap-3 font-display text-base font-bold display-ui">
                 <span aria-hidden="true">+</span>
                 {r}
               </li>
@@ -30,7 +30,7 @@ export function DemoSection() {
         <div className="lg:col-span-7">
           <DemoForm />
           <noscript>
-            <p className="mt-4 border-2 border-ink bg-surface p-4 text-base">
+            <p className="mt-4 rounded-card border-2 border-ink bg-surface p-4 text-base">
               {fill(forms.errors.noScript, { phone: site.business.phone, email: site.business.email })}
             </p>
           </noscript>

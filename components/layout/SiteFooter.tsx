@@ -10,7 +10,7 @@ const linkClass =
 export function SiteFooter() {
   const year = new Date().getFullYear();
   return (
-    <footer className="relative z-content border-t-2 border-ink bg-ink text-on-ink">
+    <footer className="relative z-content border-t-2 border-ink bg-band text-on-band">
       <Container className="grid gap-10 py-16 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-4">
           <Wordmark onInk />
@@ -19,8 +19,8 @@ export function SiteFooter() {
         </div>
 
         <nav aria-label={ui.footer.pagesHeading} className="md:col-span-3">
-          <h2 className="font-mono text-sm font-bold mono-semi">{ui.footer.pagesHeading}</h2>
-          <ul className="mt-3 font-mono text-sm">
+          <h2 className="font-display text-sm font-bold display-ui">{ui.footer.pagesHeading}</h2>
+          <ul className="mt-3 font-display text-sm">
             <li>
               <Link href={site.cta.primary.href} className={linkClass}>
                 {site.cta.primary.label}
@@ -37,7 +37,7 @@ export function SiteFooter() {
         </nav>
 
         <div className="md:col-span-5">
-          <h2 className="font-mono text-sm font-bold mono-semi">{ui.footer.contactHeading}</h2>
+          <h2 className="font-display text-sm font-bold display-ui">{ui.footer.contactHeading}</h2>
           <address className="mt-3 grid gap-1 text-base not-italic">
             <span>{site.business.name}</span>
             <span>{formatAddress()}</span>
@@ -48,14 +48,14 @@ export function SiteFooter() {
               {site.business.email}
             </a>
           </address>
-          <h2 className="mt-6 font-mono text-sm font-bold mono-semi">{ui.footer.hoursHeading}</h2>
+          <h2 className="mt-6 font-display text-sm font-bold display-ui">{ui.footer.hoursHeading}</h2>
           <p className="mt-2 text-base">{site.business.hours.label}</p>
         </div>
 
       </Container>
 
       <Container>
-        <div className="flex flex-col gap-2 border-t border-muted py-6 font-mono text-sm sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-2 border-t border-muted py-6 font-display text-sm sm:flex-row sm:items-center sm:justify-between">
         <p>
           © {year} {site.business.name}. {ui.footer.rights}
         </p>

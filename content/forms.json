@@ -40,6 +40,12 @@
         "label": "Anything we should know?",
         "optional": "(optional)",
         "placeholder": "Colors you like, services to feature, sites you admire…"
+      },
+      "style": {
+        "label": "Style you like",
+        "optional": "(optional)",
+        "placeholder": "Not sure yet",
+        "hint": "Picked from the style switcher above. Change it anytime."
       }
     },
     "industries": [

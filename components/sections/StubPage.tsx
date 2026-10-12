@@ -28,7 +28,7 @@ export function StubPage({ route, showCta = true }: { route: Route; showCta?: bo
         </Heading>
         <p className="mt-6 max-w-measure text-lg">{page.description}</p>
         <OfferLine className="mt-8 max-w-measure" />
-        <p className="mt-8 max-w-measure border-2 border-dashed border-accent bg-surface p-4 font-mono text-sm text-accent mono-semi">
+        <p className="mt-8 max-w-measure rounded-card border-2 border-dashed border-accent bg-surface p-4 font-display text-sm text-accent display-ui">
           {ui.stubs.note}
         </p>
         {showCta && (

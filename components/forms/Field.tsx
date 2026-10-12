@@ -26,7 +26,7 @@ type Props =
   | (Common & { as: "select"; options: string[] });
 
 const control =
-  "block w-full border-2 bg-surface px-3 text-base text-ink transition-colors duration-fast placeholder:text-muted";
+  "block w-full rounded-ui border-2 bg-surface px-3 text-base text-ink transition-colors duration-fast placeholder:text-muted";
 
 /** Label above, control, then hint or error. Errors are linked via aria-describedby. */
 export function Field(props: Props) {
@@ -47,7 +47,7 @@ export function Field(props: Props) {
 
   return (
     <div>
-      <label htmlFor={id} className="block font-mono text-sm font-bold mono-semi">
+      <label htmlFor={id} className="block font-display text-sm font-bold display-ui">
         {label}
         {optionalLabel && <span className="font-normal text-muted"> {optionalLabel}</span>}
       </label>
@@ -57,7 +57,7 @@ export function Field(props: Props) {
         ) : props.as === "select" ? (
           <>
             <select {...shared} className={`${control} ${state} min-h-12 appearance-none pr-10`}>
-              <option value="" disabled>
+              <option value="" disabled={!optionalLabel}>
                 {placeholder}
               </option>
               {props.options.map((o) => (
@@ -66,7 +66,7 @@ export function Field(props: Props) {
                 </option>
               ))}
             </select>
-            <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-3 flex items-center font-mono font-bold">
+            <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-3 flex items-center font-display font-bold">
               ▾
             </span>
           </>
@@ -89,7 +89,7 @@ export function Field(props: Props) {
       )}
       {error && (
         <p id={`${id}-error`} className="mt-2 flex gap-2 text-sm font-semibold text-danger">
-          <span aria-hidden="true" className="font-mono">!</span>
+          <span aria-hidden="true" className="font-display">!</span>
           {error}
         </p>
       )}

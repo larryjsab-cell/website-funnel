@@ -45,3 +45,19 @@ Skills: `/impeccable` and `/ui-ux-pro-max` aren't installed. I substituted `next
 - [fixed] `npm run build` passes, `tsc` clean, `eslint` 0 problems.
 - [fixed] Zero console errors/warnings (Playwright, 375/768/1440).
 - [fixed] Zero broken internal links (scripts/check-links.mjs, 9 pages).
+
+## Phase 2, round 2: owner feedback
+- [fixed] Single-page funnel: removed /pricing, /examples, /how-it-works, /faq, /demo, /contact. Nav and every CTA use section anchors. The link checker now verifies that anchor targets exist (10 anchors, 0 missing).
+- [fixed] Demo form is now a section: 2 steps (name+email, then details), inline errors with fixes, focus on first error, honeypot, loading state, inline success with next steps. `/api/lead` re-validates server-side. With no webhook configured, the form shows "not connected yet, call or email" (no dead button).
+- [fixed] Contact section: plain-text NAP, hours, service area + short form (secondary button style).
+- [fixed] Mobile CTA bar hides (inert) while a form section is on screen.
+- [fixed] Owner terms applied: ZIP, cancel, edits ($20/hr), demo changes, $0 upfront limited-time; socials removed.
+- [fixed] BUG found in screenshots: both form steps rendered at once (`grid` overrode `hidden`). Fixed, and the form test now asserts visibility per step.
+
+## Style switcher (owner request)
+- [fixed] 7 styles via CSS variables (color, display/UI/body faces, weights, tracking, radius, border widths, shadows, hover lift, motion durations, grid visibility, variable-font axes). The component markup is identical across styles.
+- [fixed] Contrast gate: all 7 styles pass 12 checks (text pairs ≥ 4.5, CTA edge ≥ 3).
+- [fixed] Switcher: native radios (arrow keys, screen reader group), live scoped previews, `?style=` shareable URL, localStorage, `style_select` event, pre-fills "Style you like" on the demo form.
+- [fixed] Luxury: Cormorant old-style numerals → lining figures sitewide; small UI text uses a separate UI face (Jost / Franklin / Karla) so labels stay legible.
+- [fixed] Verified per style at 1440 and 375: correct theme applied, no horizontal scroll, no console errors.
+- [deferred] Hero mockup, examples and placeholders are style-neutral illustrations. Phase 6 images are one photoshoot, so they won't change with the style.

@@ -69,7 +69,7 @@ export function SiteNav({ items, labels, drawerFooter }: Props) {
             <li key={item.href}>
               <Link
                 href={item.href}
-                className="flex min-h-11 items-center px-2 font-mono text-sm font-medium underline-offset-4 transition-colors duration-fast mono-semi hover:text-accent hover:underline hover:decoration-2 xl:px-3"
+                className="flex min-h-11 items-center px-2 font-display text-sm font-medium underline-offset-4 transition-colors duration-fast display-ui hover:text-accent hover:underline hover:decoration-2 xl:px-3"
               >
                 {item.label}
               </Link>
@@ -88,7 +88,7 @@ export function SiteNav({ items, labels, drawerFooter }: Props) {
           setOpenedAt(pathname);
           setOpen((v) => !v);
         }}
-        className="flex min-h-11 min-w-11 items-center justify-center border-2 border-ink px-2 font-mono text-sm font-bold lg:hidden"
+        className="flex min-h-11 min-w-11 items-center justify-center rounded-ui border-2 border-ink px-2 font-display text-sm font-bold lg:hidden"
       >
         <span aria-hidden="true">{open ? labels.close : labels.menu}</span>
       </button>
@@ -106,7 +106,7 @@ export function SiteNav({ items, labels, drawerFooter }: Props) {
                 <Link
                   href={item.href}
                   onClick={() => close(false)}
-                  className="flex min-h-14 items-center font-mono text-xl font-heavy mono-condensed"
+                  className="flex min-h-14 items-center font-display text-xl font-heavy display-tight"
                 >
                   {item.label}
                 </Link>

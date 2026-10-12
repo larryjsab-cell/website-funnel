@@ -17,17 +17,18 @@ export function OfferStack() {
         </div>
       </div>
 
-      <table className="mt-10 w-full border-2 border-ink text-left">
+      <div className="mt-10 overflow-hidden rounded-card border-2 border-ink">
+      <table className="w-full text-left">
         <caption className="sr-only">
           {usualCol} compared with {oursCol}
         </caption>
         <thead className="hidden bg-ink text-on-ink md:table-header-group">
           <tr>
             <td className="p-4" />
-            <th scope="col" className="p-4 font-mono text-sm font-bold mono-semi">
+            <th scope="col" className="p-4 font-display text-sm font-bold display-ui">
               {usualCol}
             </th>
-            <th scope="col" className="border-l-2 border-ink bg-canvas p-4 font-mono text-sm font-bold text-ink mono-semi">
+            <th scope="col" className="border-l-2 border-ink bg-canvas p-4 font-display text-sm font-bold text-ink display-ui">
               {oursCol}
             </th>
           </tr>
@@ -35,17 +36,17 @@ export function OfferStack() {
         <tbody>
           {o.compare.rows.map((r, i) => (
             <tr key={r.label} className={`grid grid-cols-2 md:table-row ${i > 0 ? "border-t-2 border-ink" : ""}`}>
-              <th scope="row" className="col-span-2 p-4 pb-0 font-mono text-lg font-heavy mono-condensed md:table-cell md:pb-4 md:align-top">
+              <th scope="row" className="col-span-2 p-4 pb-0 font-display text-lg font-heavy display-tight md:table-cell md:pb-4 md:align-top">
                 {r.label}
               </th>
               <td className="p-4 pr-2 text-base text-muted md:table-cell md:pr-4 md:align-top">
-                <span className="block font-mono text-sm mono-semi md:hidden" aria-hidden="true">
+                <span className="block font-display text-sm display-ui md:hidden" aria-hidden="true">
                   {usualCol}
                 </span>
                 {r.usual}
               </td>
-              <td className="p-4 pl-2 font-mono text-lg font-bold mono-semi md:table-cell md:border-l-2 md:border-ink md:pl-4 md:align-top">
-                <span className="block font-mono text-sm font-normal text-muted md:hidden" aria-hidden="true">
+              <td className="p-4 pl-2 font-display text-lg font-bold display-ui md:table-cell md:border-l-2 md:border-ink md:pl-4 md:align-top">
+                <span className="block font-display text-sm font-normal text-muted md:hidden" aria-hidden="true">
                   {oursCol}
                 </span>
                 {r.ours}
@@ -54,8 +55,9 @@ export function OfferStack() {
           ))}
         </tbody>
       </table>
+      </div>
       <p className="mt-3 text-sm text-muted">{o.compare.note}</p>
-      <p className="mt-6 font-mono text-lg font-bold mono-semi">{o.yearly}</p>
+      <p className="mt-6 font-display text-lg font-bold display-ui">{o.yearly}</p>
 
       <div className="mt-8">
         <CtaButton location="offer" variant="secondary" />

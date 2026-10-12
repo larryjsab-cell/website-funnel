@@ -4,7 +4,7 @@ import { Section } from "@/components/ui/Section";
 import { formatAddress, site } from "@/lib/site";
 import { landing } from "@/lib/content";
 
-const linkClass = "font-mono text-lg font-bold underline decoration-2 underline-offset-4 hover:text-accent";
+const linkClass = "font-display text-lg font-bold underline decoration-2 underline-offset-4 hover:text-accent";
 
 /** Plain-text contact facts (readable by people, crawlers and agents) + a short form. */
 export function ContactSection() {
@@ -18,7 +18,7 @@ export function ContactSection() {
           <p className="mt-4 max-w-measure text-lg">{c.intro}</p>
           <dl className="mt-8 grid gap-5">
             <div>
-              <dt className="font-mono text-sm text-muted mono-semi">{c.callLabel}</dt>
+              <dt className="font-display text-sm text-muted display-ui">{c.callLabel}</dt>
               <dd className="mt-1">
                 <a href={b.phoneHref} className={`${linkClass} inline-flex min-h-11 items-center`}>
                   {b.phone}
@@ -26,7 +26,7 @@ export function ContactSection() {
               </dd>
             </div>
             <div>
-              <dt className="font-mono text-sm text-muted mono-semi">{c.emailLabel}</dt>
+              <dt className="font-display text-sm text-muted display-ui">{c.emailLabel}</dt>
               <dd className="mt-1">
                 <a href={`mailto:${b.email}`} className={`${linkClass} inline-flex min-h-11 items-center break-all`}>
                   {b.email}
@@ -34,15 +34,15 @@ export function ContactSection() {
               </dd>
             </div>
             <div>
-              <dt className="font-mono text-sm text-muted mono-semi">{c.hoursLabel}</dt>
+              <dt className="font-display text-sm text-muted display-ui">{c.hoursLabel}</dt>
               <dd className="mt-1 text-lg">{b.hours.label}</dd>
             </div>
             <div>
-              <dt className="font-mono text-sm text-muted mono-semi">{c.areaLabel}</dt>
+              <dt className="font-display text-sm text-muted display-ui">{c.areaLabel}</dt>
               <dd className="mt-1 text-lg">{b.serviceArea}</dd>
             </div>
             <div>
-              <dt className="font-mono text-sm text-muted mono-semi">{c.addressLabel}</dt>
+              <dt className="font-display text-sm text-muted display-ui">{c.addressLabel}</dt>
               <dd className="mt-1 text-lg">{formatAddress()}</dd>
             </div>
           </dl>

@@ -4,17 +4,16 @@
 Funnel marketing site for an affordable web design service. The audience is local small business owners, mostly on phones. Primary conversion: free design demo request (/demo). Service area: nationwide.
 
 ## Routes
+Single-page funnel (owner decision, round 2).
+
 | Route | Purpose | Rendering |
 |---|---|---|
-| / | Landing, main conversion page | Static |
-| /pricing | 3 plans, $0 design fee, push to demo | Static |
-| /examples | Sample designs, each with a demo CTA | Static |
-| /how-it-works | 3 steps + timeline | Static |
-| /faq | Objections, FAQPage schema | Static |
-| /demo | Demo request form (slim layout) | Static + client form |
-| /demo/thank-you | Confirmation, noindex | Static |
-| /contact | General form | Static + client form |
-| /privacy, /terms | Legal | Static |
+| / | Every section; nav scrolls to #how-it-works, #examples, #styles, #pricing, #faq, #contact; CTAs → #demo | Static |
+| /api/lead | Validates form posts, forwards to the n8n webhook | Dynamic (route handler) |
+| /privacy, /terms | Legal, footer-only (needed for forms + ads) | Static |
+
+## Style system
+Seven swappable styles from one token set. `scripts/themes.mjs` holds every palette and checks WCAG contrast (12 checks per style) before writing `app/styles/themes.css`. `<html data-theme>` switches the whole page. A boot script applies `?style=` or the saved choice before first paint. The switcher cards set their own `data-theme` to show live previews. Fonts for the non-default styles are not preloaded.
 
 ## Design direction: technical brutalist ("spec sheet")
 The site reads like an engineering drawing for a website: a visible column grid, heavy 2px ink rules, mono type, and blueprint-blue dimension annotations. International-orange is used for CTAs only.

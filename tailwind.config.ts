@@ -1,21 +1,12 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Ryzon design tokens. The theme is replaced, not extended:
- * default palette, spacing, type, radius and shadow scales do not exist.
- * Components may only use the semantic names below.
+ * Ryzon design tokens. The theme is replaced, not extended: default palette,
+ * spacing, type, radius and shadow scales do not exist. Every themeable value
+ * resolves to a CSS variable set per style in app/styles/themes.css, so one
+ * attribute (<html data-theme>) restyles the whole page.
  */
-const palette = {
-  concrete: "#E4E5E0",
-  white: "#FFFFFF",
-  black: "#000000",
-  graphite: "#45483F",
-  rule: "#A3A69E",
-  grid: "#C4C6BF",
-  error: "#A1251B",
-  blueprint: "#1A33E8",
-  signal: "#FF4F00",
-};
+const v = (name: string) => `var(--${name})`;
 
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
@@ -31,18 +22,21 @@ const config: Config = {
     colors: {
       transparent: "transparent",
       current: "currentColor",
-      canvas: palette.concrete,
-      surface: palette.white,
-      ink: palette.black,
-      primary: palette.black,
-      muted: palette.graphite,
-      rule: palette.rule,
-      grid: palette.grid,
-      danger: palette.error,
-      accent: palette.blueprint,
-      cta: palette.signal,
-      "on-ink": palette.concrete,
-      "on-accent": palette.white,
+      canvas: v("c-canvas"),
+      surface: v("c-surface"),
+      ink: v("c-ink"),
+      primary: v("c-ink"),
+      muted: v("c-muted"),
+      rule: v("c-rule"),
+      grid: v("c-grid"),
+      accent: v("c-accent"),
+      cta: v("c-cta"),
+      "on-cta": v("c-on-cta"),
+      band: v("c-band"),
+      "on-band": v("c-on-band"),
+      "on-ink": v("c-on-ink"),
+      "on-accent": v("c-on-accent"),
+      danger: v("c-danger"),
     },
     spacing: {
       0: "0",
@@ -69,8 +63,8 @@ const config: Config = {
       80: "20rem",
     },
     fontFamily: {
-      mono: ["var(--font-mono)", "ui-monospace", "monospace"],
-      sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+      display: [v("font-display"), "ui-sans-serif", "system-ui", "sans-serif"],
+      body: [v("font-body"), "ui-sans-serif", "system-ui", "sans-serif"],
     },
     fontSize: {
       // Named steps. Nothing below 16px.
@@ -86,15 +80,15 @@ const config: Config = {
       "7xl": ["6rem", { lineHeight: "0.92" }],
     },
     fontWeight: {
-      normal: "400",
+      normal: v("w-normal"),
       medium: "500",
       semibold: "600",
-      bold: "700",
-      heavy: "800",
+      bold: v("w-bold"),
+      heavy: v("w-heavy"),
     },
     letterSpacing: {
-      tight: "-0.03em",
-      snug: "-0.015em",
+      tight: v("tracking-tight"),
+      snug: v("tracking-snug"),
       normal: "0",
     },
     lineHeight: {
@@ -106,20 +100,22 @@ const config: Config = {
     },
     borderRadius: {
       none: "0",
+      ui: v("radius-ui"),
+      card: v("radius-card"),
+      full: "9999px",
     },
     borderWidth: {
       0: "0",
-      DEFAULT: "1px",
-      2: "2px",
-      3: "3px",
+      DEFAULT: v("bw-hair"),
+      2: v("bw-strong"),
+      3: v("bw-heavy"),
     },
     boxShadow: {
       none: "none",
-      hard: "4px 4px 0 0 #000000",
-      "hard-sm": "2px 2px 0 0 #000000",
-      "hard-lg": "8px 8px 0 0 #000000",
-      "hard-inverse": "4px 4px 0 0 #E4E5E0",
-      "hard-inverse-lg": "8px 8px 0 0 #E4E5E0",
+      hard: v("shadow-1"),
+      "hard-lg": v("shadow-2"),
+      "hard-inverse": v("shadow-1-band"),
+      "hard-inverse-lg": v("shadow-2-band"),
     },
     extend: {
       maxWidth: {
@@ -138,9 +134,13 @@ const config: Config = {
         button: "transform, box-shadow, background-color, color",
       },
       transitionDuration: {
-        fast: "150ms",
-        base: "220ms",
-        slow: "480ms",
+        fast: v("dur-fast"),
+        base: v("dur-base"),
+        slow: v("dur-slow"),
+      },
+      translate: {
+        "lift-x": v("lift-x"),
+        "lift-y": v("lift-y"),
       },
       transitionTimingFunction: {
         out: "cubic-bezier(0.2, 0.7, 0.2, 1)",

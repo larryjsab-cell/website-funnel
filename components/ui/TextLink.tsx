@@ -8,8 +8,8 @@ export function TextLink({ href, children, onInk = false, className = "" }: Prop
   return (
     <Link
       href={href}
-      className={`inline-flex min-h-11 items-center font-mono font-bold underline decoration-2 underline-offset-4 transition-colors duration-fast ${
-        onInk ? "text-on-ink hover:decoration-4" : "text-ink hover:text-accent"
+      className={`inline-flex min-h-11 items-center font-display font-bold underline decoration-2 underline-offset-4 transition-colors duration-fast ${
+        onInk ? "text-on-band hover:decoration-4" : "text-ink hover:text-accent"
       } ${className}`}
     >
       {children}

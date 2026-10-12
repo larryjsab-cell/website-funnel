@@ -5,6 +5,7 @@ import { ProblemSection } from "@/components/sections/ProblemSection";
 import { OfferStack } from "@/components/sections/OfferStack";
 import { HowItWorks } from "@/components/sections/HowItWorks";
 import { Examples } from "@/components/sections/Examples";
+import { StyleSwitcher } from "@/components/sections/StyleSwitcher";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Pricing } from "@/components/sections/Pricing";
 import { RiskReversal } from "@/components/sections/RiskReversal";
@@ -35,6 +36,7 @@ export default function HomePage() {
       <OfferStack />
       <HowItWorks />
       <Examples />
+      <StyleSwitcher />
       <Testimonials />
       <Pricing />
       <RiskReversal />

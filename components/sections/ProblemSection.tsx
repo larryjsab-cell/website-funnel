@@ -15,7 +15,7 @@ export function ProblemSection() {
             <CtaButton location="problem" label={p.ctaLabel} />
           </div>
         </div>
-        <ul className="grid border-2 border-ink bg-surface sm:grid-cols-2 lg:col-span-7">
+        <ul className="grid overflow-hidden rounded-card border-2 border-ink bg-surface sm:grid-cols-2 lg:col-span-7">
           {p.points.map((pt, i) => (
             <li
               key={pt.title}
@@ -23,7 +23,7 @@ export function ProblemSection() {
                 i === 1 ? "sm:border-l-2 sm:border-t-0" : ""
               } ${i === 3 ? "sm:border-l-2" : ""}`}
             >
-              <h3 className="font-mono text-xl font-heavy mono-condensed">{pt.title}</h3>
+              <h3 className="font-display text-xl font-heavy display-tight">{pt.title}</h3>
               <p className="mt-2 text-base">{pt.body}</p>
             </li>
           ))}

@@ -19,7 +19,7 @@ export function Hero() {
           <OfferLine className="mt-6 max-w-measure" />
           <div className="mt-6">
             <CtaButton location="hero" size="lg" label={h.ctaLabel} className="w-full sm:w-auto" />
-            <p className="mt-3 font-mono text-sm text-muted mono-semi">{site.cta.microcopy}</p>
+            <p className="mt-3 font-display text-sm text-muted display-ui">{site.cta.microcopy}</p>
           </div>
         </div>
         <div className="lg:col-span-6">

@@ -7,11 +7,15 @@ import { track } from "@/lib/analytics";
 import { forms } from "@/lib/content";
 import { checkAll, checkField, fill, type DemoField, type FieldErrorKind } from "@/lib/forms";
 import { errorText, submitLead } from "@/lib/submitLead";
+import { styleName } from "@/lib/theme";
+import { useActiveStyle } from "@/lib/useActiveStyle";
+import { styles } from "@/lib/content";
 
 const copy = forms.demo;
 const STEP1: DemoField[] = ["name", "email"];
-const STEP2: DemoField[] = ["businessName", "phone", "industry", "website", "notes"];
-const empty: Record<DemoField, string> = { name: "", email: "", businessName: "", phone: "", industry: "", website: "", notes: "" };
+const STEP2: DemoField[] = ["businessName", "phone", "industry", "style", "website", "notes"];
+const empty: Record<DemoField, string> = { name: "", email: "", businessName: "", phone: "", industry: "", style: "", website: "", notes: "" };
+const styleOptions = styles.options.map((o) => o.name);
 
 type Status = "idle" | "sending" | "success";
 
@@ -44,6 +48,13 @@ export function DemoForm() {
     return () => document.removeEventListener("click", onClick);
   }, []);
 
+  // The style switcher feeds the "style you like" field until the visitor
+  // picks a value there themselves. The default page style doesn't count.
+  const activeStyle = useActiveStyle();
+  const [styleTouched, setStyleTouched] = useState(false);
+  const styleValue = styleTouched ? values.style : activeStyle === styles.defaultId ? "" : styleName(activeStyle);
+  const payload = { ...values, style: styleValue };
+
   useEffect(() => {
     if (!moved.current) return;
     if (status === "success") successRef.current?.focus();
@@ -54,6 +65,7 @@ export function DemoForm() {
 
   function onChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const f = e.target.name as DemoField;
+    if (f === "style") setStyleTouched(true);
     setValues((v) => ({ ...v, [f]: e.target.value }));
     // Clear an error as soon as the field becomes valid; never add one mid-typing.
     if (errors[f] && !checkField(f, e.target.value)) setErrors((er) => ({ ...er, [f]: undefined }));
@@ -95,7 +107,7 @@ export function DemoForm() {
 
     setStatus("sending");
     setFormError("");
-    const result = await submitLead("demo", values, trap);
+    const result = await submitLead("demo", payload, trap);
     if (result.ok) {
       track({ name: "demo_submit", step: 2 });
       moved.current = true;
@@ -114,16 +126,16 @@ export function DemoForm() {
     const s = copy.success;
     const vars = { name: values.name.trim().split(/\s+/)[0], email: values.email.trim() };
     return (
-      <div className="border-2 border-ink bg-surface p-6 shadow-hard md:p-8">
-        <h3 ref={successRef} tabIndex={-1} className="font-mono text-2xl font-heavy text-balance mono-condensed md:text-3xl">
+      <div className="rounded-card border-2 border-ink bg-surface p-6 shadow-hard md:p-8">
+        <h3 ref={successRef} tabIndex={-1} className="font-display text-2xl font-heavy text-balance display-tight md:text-3xl">
           {s.heading}
         </h3>
         <p className="mt-4 text-lg">{fill(s.body, vars)}</p>
-        <h4 className="mt-8 font-mono text-lg font-bold mono-semi">{s.nextHeading}</h4>
+        <h4 className="mt-8 font-display text-lg font-bold display-ui">{s.nextHeading}</h4>
         <ol className="mt-3 grid gap-3">
           {s.next.map((item, i) => (
             <li key={item} className="flex gap-3 text-base">
-              <span aria-hidden="true" className="font-mono font-heavy mono-condensed">
+              <span aria-hidden="true" className="font-display font-heavy display-tight">
                 {i + 1}
               </span>
               <span>{fill(item, vars)}</span>
@@ -132,7 +144,7 @@ export function DemoForm() {
         </ol>
         <a
           href="#examples"
-          className="mt-8 inline-flex min-h-11 items-center font-mono font-bold underline decoration-2 underline-offset-4 hover:text-accent"
+          className="mt-8 inline-flex min-h-11 items-center font-display font-bold underline decoration-2 underline-offset-4 hover:text-accent"
         >
           {s.whileYouWait}
         </a>
@@ -148,18 +160,18 @@ export function DemoForm() {
       noValidate
       aria-label={copy.label}
       aria-busy={busy}
-      className="relative border-2 border-ink bg-surface p-5 shadow-hard md:p-8"
+      className="relative rounded-card border-2 border-ink bg-surface p-5 shadow-hard md:p-8"
     >
       <Honeypot value={trap} onChange={setTrap} />
 
-      <p className="font-mono text-sm text-muted mono-semi" aria-live="polite">
+      <p className="font-display text-sm text-muted display-ui" aria-live="polite">
         {fill(copy.stepOf, { step: String(step) })}
       </p>
-      <h3 ref={stepHeadingRef} tabIndex={-1} className="mt-1 font-mono text-xl font-heavy mono-condensed md:text-2xl">
+      <h3 ref={stepHeadingRef} tabIndex={-1} className="mt-1 font-display text-xl font-heavy display-tight md:text-2xl">
         {step === 1 ? copy.step1Title : copy.step2Title}
       </h3>
 
-      <div className="mt-6 grid gap-5" hidden={step !== 1}>
+      <div className={step === 1 ? "mt-6 grid gap-5" : "hidden"}>
         <Field
           id="demo-name"
           name="name"
@@ -188,7 +200,7 @@ export function DemoForm() {
         />
       </div>
 
-      <div className="mt-6 grid gap-5" hidden={step !== 2}>
+      <div className={step === 2 ? "mt-6 grid gap-5" : "hidden"}>
         <Field
           id="demo-business"
           name="businessName"
@@ -228,6 +240,18 @@ export function DemoForm() {
           />
         </div>
         <Field
+          as="select"
+          id="demo-style"
+          name="style"
+          label={label("style")}
+          optionalLabel={copy.fields.style.optional}
+          hint={copy.fields.style.hint}
+          value={styleValue}
+          onChange={onChange}
+          options={styleOptions}
+          placeholder={copy.fields.style.placeholder}
+        />
+        <Field
           id="demo-website"
           name="website"
           type="url"
@@ -258,7 +282,7 @@ export function DemoForm() {
       </div>
 
       {formError && (
-        <p role="alert" className="mt-6 border-2 border-danger p-4 text-base font-semibold text-danger">
+        <p role="alert" className="mt-6 rounded-ui border-2 border-danger p-4 text-base font-semibold text-danger">
           {formError}
         </p>
       )}
@@ -271,7 +295,7 @@ export function DemoForm() {
               moved.current = true;
               setStep(1);
             }}
-            className="min-h-12 border-2 border-ink px-6 font-mono text-sm font-bold mono-semi hover:bg-ink hover:text-on-ink"
+            className="min-h-12 rounded-ui border-2 border-ink px-6 font-display text-sm font-bold display-ui hover:bg-ink hover:text-on-ink"
           >
             {copy.back}
           </button>
@@ -279,13 +303,13 @@ export function DemoForm() {
         <button
           type="submit"
           disabled={busy}
-          className="inline-flex min-h-14 items-center justify-center gap-3 border-2 border-ink bg-cta px-8 font-mono text-lg font-bold text-ink shadow-hard transition-button duration-fast ease-out mono-semi hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard-lg active:translate-x-1 active:translate-y-1 active:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:cursor-wait disabled:shadow-none"
+          className="inline-flex min-h-14 items-center justify-center gap-3 rounded-ui border-2 border-ink bg-cta px-8 font-display text-lg font-bold text-on-cta shadow-hard transition-button duration-fast ease-out display-ui hover:-translate-x-lift-x hover:-translate-y-lift-y hover:shadow-hard-lg active:translate-x-lift-x active:translate-y-lift-y active:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:cursor-wait disabled:shadow-none"
         >
-          {busy && <span aria-hidden="true" className="h-4 w-4 animate-spin border-2 border-ink border-t-transparent" />}
+          {busy && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />}
           {busy ? copy.sending : step === 1 ? copy.next : copy.submit}
         </button>
       </div>
-      <p className="mt-3 font-mono text-sm text-muted mono-semi">{copy.microcopy}</p>
+      <p className="mt-3 font-display text-sm text-muted display-ui">{copy.microcopy}</p>
     </form>
   );
 }

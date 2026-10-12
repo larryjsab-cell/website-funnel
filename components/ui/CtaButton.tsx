@@ -42,15 +42,15 @@ export function CtaButton({
   const target = href ?? (isPrimary ? site.cta.primary.href : site.cta.secondary.href);
 
   const base =
-    `inline-flex items-center justify-center border-2 text-center font-mono font-bold ${size === "sm" ? "mono-condensed" : "mono-semi"} ` +
+    `inline-flex items-center justify-center rounded-ui border-2 text-center font-display font-bold ${size === "sm" ? "display-ui ui-condensed" : "display-ui"} ` +
     "transition-button duration-fast ease-out";
 
   const look = isPrimary
     ? onInk
-      ? "border-on-ink bg-cta text-ink shadow-hard-inverse hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard-inverse-lg active:translate-x-1 active:translate-y-1 active:shadow-none"
-      : "border-ink bg-cta text-ink shadow-hard hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard-lg active:translate-x-1 active:translate-y-1 active:shadow-none"
+      ? "border-on-band bg-cta text-on-cta shadow-hard-inverse hover:-translate-x-lift-x hover:-translate-y-lift-y hover:shadow-hard-inverse-lg active:translate-x-lift-x active:translate-y-lift-y active:shadow-none"
+      : "border-ink bg-cta text-on-cta shadow-hard hover:-translate-x-lift-x hover:-translate-y-lift-y hover:shadow-hard-lg active:translate-x-lift-x active:translate-y-lift-y active:shadow-none"
     : onInk
-      ? "border-on-ink bg-transparent text-on-ink hover:bg-on-ink hover:text-ink"
+      ? "border-on-band bg-transparent text-on-band hover:bg-on-band hover:text-band"
       : "border-ink bg-transparent text-ink hover:bg-ink hover:text-on-ink";
 
   return (

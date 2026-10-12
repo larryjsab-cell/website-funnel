@@ -132,6 +132,10 @@
       "href": "/#examples"
     },
     {
+      "label": "Styles",
+      "href": "/#styles"
+    },
+    {
       "label": "Pricing",
       "href": "/#pricing"
     },
@@ -165,6 +169,7 @@
         "offer",
         "how-it-works",
         "examples",
+        "styles",
         "testimonials",
         "pricing",
         "risk",

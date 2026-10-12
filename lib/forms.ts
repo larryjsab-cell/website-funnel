@@ -4,7 +4,7 @@ export type FormType = "demo" | "contact";
 
 export const HONEYPOT = "company_fax";
 
-export const demoFields = ["name", "email", "businessName", "phone", "industry", "website", "notes"] as const;
+export const demoFields = ["name", "email", "businessName", "phone", "industry", "style", "website", "notes"] as const;
 export const contactFields = ["name", "email", "message"] as const;
 
 export type DemoField = (typeof demoFields)[number];
@@ -17,6 +17,7 @@ export const limits: Record<string, number> = {
   businessName: 160,
   phone: 32,
   industry: 80,
+  style: 80,
   website: 300,
   notes: 3000,
   message: 3000,
@@ -31,7 +32,7 @@ export function digits(value: string) {
 
 export function checkField(field: string, raw: string): FieldErrorKind | null {
   const value = raw.trim();
-  const optional = field === "website" || field === "notes";
+  const optional = field === "website" || field === "notes" || field === "style";
   if (!value) return optional ? null : field === "industry" ? "select" : "required";
   if (field === "email" && !EMAIL.test(value)) return "email";
   if (field === "phone") {

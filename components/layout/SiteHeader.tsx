@@ -17,7 +17,7 @@ export function SiteHeader() {
             drawerFooter={
               <div className="grid gap-4">
                 <CtaButton location="nav_drawer" size="lg" fullWidth />
-                <a href={site.business.phoneHref} className="font-mono text-lg font-bold underline decoration-2 underline-offset-4">
+                <a href={site.business.phoneHref} className="font-display text-lg font-bold underline decoration-2 underline-offset-4">
                   {site.business.phone}
                 </a>
               </div>

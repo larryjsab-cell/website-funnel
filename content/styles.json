@@ -1,0 +1,47 @@
+{
+  "heading": "Pick a style. Watch this page change.",
+  "intro": "Same page, same words, seven different looks. Tap one to restyle everything you see. Your site can be designed in any of them, or a mix.",
+  "groupLabel": "Website style",
+  "current": "Showing",
+  "note": "Found one you like? It’s added to your demo request automatically.",
+  "previewButton": "Free demo",
+  "previewText": "Aa",
+  "defaultId": "brutalist",
+  "options": [
+    {
+      "id": "brutalist",
+      "name": "Technical brutalist",
+      "desc": "Mono type, grid lines, raw edges."
+    },
+    {
+      "id": "minimal",
+      "name": "Modern minimal",
+      "desc": "White space, restrained type."
+    },
+    {
+      "id": "editorial",
+      "name": "Bold editorial",
+      "desc": "Big type, high contrast, magazine feel."
+    },
+    {
+      "id": "organic",
+      "name": "Warm organic",
+      "desc": "Soft shapes, earthy palette, friendly."
+    },
+    {
+      "id": "corporate",
+      "name": "Corporate clean",
+      "desc": "Structured, trustworthy, conservative."
+    },
+    {
+      "id": "luxury",
+      "name": "Luxury dark",
+      "desc": "Dark base, metal accents, slow and refined."
+    },
+    {
+      "id": "playful",
+      "name": "Playful",
+      "desc": "Bright, rounded, energetic."
+    }
+  ]
+}

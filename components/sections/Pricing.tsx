@@ -16,7 +16,7 @@ export function Pricing() {
           <Heading id="pricing-heading">{p.heading}</Heading>
           <p className="mt-4 max-w-measure text-lg">{p.intro}</p>
         </div>
-        <p className="border-2 border-dashed border-on-ink p-4 font-mono text-lg font-bold mono-semi lg:col-span-5">
+        <p className="rounded-card border-2 border-dashed border-on-band p-4 font-display text-lg font-bold display-ui lg:col-span-5">
           {p.limitedTime}
         </p>
       </div>
@@ -27,32 +27,32 @@ export function Pricing() {
           return (
             <li
               key={t.id}
-              className={`flex flex-col border-2 p-6 ${
-                featured ? "border-on-ink bg-surface text-ink" : "border-on-ink text-on-ink"
+              className={`flex flex-col rounded-card border-2 p-6 ${
+                featured ? "border-on-band bg-surface text-ink" : "border-on-band text-on-band"
               }`}
             >
               <div className="flex items-start justify-between gap-3">
-                <h3 className="font-mono text-xl font-heavy mono-condensed">{t.name}</h3>
+                <h3 className="font-display text-xl font-heavy display-tight">{t.name}</h3>
                 {featured && (
-                  <span className="shrink-0 border-2 border-ink px-2 font-mono text-sm font-bold mono-semi">{p.featuredLabel}</span>
+                  <span className="shrink-0 rounded-ui border-2 border-ink px-2 font-display text-sm font-bold display-ui">{p.featuredLabel}</span>
                 )}
               </div>
-              <p className="mt-4 font-mono font-heavy leading-none tabular-nums mono-condensed">
+              <p className="mt-4 font-display font-heavy leading-none lining-nums tabular-nums display-tight">
                 <span className="text-5xl">{formatPrice(t.monthly)}</span>
                 <span className="text-xl">{p.perMonth}</span>
               </p>
-              <p className="mt-2 font-mono text-sm mono-semi">
+              <p className="mt-2 font-display text-sm display-ui">
                 {fill(p.orYearly, { price: `${formatPrice(t.yearly)}${p.perYear}` })}
               </p>
-              <p className="mt-1 font-mono text-sm font-bold mono-semi">{t.upfront}</p>
+              <p className="mt-1 font-display text-sm font-bold display-ui">{t.upfront}</p>
               <p className="mt-4 text-base">{t.summary}</p>
               {t.inheritsFrom && (
-                <p className="mt-4 font-mono text-sm font-bold mono-semi">{fill(p.everything, { plan: t.inheritsFrom })}</p>
+                <p className="mt-4 font-display text-sm font-bold display-ui">{fill(p.everything, { plan: t.inheritsFrom })}</p>
               )}
-              <ul className={`mt-3 grid gap-2 border-t-2 pt-4 ${featured ? "border-ink" : "border-on-ink"}`}>
+              <ul className={`mt-3 grid gap-2 border-t-2 pt-4 ${featured ? "border-ink" : "border-on-band"}`}>
                 {t.includes.map((item) => (
                   <li key={item} className="flex gap-3 text-base">
-                    <span aria-hidden="true" className="font-mono font-bold">
+                    <span aria-hidden="true" className="font-display font-bold">
                       +
                     </span>
                     {item}
@@ -72,12 +72,12 @@ export function Pricing() {
         })}
       </ul>
 
-      <p className="mt-6 font-mono text-lg font-bold mono-semi">{site.offer.yearlyDiscount}</p>
+      <p className="mt-6 font-display text-lg font-bold display-ui">{site.offer.yearlyDiscount}</p>
 
-      <dl className="mt-10 grid gap-0 border-t-2 border-on-ink md:grid-cols-3">
+      <dl className="mt-10 grid gap-0 border-t-2 border-on-band md:grid-cols-3">
         {p.terms.map((term, i) => (
-          <div key={term.title} className={`py-5 md:pr-6 ${i > 0 ? "border-t-2 border-on-ink md:border-l-2 md:border-t-0 md:pl-6" : ""}`}>
-            <dt className="font-mono text-lg font-heavy mono-condensed">{term.title}</dt>
+          <div key={term.title} className={`py-5 md:pr-6 ${i > 0 ? "border-t-2 border-on-band md:border-l-2 md:border-t-0 md:pl-6" : ""}`}>
+            <dt className="font-display text-lg font-heavy display-tight">{term.title}</dt>
             <dd className="mt-2 text-base">{term.body}</dd>
           </div>
         ))}

@@ -10,17 +10,17 @@ export function Wordmark({ onInk = false }: Props) {
     <Link
       href="/"
       aria-label={ui.nav.homeLabel}
-      className={`inline-flex min-h-11 min-w-11 items-center gap-2 font-mono ${onInk ? "text-on-ink" : "text-ink"}`}
+      className={`inline-flex min-h-11 min-w-11 items-center gap-2 font-display ${onInk ? "text-on-band" : "text-ink"}`}
     >
       <span
         aria-hidden="true"
-        className={`flex h-8 w-8 items-center justify-center text-lg font-heavy mono-condensed ${
-          onInk ? "bg-on-ink text-ink" : "bg-ink text-on-ink"
+        className={`flex h-8 w-8 items-center justify-center rounded-ui text-lg font-heavy display-tight ${
+          onInk ? "bg-on-band text-band" : "bg-ink text-on-ink"
         }`}
       >
         {site.business.shortName.charAt(0)}
       </span>
-      <span translate="no" className="hidden text-lg font-heavy tracking-snug mono-condensed xs:inline">
+      <span translate="no" className="hidden text-lg font-heavy tracking-snug display-tight xs:inline">
         {site.business.shortName}
         <span className="hidden font-normal xl:inline"> {site.business.name.replace(site.business.shortName, "").trim()}</span>
       </span>

@@ -57,7 +57,7 @@ export function Placeholder({
         <line x1="100" y1="0" x2="0" y2="100" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" />
       </svg>
       {showLabel && (
-        <span className="absolute bottom-2 left-2 bg-canvas px-2 font-mono text-sm text-muted">
+        <span className="absolute bottom-2 left-2 bg-canvas px-2 font-display text-sm text-muted">
           {ui.placeholder.label}
         </span>
       )}
