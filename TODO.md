@@ -47,7 +47,7 @@ Owner to-dos:
 - [ ] Terms: billing method and renewal terms, confirm Michigan as governing law
 
 ## Launch (Phases 8–12)
-- [ ] **Netlify deploys are paused:** the latest deploy was skipped with "account credit usage exceeded". The preview still runs the older build. Add credits or upgrade the Netlify plan, then redeploy `claude/inspiring-hypatia-187oth`.
+- [x] Netlify plan upgraded; Phases 8–12 are live on https://ryzon-funnel-preview.netlify.app.
 - [ ] Once the domain is set, submit `https://<domain>/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
 - Security headers (CSP, HSTS, nosniff, frame-deny, referrer and permissions policies) are set in `next.config.ts`. A new third-party script, font or API needs its origin added to the CSP there.
 - `/llms.txt` is generated from `site.config.json` and the content files, so it updates itself.
