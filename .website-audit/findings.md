@@ -65,3 +65,18 @@ Skills: `/impeccable` and `/ui-ux-pro-max` aren't installed. I substituted `next
 ## Legal pages (owner: "/privacy and /terms can be pages")
 - [fixed] /privacy and /terms are real, indexable pages (StubPage removed). Copy comes from content/legal.json and is written only from the owner's stated terms. Unknowns are marked [CONFIRM] (analytics provider, retention period, billing/renewal, governing law). A draft notice recommends legal review.
 - [fixed] Verified: no overflow at 9 widths, links OK, renders in all styles.
+
+## Per-style CSS (owner: "each design needs its own color palette and CSS")
+- [fixed] Added stable `rz-*` hooks to every component plus one stylesheet per style (app/styles/looks/*.css) on top of its palette tokens. Layout and text are identical; each style changes section dividers, backgrounds, card treatment, button shape and finish, headings, numbering, list markers, table and FAQ treatment.
+  - Minimal: no section rules, hairline floating cards, pill chips, light bands, small circled numbers.
+  - Editorial: double rules, oversized Bodoni, italic standfirsts, drop cap, pull-quote testimonials, column layout instead of boxes.
+  - Organic: paper grain, soft hero blobs, rounded floating panels, pebble numbers, rounded FAQ.
+  - Corporate: dotted hero, accent bars on headings, numbered squares, check marks, zebra table, boxed FAQ.
+  - Luxury: gold ornaments between sections, double gold frames, metallic buttons, tracked caps (desktop), gold numerals.
+  - Playful: confetti, candy-colored cards, tilted stickers, wavy heading underlines, bubbly numbers.
+- [fixed] Mobile issues found in screenshots: Luxury header labels collided with the logo at 375px; placeholder tokens broke mid-word; Editorial trust value overflowed. All fixed. A header-overlap check now runs per style at 320/375/1024.
+- [fixed] axe-core scan per style at 1440 and 375: 14/14 runs with 0 violations, after putting the mobile CTA bar in an `<aside>` landmark.
+
+## Netlify
+- [fixed] Created a separate project `ryzon-funnel-preview` (the existing `ryzon-automation` project was left untouched, per the owner). Added netlify.toml.
+- [deferred] Upload blocked: this cloud environment's network policy denies netlify-mcp.netlify.app and api.netlify.com (proxy 403). Owner needs to either connect the GitHub branch in Netlify, or allow those hosts.

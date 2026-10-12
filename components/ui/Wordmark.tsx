@@ -10,11 +10,11 @@ export function Wordmark({ onInk = false }: Props) {
     <Link
       href="/"
       aria-label={ui.nav.homeLabel}
-      className={`inline-flex min-h-11 min-w-11 items-center gap-2 font-display ${onInk ? "text-on-band" : "text-ink"}`}
+      className={`rz-wordmark inline-flex min-h-11 min-w-11 items-center gap-2 font-display ${onInk ? "text-on-band" : "text-ink"}`}
     >
       <span
         aria-hidden="true"
-        className={`flex h-8 w-8 items-center justify-center rounded-ui text-lg font-heavy display-tight ${
+        className={`rz-logo-mark flex h-8 w-8 items-center justify-center rounded-ui text-lg font-heavy display-tight ${
           onInk ? "bg-on-band text-band" : "bg-ink text-on-ink"
         }`}
       >

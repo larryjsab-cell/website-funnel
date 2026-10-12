@@ -45,7 +45,7 @@ export function Placeholder({
       role={decorative ? undefined : "img"}
       aria-label={decorative ? undefined : alt}
       aria-hidden={decorative ? true : undefined}
-      className={`relative overflow-hidden bg-canvas ${aspects[aspect]} ${className}`}
+      className={`rz-placeholder relative overflow-hidden bg-canvas ${aspects[aspect]} ${className}`}
     >
       <svg
         aria-hidden="true"

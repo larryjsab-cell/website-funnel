@@ -16,7 +16,7 @@ export function ContactSection() {
         <div className="lg:col-span-5">
           <Heading id="contact-heading">{c.heading}</Heading>
           <p className="mt-4 max-w-measure text-lg">{c.intro}</p>
-          <dl className="mt-8 grid gap-5">
+          <dl className="rz-contact mt-8 grid gap-5">
             <div>
               <dt className="font-display text-sm text-muted display-ui">{c.callLabel}</dt>
               <dd className="mt-1">

@@ -57,7 +57,7 @@ export function CtaButton({
     <Link
       href={target}
       data-cta={location}
-      className={`${base} ${look} ${sizes[size]} ${fullWidth ? "w-full" : ""} ${className}`}
+      className={`rz-btn rz-btn-${variant} rz-btn-${size} ${base} ${look} ${sizes[size]} ${fullWidth ? "w-full" : ""} ${className}`}
     >
       {text}
     </Link>

@@ -14,7 +14,7 @@ export function Faq() {
         <div className="grid gap-10 lg:col-span-8">
           {faq.groups.map((g) => (
             <div key={g.id}>
-              <h3 className="mb-3 font-display text-lg font-heavy text-muted display-tight">{g.title}</h3>
+              <h3 className="rz-group-title mb-3 font-display text-lg font-heavy text-muted display-tight">{g.title}</h3>
               <FaqList items={g.items} headingLevel="h4" />
             </div>
           ))}

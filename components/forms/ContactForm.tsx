@@ -59,7 +59,7 @@ export function ContactForm() {
 
   if (sent) {
     return (
-      <div role="status" className="rounded-card border-2 border-ink bg-surface p-6">
+      <div role="status" className="rz-form rounded-card border-2 border-ink bg-surface p-6">
         <h3 className="font-display text-xl font-heavy display-tight">{copy.success.heading}</h3>
         <p className="mt-3 text-base">
           {fill(copy.success.body, { name: values.name.trim().split(/\s+/)[0], email: values.email.trim() })}
@@ -75,7 +75,7 @@ export function ContactForm() {
       noValidate
       aria-label={copy.label}
       aria-busy={sending}
-      className="relative grid gap-5 rounded-card border-2 border-ink bg-surface p-5 md:p-6"
+      className="rz-form relative grid gap-5 rounded-card border-2 border-ink bg-surface p-5 md:p-6"
     >
       <Honeypot value={trap} onChange={setTrap} />
       <div className="grid gap-5 sm:grid-cols-2">
@@ -126,7 +126,7 @@ export function ContactForm() {
         <button
           type="submit"
           disabled={sending}
-          className="inline-flex min-h-12 items-center gap-3 rounded-ui border-2 border-ink px-6 font-display text-sm font-bold display-ui transition-button duration-fast hover:bg-ink hover:text-on-ink disabled:cursor-wait"
+          className="rz-btn rz-btn-secondary inline-flex min-h-12 items-center gap-3 rounded-ui border-2 border-ink px-6 font-display text-sm font-bold display-ui transition-button duration-fast hover:bg-ink hover:text-on-ink disabled:cursor-wait"
         >
           {sending && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />}
           {sending ? copy.sending : copy.submit}

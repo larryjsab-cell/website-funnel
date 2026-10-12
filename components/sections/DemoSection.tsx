@@ -16,12 +16,12 @@ export function DemoSection() {
           <Heading id="demo-heading" size="display">
             {d.heading}
           </Heading>
-          <p className="mt-6 max-w-measure text-lg">{d.intro}</p>
+          <p className="rz-lede mt-6 max-w-measure text-lg">{d.intro}</p>
           <OfferLine className="mt-8 max-w-measure" />
-          <ul className="mt-6 grid gap-2">
+          <ul className="rz-checklist mt-6 grid gap-2">
             {d.recap.map((r) => (
               <li key={r} className="flex gap-3 font-display text-base font-bold display-ui">
-                <span aria-hidden="true">+</span>
+                <span aria-hidden="true" className="rz-mark">+</span>
                 {r}
               </li>
             ))}

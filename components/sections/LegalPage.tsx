@@ -24,7 +24,7 @@ function LegalBlock({ block }: { block: Block }) {
       <ul className="mt-3 grid max-w-measure gap-2 text-base">
         {block.list.map((item) => (
           <li key={item} className="flex gap-3">
-            <span aria-hidden="true" className="font-display font-bold display-ui">
+            <span aria-hidden="true" className="rz-mark font-display font-bold display-ui">
               +
             </span>
             <span>{item}</span>

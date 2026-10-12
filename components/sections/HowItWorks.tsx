@@ -11,13 +11,13 @@ export function HowItWorks() {
       <Heading id="how-it-works-heading">{s.heading}</Heading>
       <p className="mt-4 max-w-measure text-lg">{s.intro}</p>
 
-      <ol className="mt-10 grid md:grid-cols-3">
+      <ol className="rz-steps mt-10 grid md:grid-cols-3">
         {s.items.map((step, i) => (
           <li
             key={step.title}
-            className={`border-t-2 border-ink pb-8 pt-4 md:pb-0 md:pr-6 ${i > 0 ? "md:border-l-2 md:pl-6" : ""}`}
+            className={`rz-step border-t-2 border-ink pb-8 pt-4 md:pb-0 md:pr-6 ${i > 0 ? "md:border-l-2 md:pl-6" : ""}`}
           >
-            <span aria-hidden="true" className="block font-display text-6xl font-heavy leading-none display-tight">
+            <span aria-hidden="true" className="rz-step-num block font-display text-6xl font-heavy leading-none display-tight">
               {i + 1}
             </span>
             <h3 className="mt-4 font-display text-xl font-heavy display-tight">
@@ -29,7 +29,7 @@ export function HowItWorks() {
         ))}
       </ol>
 
-      <div className="mt-12 overflow-hidden rounded-card border-2 border-ink bg-surface">
+      <div className="rz-timeline mt-12 overflow-hidden rounded-card border-2 border-ink bg-surface">
         <h3 className="border-b-2 border-ink px-4 py-3 font-display text-lg font-heavy display-tight md:px-6">
           {s.timelineHeading}
         </h3>

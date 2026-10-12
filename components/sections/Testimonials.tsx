@@ -8,13 +8,13 @@ export function Testimonials() {
   return (
     <Section id="testimonials">
       <Heading id="testimonials-heading">{landing.testimonials.heading}</Heading>
-      <ul className="mt-10 grid gap-6 md:grid-cols-3">
+      <ul className="rz-quotes mt-10 grid gap-6 md:grid-cols-3">
         {testimonials.items.map((t, i) => {
           const pending = isPlaceholder(t.quote);
           return (
             <li key={i} data-placeholder-text={pending ? t.quote : undefined}>
               <figure
-                className={`h-full rounded-card border-2 bg-surface p-6 ${pending ? "border-dashed border-accent" : "border-ink shadow-hard"}`}
+                className={`rz-card rz-quote h-full rounded-card border-2 bg-surface p-6 ${pending ? "border-dashed border-accent" : "border-ink shadow-hard"}`}
               >
                 <blockquote className={`font-display text-xl font-bold display-tight ${pending ? "text-accent" : ""}`}>
                   <p>{t.quote}</p>

@@ -1,0 +1,172 @@
+/* Playful: confetti, candy-colored cards, tilted stickers, wavy underlines,
+   chunky shadows. Every card a different color. */
+[data-theme="playful"] {
+  --look-yellow: #ffe27a;
+  --look-pink: #ffc2d9;
+  --look-blue: #c9d8ff;
+  --look-mint: #c3f0d8;
+}
+
+[data-theme="playful"] body {
+  background-image:
+    radial-gradient(circle at 12% 18%, #ff3b7a 0 3px, transparent 4px),
+    radial-gradient(circle at 78% 8%, #2b54e0 0 3px, transparent 4px),
+    radial-gradient(circle at 40% 70%, #12b886 0 3px, transparent 4px),
+    radial-gradient(circle at 88% 62%, #ffb400 0 4px, transparent 5px),
+    radial-gradient(circle at 62% 36%, #ff3b7a 0 2px, transparent 3px);
+  background-size: 560px 560px;
+}
+
+[data-theme="playful"] .rz-header {
+  border-bottom-width: 3px;
+}
+
+[data-theme="playful"] .rz-section {
+  border-top-width: 3px;
+}
+
+/* Wavy underline on section headings. */
+[data-theme="playful"] .rz-heading-section {
+  text-decoration: underline wavy var(--c-cta);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.22em;
+}
+[data-theme="playful"] .rz-tone-ink .rz-heading-section {
+  text-decoration-color: var(--look-yellow);
+}
+
+/* Candy cards. */
+[data-theme="playful"] .rz-points {
+  gap: 1rem;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+[data-theme="playful"] .rz-point {
+  border: 3px solid var(--c-ink) !important;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-1);
+}
+[data-theme="playful"] .rz-point:nth-child(4n + 1),
+[data-theme="playful"] .rz-quotes > :nth-child(3n + 1) .rz-quote,
+[data-theme="playful"] .rz-trust-item:nth-child(5n + 1) {
+  background: var(--look-yellow);
+}
+[data-theme="playful"] .rz-point:nth-child(4n + 2),
+[data-theme="playful"] .rz-quotes > :nth-child(3n + 2) .rz-quote,
+[data-theme="playful"] .rz-trust-item:nth-child(5n + 2) {
+  background: var(--look-pink);
+}
+[data-theme="playful"] .rz-point:nth-child(4n + 3),
+[data-theme="playful"] .rz-quotes > :nth-child(3n + 3) .rz-quote,
+[data-theme="playful"] .rz-trust-item:nth-child(5n + 3) {
+  background: var(--look-blue);
+}
+[data-theme="playful"] .rz-point:nth-child(4n + 4),
+[data-theme="playful"] .rz-trust-item:nth-child(5n + 4) {
+  background: var(--look-mint);
+}
+
+/* Tilted stickers that straighten on hover. */
+[data-theme="playful"] .rz-examples > :nth-child(odd),
+[data-theme="playful"] .rz-quotes > :nth-child(odd) .rz-quote {
+  transform: rotate(-1.2deg);
+}
+[data-theme="playful"] .rz-examples > :nth-child(even),
+[data-theme="playful"] .rz-quotes > :nth-child(even) .rz-quote {
+  transform: rotate(1.2deg);
+}
+[data-theme="playful"] .rz-examples > *,
+[data-theme="playful"] .rz-quote {
+  transition: transform var(--dur-base) ease-out;
+}
+[data-theme="playful"] .rz-examples > *:hover {
+  transform: rotate(0) translateY(-4px);
+}
+[data-theme="playful"] .rz-example,
+[data-theme="playful"] .rz-quote {
+  box-shadow: var(--shadow-1);
+}
+[data-theme="playful"] .rz-quote {
+  border-style: solid;
+  border-color: var(--c-ink);
+}
+
+[data-theme="playful"] .rz-badge {
+  background: var(--look-yellow);
+  transform: rotate(-6deg);
+}
+
+/* Bubbly numbers. */
+[data-theme="playful"] .rz-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border: 3px solid var(--c-ink);
+  border-radius: 999px;
+  box-shadow: var(--shadow-1);
+  font-size: 2.25rem;
+}
+[data-theme="playful"] .rz-step:nth-child(1) .rz-step-num {
+  background: var(--look-pink);
+  transform: rotate(-8deg);
+}
+[data-theme="playful"] .rz-step:nth-child(2) .rz-step-num {
+  background: var(--look-yellow);
+  transform: rotate(6deg);
+}
+[data-theme="playful"] .rz-step:nth-child(3) .rz-step-num {
+  background: var(--look-mint);
+  transform: rotate(-4deg);
+}
+
+[data-theme="playful"] .rz-offer-cell:nth-child(1) {
+  background: var(--look-yellow);
+}
+[data-theme="playful"] .rz-offer-cell:nth-child(2) {
+  background: var(--look-pink);
+}
+[data-theme="playful"] .rz-offer-cell:nth-child(3) {
+  background: var(--look-mint);
+}
+
+[data-theme="playful"] .rz-trust {
+  gap: 3px;
+}
+
+[data-theme="playful"] .rz-faq {
+  display: grid;
+  gap: 0.75rem;
+  border: 0;
+}
+[data-theme="playful"] .rz-faq-item {
+  border: 3px solid var(--c-ink);
+  border-radius: 1.25rem;
+  background: var(--c-surface);
+  padding-inline: 1.25rem;
+  box-shadow: var(--shadow-1);
+}
+[data-theme="playful"] .rz-faq-item[open] {
+  background: var(--look-blue);
+}
+
+[data-theme="playful"] .rz-mark {
+  color: var(--c-cta);
+}
+[data-theme="playful"] .rz-tone-ink .rz-mark {
+  color: var(--look-yellow);
+}
+[data-theme="playful"] .rz-placeholder {
+  background: var(--look-blue);
+}
+[data-theme="playful"] .rz-form {
+  background: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="playful"] .rz-examples > *:hover {
+    transform: none;
+  }
+}

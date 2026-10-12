@@ -126,7 +126,7 @@ export function DemoForm() {
     const s = copy.success;
     const vars = { name: values.name.trim().split(/\s+/)[0], email: values.email.trim() };
     return (
-      <div className="rounded-card border-2 border-ink bg-surface p-6 shadow-hard md:p-8">
+      <div className="rz-form rounded-card border-2 border-ink bg-surface p-6 shadow-hard md:p-8">
         <h3 ref={successRef} tabIndex={-1} className="font-display text-2xl font-heavy text-balance display-tight md:text-3xl">
           {s.heading}
         </h3>
@@ -160,7 +160,7 @@ export function DemoForm() {
       noValidate
       aria-label={copy.label}
       aria-busy={busy}
-      className="relative rounded-card border-2 border-ink bg-surface p-5 shadow-hard md:p-8"
+      className="rz-form relative rounded-card border-2 border-ink bg-surface p-5 shadow-hard md:p-8"
     >
       <Honeypot value={trap} onChange={setTrap} />
 
@@ -295,7 +295,7 @@ export function DemoForm() {
               moved.current = true;
               setStep(1);
             }}
-            className="min-h-12 rounded-ui border-2 border-ink px-6 font-display text-sm font-bold display-ui hover:bg-ink hover:text-on-ink"
+            className="rz-btn rz-btn-secondary min-h-12 rounded-ui border-2 border-ink px-6 font-display text-sm font-bold display-ui hover:bg-ink hover:text-on-ink"
           >
             {copy.back}
           </button>
@@ -303,7 +303,7 @@ export function DemoForm() {
         <button
           type="submit"
           disabled={busy}
-          className="inline-flex min-h-14 items-center justify-center gap-3 rounded-ui border-2 border-ink bg-cta px-8 font-display text-lg font-bold text-on-cta shadow-hard transition-button duration-fast ease-out display-ui hover:-translate-x-lift-x hover:-translate-y-lift-y hover:shadow-hard-lg active:translate-x-lift-x active:translate-y-lift-y active:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:cursor-wait disabled:shadow-none"
+          className="rz-btn rz-btn-primary inline-flex min-h-14 items-center justify-center gap-3 rounded-ui border-2 border-ink bg-cta px-8 font-display text-lg font-bold text-on-cta shadow-hard transition-button duration-fast ease-out display-ui hover:-translate-x-lift-x hover:-translate-y-lift-y hover:shadow-hard-lg active:translate-x-lift-x active:translate-y-lift-y active:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:cursor-wait disabled:shadow-none"
         >
           {busy && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />}
           {busy ? copy.sending : step === 1 ? copy.next : copy.submit}

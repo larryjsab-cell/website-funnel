@@ -9,7 +9,7 @@ export function Examples() {
     <Section id="examples" tone="surface">
       <Heading id="examples-heading">{e.heading}</Heading>
       <p className="mt-4 max-w-measure text-lg">{e.intro}</p>
-      <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
+      <div className="rz-examples mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
         {examples.items.map((item) => (
           <ExampleCard key={item.id} item={item} ctaLabel={e.cardCta} />
         ))}

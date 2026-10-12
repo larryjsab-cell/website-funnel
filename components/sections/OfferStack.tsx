@@ -17,12 +17,12 @@ export function OfferStack() {
         </div>
       </div>
 
-      <div className="mt-10 overflow-hidden rounded-card border-2 border-ink">
+      <div className="rz-table mt-10 overflow-hidden rounded-card border-2 border-ink">
       <table className="w-full text-left">
         <caption className="sr-only">
           {usualCol} compared with {oursCol}
         </caption>
-        <thead className="hidden bg-ink text-on-ink md:table-header-group">
+        <thead className="rz-thead hidden bg-ink text-on-ink md:table-header-group">
           <tr>
             <td className="p-4" />
             <th scope="col" className="p-4 font-display text-sm font-bold display-ui">

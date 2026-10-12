@@ -1,0 +1,144 @@
+/* Corporate clean: structured and reassuring. Accent bars, numbered
+   squares, ticks, zebra tables, a dotted hero, consistent elevation. */
+[data-theme="corporate"] .rz-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--c-rule);
+  box-shadow: 0 1px 3px rgb(14 27 44 / 0.06);
+}
+
+[data-theme="corporate"] .rz-hero {
+  background-image: radial-gradient(rgb(31 79 191 / 0.13) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+[data-theme="corporate"] .rz-section {
+  border-top: 1px solid var(--c-rule);
+}
+
+/* Accent bar above section headings. */
+[data-theme="corporate"] .rz-heading-section::before {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 4px;
+  margin-bottom: 1rem;
+  border-radius: 2px;
+  background: var(--c-accent);
+}
+[data-theme="corporate"] .rz-tone-ink .rz-heading-section::before {
+  background: #7fa3ff;
+}
+
+[data-theme="corporate"] .rz-card,
+[data-theme="corporate"] .rz-form,
+[data-theme="corporate"] .rz-table,
+[data-theme="corporate"] .rz-timeline,
+[data-theme="corporate"] .rz-points,
+[data-theme="corporate"] .rz-browser,
+[data-theme="corporate"] .rz-phone {
+  border-color: var(--c-rule);
+  box-shadow: var(--shadow-1);
+}
+[data-theme="corporate"] .rz-plan {
+  border-top: 4px solid #7fa3ff;
+}
+[data-theme="corporate"] .rz-plan-featured {
+  border-top-color: var(--c-cta);
+}
+[data-theme="corporate"] .rz-point,
+[data-theme="corporate"] .rz-step {
+  border-color: var(--c-rule) !important;
+}
+
+[data-theme="corporate"] .rz-trust {
+  background: var(--c-rule);
+  gap: 1px;
+  border-inline: 0;
+}
+[data-theme="corporate"] .rz-trust-item {
+  box-shadow: inset 4px 0 0 var(--c-accent);
+}
+
+/* Numbered squares. */
+[data-theme="corporate"] .rz-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 8px;
+  background: var(--c-accent);
+  color: var(--c-on-accent);
+  font-size: 1.375rem;
+}
+
+/* Ticks instead of plus marks. */
+[data-theme="corporate"] .rz-mark {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  margin-top: 0.15em;
+  border-radius: 999px;
+  background: var(--c-cta);
+  font-size: 0;
+}
+[data-theme="corporate"] .rz-mark::before {
+  content: "✓";
+  color: #ffffff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+/* Zebra comparison table with a navy head. */
+[data-theme="corporate"] .rz-thead {
+  background: var(--c-band);
+  color: var(--c-on-band);
+}
+[data-theme="corporate"] .rz-thead th:last-child {
+  background: var(--c-band);
+  color: var(--c-on-band);
+}
+[data-theme="corporate"] .rz-table tbody tr {
+  border-color: var(--c-rule);
+}
+[data-theme="corporate"] .rz-table tbody tr:nth-child(even) {
+  background: #f4f6f9;
+}
+
+[data-theme="corporate"] .rz-faq {
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-card);
+  background: #ffffff;
+  overflow: hidden;
+}
+[data-theme="corporate"] .rz-faq-item {
+  border-color: var(--c-rule);
+  padding-inline: 1.25rem;
+}
+[data-theme="corporate"] .rz-faq-item:last-child {
+  border-bottom: 0;
+}
+
+[data-theme="corporate"] .rz-btn-primary:hover,
+[data-theme="corporate"] .rz-btn-primary:focus-visible {
+  filter: brightness(0.92);
+}
+[data-theme="corporate"] .rz-btn-primary {
+  border-color: transparent;
+}
+[data-theme="corporate"] .rz-btn-secondary {
+  border-color: var(--c-rule);
+}
+
+[data-theme="corporate"] .rz-input {
+  border-color: #b8c3d1;
+}
+[data-theme="corporate"] .rz-input[aria-invalid="true"] {
+  border-color: var(--c-danger);
+}
+[data-theme="corporate"] .rz-placeholder {
+  background: #e9eef4;
+}

@@ -7,7 +7,7 @@ import { ui } from "@/lib/content";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-header border-b-2 border-ink bg-canvas">
+    <header className="rz-header sticky top-0 z-header border-b-2 border-ink bg-canvas">
       <Container className="flex h-16 items-center justify-between gap-2">
         <Wordmark />
         <div className="flex items-center gap-1 xs:gap-2 lg:gap-4">

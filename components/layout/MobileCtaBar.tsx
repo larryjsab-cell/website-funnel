@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { ui } from "@/lib/content";
 
 /**
  * Always-reachable demo CTA under md. Slides away while a form section
@@ -29,13 +30,14 @@ export function MobileCtaBar() {
   }, []);
 
   return (
-    <div
+    <aside
+      aria-label={ui.mobileBarLabel}
       inert={hidden}
-      className={`fixed inset-x-0 bottom-0 z-bar border-t-2 border-ink bg-canvas px-4 py-3 transition-transform duration-base ease-out md:hidden ${
+      className={`rz-mobile-bar fixed inset-x-0 bottom-0 z-bar border-t-2 border-ink bg-canvas px-4 py-3 transition-transform duration-base ease-out md:hidden ${
         hidden ? "translate-y-full" : ""
       }`}
     >
       <CtaButton location="sticky_mobile_bar" fullWidth />
-    </div>
+    </aside>
   );
 }

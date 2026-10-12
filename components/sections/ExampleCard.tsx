@@ -8,7 +8,7 @@ type Props = { item: ExampleItem; ctaLabel: string };
 /** Each example ends in the demo: the whole card links to #demo and pre-selects the industry. */
 export function ExampleCard({ item, ctaLabel }: Props) {
   return (
-    <article id={`example-${item.id}`} className="group relative flex flex-col overflow-hidden rounded-card border-2 border-ink bg-surface">
+    <article id={`example-${item.id}`} className="rz-card rz-example group relative flex flex-col overflow-hidden rounded-card border-2 border-ink bg-surface">
       <Placeholder prompt={item.prompt} alt={item.alt} aspect="4/3" />
       <div className="flex flex-1 flex-col border-t-2 border-ink p-3 md:p-4">
         <h3 className="font-display text-lg font-heavy display-tight">{item.title}</h3>

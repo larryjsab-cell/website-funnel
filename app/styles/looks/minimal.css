@@ -1,0 +1,137 @@
+/* Modern minimal: white space does the work. No rules between sections,
+   hairline cards, pills, light bands, quiet numbering. */
+[data-theme="minimal"] {
+  --look-hair: #e4e4e1;
+}
+
+[data-theme="minimal"] .rz-header {
+  background: rgb(250 250 248 / 0.86);
+  backdrop-filter: saturate(1.4) blur(14px);
+  border-bottom-color: transparent;
+  box-shadow: 0 1px 0 var(--look-hair);
+}
+
+[data-theme="minimal"] .rz-section {
+  border-top-color: transparent;
+}
+@media (min-width: 768px) {
+  [data-theme="minimal"] .rz-section:not(#trust) {
+    padding-block: 8rem;
+  }
+}
+
+/* Light bands instead of dark ones; tokens re-scoped so every child stays legible. */
+[data-theme="minimal"] .rz-tone-ink,
+[data-theme="minimal"] .rz-footer {
+  --c-band: #f1f1ee;
+  --c-on-band: #18181a;
+}
+
+[data-theme="minimal"] .rz-heading {
+  font-weight: 500;
+}
+[data-theme="minimal"] .rz-heading-display {
+  letter-spacing: -0.045em;
+}
+
+[data-theme="minimal"] .rz-card,
+[data-theme="minimal"] .rz-form,
+[data-theme="minimal"] .rz-table,
+[data-theme="minimal"] .rz-timeline,
+[data-theme="minimal"] .rz-browser,
+[data-theme="minimal"] .rz-phone {
+  border-color: var(--look-hair);
+  box-shadow: 0 1px 2px rgb(24 24 26 / 0.04), 0 12px 32px -20px rgb(24 24 26 / 0.18);
+}
+
+/* Problem points: separate floating cards instead of one ruled grid. */
+[data-theme="minimal"] .rz-points {
+  gap: 1rem;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+[data-theme="minimal"] .rz-point {
+  border: 1px solid var(--look-hair) !important;
+  border-radius: var(--radius-card);
+  background: var(--c-surface);
+}
+
+[data-theme="minimal"] .rz-trust {
+  background: var(--look-hair);
+  gap: 1px;
+  border-inline: 0;
+}
+
+[data-theme="minimal"] .rz-offer-line {
+  border: 0;
+  gap: 0.5rem;
+  background: transparent;
+  overflow: visible;
+}
+[data-theme="minimal"] .rz-offer-cell {
+  border: 1px solid var(--look-hair) !important;
+  border-radius: 999px;
+  background: var(--c-surface);
+}
+
+[data-theme="minimal"] .rz-btn-primary {
+  border-color: transparent;
+}
+[data-theme="minimal"] .rz-btn-secondary {
+  border-color: var(--look-hair);
+}
+
+/* Quiet numbering: small outlined circles instead of giant numerals. */
+[data-theme="minimal"] .rz-step {
+  border-top-color: var(--look-hair);
+  border-left-color: var(--look-hair);
+}
+[data-theme="minimal"] .rz-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--c-ink);
+  border-radius: 999px;
+  font-size: 1.0625rem;
+  font-weight: 500;
+}
+
+[data-theme="minimal"] .rz-faq,
+[data-theme="minimal"] .rz-faq-item {
+  border-color: var(--look-hair);
+}
+
+[data-theme="minimal"] .rz-mockup {
+  --c-accent: #6b6b70;
+}
+[data-theme="minimal"] .rz-placeholder {
+  background: #f1f1ee;
+}
+[data-theme="minimal"] .rz-placeholder svg {
+  opacity: 0.4;
+}
+
+[data-theme="minimal"] .rz-input {
+  border-color: var(--look-hair);
+  background: #fafaf8;
+}
+[data-theme="minimal"] .rz-input[aria-invalid="true"] {
+  border-color: var(--c-danger);
+}
+
+[data-theme="minimal"] .rz-thead {
+  background: #f1f1ee;
+  color: var(--c-ink);
+}
+[data-theme="minimal"] .rz-thead th:last-child {
+  background: #e8f1ec;
+}
+[data-theme="minimal"] .rz-table tbody tr {
+  border-color: var(--look-hair);
+}
+[data-theme="minimal"] .rz-table td:last-child {
+  border-color: var(--look-hair);
+}

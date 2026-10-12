@@ -10,7 +10,7 @@ export function RiskReversal() {
       <Heading id="risk-heading" size="display" className="lg:text-7xl">
         {r.heading}
       </Heading>
-      <p className="mt-6 max-w-measure text-lg">{r.body}</p>
+      <p className="rz-lede mt-6 max-w-measure text-lg">{r.body}</p>
       <div className="mt-8">
         <CtaButton location="risk_reversal" size="lg" label={r.ctaLabel} />
       </div>

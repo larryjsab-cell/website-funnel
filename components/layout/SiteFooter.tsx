@@ -10,7 +10,7 @@ const linkClass =
 export function SiteFooter() {
   const year = new Date().getFullYear();
   return (
-    <footer className="relative z-content border-t-2 border-ink bg-band text-on-band">
+    <footer className="rz-footer relative z-content border-t-2 border-ink bg-band text-on-band">
       <Container className="grid gap-10 py-16 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-4">
           <Wordmark onInk />

@@ -16,7 +16,7 @@ function Block({ d, children, className = "" }: { d: number; children: ReactNode
 /** Blueprint dimension line: |—— label ——| */
 function Dimension({ label, className = "" }: { label: string; className?: string }) {
   return (
-    <div aria-hidden="true" className={`flex items-center gap-2 font-display text-sm text-accent display-ui ${className}`}>
+    <div aria-hidden="true" className={`rz-dimension flex items-center gap-2 font-display text-sm text-accent display-ui ${className}`}>
       <span className="h-4 border-l-2 border-accent" />
       <span className="draw-x h-0 flex-1 border-t-2 border-accent" />
       <span className="shrink-0">{label}</span>
@@ -33,12 +33,12 @@ function Dimension({ label, className = "" }: { label: string; className?: strin
  */
 export function HeroMockup() {
   return (
-    <figure className="relative">
+    <figure className="rz-mockup relative">
       <Dimension label={m.annotations.width} className="mb-3" />
 
       <div aria-hidden="true" className="relative">
         {/* Browser */}
-        <div className="relative overflow-hidden rounded-card border-2 border-ink bg-surface shadow-hard-lg">
+        <div className="rz-browser relative overflow-hidden rounded-card border-2 border-ink bg-surface shadow-hard-lg">
           <div className="flex h-10 items-center gap-2 border-b-2 border-ink px-3">
             <span className="h-3 w-3 border-2 border-ink" />
             <span className="h-3 w-3 border-2 border-ink" />
@@ -100,7 +100,7 @@ export function HeroMockup() {
         </div>
 
         {/* Phone */}
-        <div className="absolute -bottom-12 -right-4 hidden w-40 overflow-hidden rounded-card border-2 border-ink bg-surface shadow-hard xl:block">
+        <div className="rz-phone absolute -bottom-12 -right-4 hidden w-40 overflow-hidden rounded-card border-2 border-ink bg-surface shadow-hard xl:block">
           <div className="flex h-6 items-center justify-center border-b-2 border-ink">
             <span className="h-1 w-8 bg-ink" />
           </div>

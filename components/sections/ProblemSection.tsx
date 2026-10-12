@@ -10,16 +10,16 @@ export function ProblemSection() {
       <div className="grid gap-8 lg:grid-cols-12">
         <div className="lg:col-span-5">
           <Heading id="problem-heading">{p.heading}</Heading>
-          <p className="mt-4 max-w-measure text-lg">{p.intro}</p>
+          <p className="rz-lede mt-4 max-w-measure text-lg">{p.intro}</p>
           <div className="mt-8">
             <CtaButton location="problem" label={p.ctaLabel} />
           </div>
         </div>
-        <ul className="grid overflow-hidden rounded-card border-2 border-ink bg-surface sm:grid-cols-2 lg:col-span-7">
+        <ul className="rz-points grid overflow-hidden rounded-card border-2 border-ink bg-surface sm:grid-cols-2 lg:col-span-7">
           {p.points.map((pt, i) => (
             <li
               key={pt.title}
-              className={`p-5 md:p-6 ${i > 0 ? "border-t-2 border-ink" : ""} ${
+              className={`rz-point p-5 md:p-6 ${i > 0 ? "border-t-2 border-ink" : ""} ${
                 i === 1 ? "sm:border-l-2 sm:border-t-0" : ""
               } ${i === 3 ? "sm:border-l-2" : ""}`}
             >

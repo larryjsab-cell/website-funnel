@@ -26,7 +26,7 @@ type Props =
   | (Common & { as: "select"; options: string[] });
 
 const control =
-  "block w-full rounded-ui border-2 bg-surface px-3 text-base text-ink transition-colors duration-fast placeholder:text-muted";
+  "rz-input block w-full rounded-ui border-2 bg-surface px-3 text-base text-ink transition-colors duration-fast placeholder:text-muted";
 
 /** Label above, control, then hint or error. Errors are linked via aria-describedby. */
 export function Field(props: Props) {
@@ -47,7 +47,7 @@ export function Field(props: Props) {
 
   return (
     <div>
-      <label htmlFor={id} className="block font-display text-sm font-bold display-ui">
+      <label htmlFor={id} className="rz-label block font-display text-sm font-bold display-ui">
         {label}
         {optionalLabel && <span className="font-normal text-muted"> {optionalLabel}</span>}
       </label>

@@ -1,0 +1,170 @@
+/* Bold editorial: a magazine spread. Double rules, oversized Bodoni,
+   italic standfirsts, a drop cap, pull-quote testimonials. */
+[data-theme="editorial"] .rz-header {
+  border-bottom: 3px solid var(--c-ink);
+  box-shadow: 0 4px 0 -3px var(--c-ink), 0 5px 0 -3px var(--c-canvas), 0 6px 0 -3px var(--c-ink);
+}
+
+/* Double rule above every section: heavy then hairline. */
+[data-theme="editorial"] .rz-section {
+  border-top: 4px solid var(--c-ink);
+}
+[data-theme="editorial"] .rz-section::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 4px;
+  height: 1px;
+  margin-top: 3px;
+  background: currentColor;
+}
+
+[data-theme="editorial"] .rz-heading {
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+[data-theme="editorial"] .rz-heading-section {
+  font-size: clamp(2.375rem, 5vw, 4.25rem);
+}
+[data-theme="editorial"] .rz-heading-display {
+  font-size: clamp(3rem, 8.5vw, 7.5rem);
+}
+[data-theme="editorial"] .rz-hero .rz-heading-display {
+  font-size: clamp(3rem, 7vw, 6.25rem);
+}
+[data-theme="editorial"] #risk .rz-heading,
+[data-theme="editorial"] #demo .rz-heading {
+  font-style: italic;
+  font-weight: 600;
+}
+
+/* Standfirst: serif italic, larger. */
+[data-theme="editorial"] .rz-lede {
+  font-family: var(--font-bodoni), serif;
+  font-style: italic;
+  font-size: 1.375rem;
+  line-height: 1.45;
+}
+@media (min-width: 768px) {
+  [data-theme="editorial"] .rz-lede {
+    font-size: 1.5rem;
+  }
+}
+[data-theme="editorial"] #problem .rz-lede::first-letter {
+  float: left;
+  margin: 0.06em 0.1em 0 0;
+  font-size: 3.6em;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 0.8;
+}
+
+/* Columns, not boxes. */
+[data-theme="editorial"] .rz-points,
+[data-theme="editorial"] .rz-table,
+[data-theme="editorial"] .rz-timeline {
+  border-width: 0;
+  border-top: 2px solid var(--c-ink);
+  border-bottom: 1px solid var(--c-ink);
+  background: transparent;
+}
+[data-theme="editorial"] .rz-point h3,
+[data-theme="editorial"] .rz-step h3,
+[data-theme="editorial"] .rz-faq-item h3,
+[data-theme="editorial"] .rz-faq-item h4 {
+  font-family: var(--font-bodoni), serif;
+  font-variation-settings: normal;
+  font-size: 1.5rem;
+}
+[data-theme="editorial"] .rz-thead {
+  background: transparent;
+  color: var(--c-ink);
+  border-bottom: 2px solid var(--c-ink);
+}
+[data-theme="editorial"] .rz-thead th:last-child {
+  background: transparent;
+}
+
+[data-theme="editorial"] .rz-step-num {
+  font-family: var(--font-bodoni), serif;
+  font-style: italic;
+  font-size: 6rem;
+  color: var(--c-cta);
+}
+
+[data-theme="editorial"] .rz-trust {
+  background: transparent;
+  gap: 0;
+  border-inline: 0;
+}
+[data-theme="editorial"] .rz-trust-item {
+  border-right: 1px solid var(--c-ink);
+}
+[data-theme="editorial"] .rz-trust-item:not([data-placeholder-text]) p:first-child {
+  font-family: var(--font-bodoni), serif;
+  font-size: 1.5rem;
+}
+@media (min-width: 768px) {
+  [data-theme="editorial"] .rz-trust-item:not([data-placeholder-text]) p:first-child {
+    font-size: 1.875rem;
+  }
+}
+
+/* Pull quotes. */
+[data-theme="editorial"] .rz-quote {
+  border-width: 0;
+  border-top: 2px solid var(--c-ink);
+  background: transparent;
+  padding-inline: 0;
+}
+[data-theme="editorial"] .rz-quote blockquote::before {
+  content: "“";
+  display: block;
+  font-family: var(--font-bodoni), serif;
+  font-size: 5rem;
+  line-height: 0.6;
+  color: var(--c-cta);
+}
+
+[data-theme="editorial"] .rz-example {
+  border-width: 0;
+  background: transparent;
+}
+[data-theme="editorial"] .rz-example > div:last-child {
+  border-top: 2px solid var(--c-ink);
+  padding-inline: 0;
+}
+
+[data-theme="editorial"] .rz-btn-primary:hover {
+  background: var(--c-ink);
+  color: var(--c-on-ink);
+}
+[data-theme="editorial"] .rz-tone-ink .rz-btn-primary:hover {
+  background: var(--c-on-band);
+  color: var(--c-band);
+}
+
+[data-theme="editorial"] .rz-offer-line {
+  border-width: 0;
+  border-block: 2px solid var(--c-ink);
+  background: transparent;
+}
+
+[data-theme="editorial"] .rz-plan {
+  border-width: 1px;
+}
+[data-theme="editorial"] .rz-price {
+  font-size: 1.25em;
+}
+
+[data-theme="editorial"] .rz-form {
+  border-width: 0;
+  border-top: 4px solid var(--c-ink);
+  background: transparent;
+  padding-inline: 0;
+}
+[data-theme="editorial"] .rz-input {
+  border-width: 0 0 1px;
+  background: transparent;
+  padding-inline: 0;
+}

@@ -14,6 +14,13 @@ import {
   Public_Sans,
 } from "next/font/google";
 import "./globals.css";
+// Per-style stylesheets: each style's own CSS on top of its palette tokens.
+import "./styles/looks/minimal.css";
+import "./styles/looks/editorial.css";
+import "./styles/looks/organic.css";
+import "./styles/looks/corporate.css";
+import "./styles/looks/luxury.css";
+import "./styles/looks/playful.css";
 import { AnalyticsListener } from "@/components/layout/AnalyticsListener";
 import { GridBackdrop } from "@/components/layout/GridBackdrop";
 import { SkipLink } from "@/components/layout/SkipLink";
@@ -27,7 +34,13 @@ import { themeBootScript } from "@/lib/theme";
 const martian = Martian_Mono({ subsets: ["latin"], axes: ["wdth"], variable: "--font-martian", display: "swap" });
 const archivo = Archivo({ subsets: ["latin"], variable: "--font-archivo", display: "swap" });
 const instrument = Instrument_Sans({ subsets: ["latin"], variable: "--font-instrument", display: "swap", preload: false });
-const bodoni = Bodoni_Moda({ subsets: ["latin"], variable: "--font-bodoni", display: "swap", preload: false });
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  variable: "--font-bodoni",
+  display: "swap",
+  preload: false,
+});
 const franklin = Libre_Franklin({ subsets: ["latin"], variable: "--font-franklin", display: "swap", preload: false });
 const fraunces = Fraunces({
   subsets: ["latin"],

@@ -23,7 +23,7 @@ export function StyleSwitcher() {
   const activeName = styles.options.find((o) => o.id === active)?.name;
 
   return (
-    <section id="styles" aria-labelledby="styles-heading" className="cv-auto relative border-t-2 border-ink py-16 md:py-24">
+    <section id="styles" aria-labelledby="styles-heading" className="rz-section rz-tone-canvas cv-auto relative border-t-2 border-ink py-16 md:py-24">
       <Container>
         <div className="grid gap-4 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">

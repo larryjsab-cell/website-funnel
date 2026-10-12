@@ -26,7 +26,7 @@ export function Section({ id, tone = "canvas", children, className = "", labelle
     <section
       id={id}
       aria-labelledby={labelled ? `${id}-heading` : undefined}
-      className={`relative border-t-2 border-ink ${padding === "default" ? "py-16 md:py-24" : ""} ${tones[tone]} ${className}`}
+      className={`rz-section rz-tone-${tone} relative border-t-2 border-ink ${padding === "default" ? "py-16 md:py-24" : ""} ${tones[tone]} ${className}`}
     >
       <Container>{children}</Container>
     </section>

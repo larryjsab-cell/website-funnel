@@ -69,7 +69,7 @@ export function SiteNav({ items, labels, drawerFooter }: Props) {
             <li key={item.href}>
               <Link
                 href={item.href}
-                className="flex min-h-11 items-center px-2 font-display text-sm font-medium underline-offset-4 transition-colors duration-fast display-ui hover:text-accent hover:underline hover:decoration-2 xl:px-3"
+                className="rz-nav-link flex min-h-11 items-center px-2 font-display text-sm font-medium underline-offset-4 transition-colors duration-fast display-ui hover:text-accent hover:underline hover:decoration-2 xl:px-3"
               >
                 {item.label}
               </Link>
@@ -88,7 +88,7 @@ export function SiteNav({ items, labels, drawerFooter }: Props) {
           setOpenedAt(pathname);
           setOpen((v) => !v);
         }}
-        className="flex min-h-11 min-w-11 items-center justify-center rounded-ui border-2 border-ink px-2 font-display text-sm font-bold lg:hidden"
+        className="rz-menu-btn flex min-h-11 min-w-11 items-center justify-center rounded-ui border-2 border-ink px-2 font-display text-sm font-bold display-ui lg:hidden"
       >
         <span aria-hidden="true">{open ? labels.close : labels.menu}</span>
       </button>
@@ -97,7 +97,7 @@ export function SiteNav({ items, labels, drawerFooter }: Props) {
         ref={panelRef}
         id={panelId}
         hidden={!open}
-        className="fixed inset-x-0 bottom-0 top-16 z-drawer overflow-y-auto overscroll-contain border-t-2 border-ink bg-canvas lg:hidden"
+        className="rz-drawer fixed inset-x-0 bottom-0 top-16 z-drawer overflow-y-auto overscroll-contain border-t-2 border-ink bg-canvas lg:hidden"
       >
         <nav aria-label={labels.label} className="px-4 py-6">
           <ul className="border-t-2 border-ink">
