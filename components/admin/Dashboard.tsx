@@ -325,6 +325,9 @@ function TableView({ subs }: { subs: Submission[] }) {
   const [from, setFrom] = useState(() => params.get("from") ?? "");
   const [to, setTo] = useState(() => params.get("to") ?? "");
   const [limit, setLimit] = useState(TABLE_PAGE);
+  // Phones: the filters fold away behind a button (open if the URL already sets one).
+  const [showFilters, setShowFilters] = useState(() => ["status", "plan", "offer", "from", "to"].some((k) => params.get(k)));
+  const activeFilters = [status, plan, offer, from, to].filter(Boolean).length;
 
   useEffect(() => {
     const values = { q: q.trim(), status, plan, offer, from, to };
@@ -364,12 +367,16 @@ function TableView({ subs }: { subs: Submission[] }) {
   return (
     <>
       <div className="grid gap-3 rounded-card border-2 border-ink bg-surface p-4 sm:grid-cols-2 lg:grid-cols-6">
-        <div className="lg:col-span-2">
+        <div className="sm:col-span-2 lg:col-span-2">
           <label htmlFor="f-q" className={labelClass}>
             Search
           </label>
           <input id="f-q" name="q" type="search" autoComplete="off" spellCheck={false} value={q} onChange={(e) => setQ(e.target.value)} placeholder="Name, email, business, phone…" className={`${inputClass} mt-1`} />
         </div>
+        <Button className="sm:col-span-2 md:hidden" aria-expanded={showFilters} aria-controls="table-filters" onClick={() => setShowFilters((v) => !v)}>
+          {showFilters ? "Hide Filters" : `Filters${activeFilters ? ` (${activeFilters})` : ""}`}
+        </Button>
+        <div id="table-filters" className={`${showFilters ? "grid" : "hidden"} gap-3 sm:col-span-2 sm:grid-cols-2 md:grid lg:col-span-4 lg:grid-cols-4`}>
         <FilterSelect id="f-status" label="Status" value={status} onChange={setStatus} options={STATUSES.map((s) => [s.id, s.label])} />
         <FilterSelect id="f-plan" label="Plan" value={plan} onChange={setPlan} options={Object.entries(PLANS)} />
         <FilterSelect id="f-offer" label="Offer" value={offer} onChange={setOffer} options={Object.entries(OFFERS)} />
@@ -387,6 +394,7 @@ function TableView({ subs }: { subs: Submission[] }) {
             <input id="f-to" name="to" type="date" value={to} onChange={(e) => setTo(e.target.value)} className={`${inputClass} mt-1 px-1`} />
           </div>
         </div>
+        </div>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
@@ -398,7 +406,36 @@ function TableView({ subs }: { subs: Submission[] }) {
         </Button>
       </div>
 
-      <div className="mt-3 overflow-x-auto rounded-card border-2 border-ink bg-surface">
+      {/* Phones: one card per submission instead of a sideways-scrolling table. */}
+      <ul className="mt-3 grid gap-2 md:hidden">
+        {rows.slice(0, limit).map((s) => (
+          <li key={s.id} className="rounded-card border-2 border-ink bg-surface p-3 tabular-nums">
+            <div className="flex items-start justify-between gap-2">
+              <Link href={`/admin/s/${s.id}`} className="inline-flex min-h-11 min-w-0 items-center break-words font-bold underline underline-offset-4">
+                {displayName(s)}
+              </Link>
+              <StatusBadge status={s.status} />
+            </div>
+            <p className="break-words text-sm">
+              {s.name} · <span className="text-muted">{s.email}</span>
+            </p>
+            <p className="mt-1 text-sm text-muted">
+              {day(s.created_at)}
+              {s.plan ? ` · ${PLANS[s.plan] ?? s.plan}${s.billing_interval ? ` / ${s.billing_interval}` : ""}` : ""}
+              {s.offer ? ` · ${OFFERS[s.offer] ?? s.offer}` : ""}
+              {s.paid_at ? ` · paid ${day(s.paid_at)}` : ""}
+              {` · ${s.utm_source || host(s.referrer) || "direct"}`}
+            </p>
+            {s.automations_paused && (
+              <p className="mt-1">
+                <Tag>Paused</Tag>
+              </p>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-3 hidden overflow-x-auto rounded-card border-2 border-ink bg-surface md:block">
         <table className="w-full min-w-[56rem] border-collapse text-left text-sm tabular-nums">
           <thead>
             <tr className="border-b-2 border-ink font-display">
@@ -414,7 +451,7 @@ function TableView({ subs }: { subs: Submission[] }) {
               <tr key={s.id} className="border-t border-rule align-top">
                 <td className="whitespace-nowrap px-3 py-2">{day(s.created_at)}</td>
                 <td className="px-3 py-2">
-                  <Link href={`/admin/s/${s.id}`} className="font-bold underline underline-offset-4">
+                  <Link href={`/admin/s/${s.id}`} className="inline-flex min-h-11 items-center font-bold underline underline-offset-4">
                     {displayName(s)}
                   </Link>
                   {s.automations_paused && <span className="ml-2"><Tag>Paused</Tag></span>}

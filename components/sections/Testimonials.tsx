@@ -14,7 +14,7 @@ export function Testimonials() {
           return (
             <li key={i} data-placeholder-text={pending ? t.quote : undefined}>
               <figure
-                className={`rz-card rz-quote h-full rounded-card border-2 bg-surface p-6 ${pending ? "border-dashed border-accent" : "border-ink shadow-hard"}`}
+                className={`rz-card rz-quote h-full break-words rounded-card border-2 bg-surface p-6 ${pending ? "border-dashed border-accent" : "border-ink shadow-hard"}`}
               >
                 <blockquote className={`font-display text-xl font-bold display-tight ${pending ? "text-accent" : ""}`}>
                   <p>{t.quote}</p>

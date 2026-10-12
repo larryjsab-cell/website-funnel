@@ -148,3 +148,8 @@ const css = [
 mkdirSync(new URL("../app/styles/", import.meta.url), { recursive: true });
 writeFileSync(new URL("../app/styles/themes.css", import.meta.url), css);
 console.log("Wrote app/styles/themes.css");
+
+// The browser toolbar (<meta name="theme-color">) follows the page background of each style.
+const canvas = Object.fromEntries(Object.entries(themes).map(([n, th]) => [n, th.c.canvas]));
+writeFileSync(new URL("../content/theme-canvas.json", import.meta.url), JSON.stringify(canvas, null, 2) + "\n");
+console.log("Wrote content/theme-canvas.json");

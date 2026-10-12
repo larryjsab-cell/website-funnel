@@ -192,6 +192,8 @@ export function DemoForm() {
         <Field
           id="demo-name"
           name="name"
+          autoCapitalize="words"
+          enterKeyHint="next"
           label={label("name")}
           value={values.name}
           onChange={onChange}
@@ -204,6 +206,7 @@ export function DemoForm() {
           id="demo-email"
           name="email"
           type="email"
+          enterKeyHint="next"
           inputMode="email"
           spellCheck={false}
           autoCapitalize="off"
@@ -222,6 +225,8 @@ export function DemoForm() {
         <Field
           id="demo-business"
           name="businessName"
+          autoCapitalize="words"
+          enterKeyHint="next"
           label={label("businessName")}
           value={values.businessName}
           onChange={onChange}
@@ -235,6 +240,7 @@ export function DemoForm() {
             id="demo-phone"
             name="phone"
             type="tel"
+            enterKeyHint="next"
             inputMode="tel"
             label={label("phone")}
             value={values.phone}
@@ -273,6 +279,7 @@ export function DemoForm() {
           id="demo-website"
           name="website"
           type="url"
+          enterKeyHint="next"
           inputMode="url"
           spellCheck={false}
           autoCapitalize="off"

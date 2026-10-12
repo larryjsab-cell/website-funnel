@@ -106,12 +106,12 @@ export function SubmissionDetail({ id }: { id: string }) {
   return (
     <div>
       <p>
-        <Link href="/admin" className="text-sm underline underline-offset-4">
-          Back to the pipeline
+        <Link href="/admin" className="inline-flex min-h-11 items-center text-sm underline underline-offset-4">
+          ← Back to the pipeline
         </Link>
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-3">
-        <h1 className="font-display text-3xl font-heavy display-tight">{displayName(s)}</h1>
+        <h1 className="min-w-0 break-words font-display text-2xl font-heavy display-tight sm:text-3xl">{displayName(s)}</h1>
         <StatusBadge status={s.status} />
         {s.automations_paused && <Tag>Automations paused</Tag>}
         {s.unsubscribed_at && <Tag>Unsubscribed from offers</Tag>}
@@ -373,7 +373,8 @@ function EmailsPanel({ detail, action }: { detail: Detail; action: Action }) {
         <ul>
           {queue.map((q) => (
             <li key={q.id} className="flex flex-wrap items-start justify-between gap-3 border-t border-rule py-3 first:border-t-0">
-              <div className="min-w-0 flex-1">
+              {/* Wraps the buttons under the text on narrow phones instead of squeezing the text. */}
+              <div className="min-w-0 flex-[1_1_12rem]">
                 <p className="font-bold">
                   {templates.get(q.template_key)?.recipient === "admin" ? "To you: " : ""}
                   {label(q.template_key)}
@@ -472,22 +473,22 @@ function ChangesPanel({ changes, action }: { changes: ChangeRequest[]; action: A
 function AnswersPanel({ s }: { s: Submission }) {
   const rows: [string, ReactNode][] = [
     ["Name", s.name],
-    ["Email", <a key="e" href={`mailto:${s.email}`} className="underline underline-offset-4">{s.email}</a>],
-    ["Phone", s.phone ? <a key="p" href={`tel:${s.phone}`} className="underline underline-offset-4">{s.phone}</a> : ""],
+    ["Email", <a key="e" href={`mailto:${s.email}`} className="inline-flex min-h-11 items-center break-all underline underline-offset-4">{s.email}</a>],
+    ["Phone", s.phone ? <a key="p" href={`tel:${s.phone}`} className="inline-flex min-h-11 items-center break-all underline underline-offset-4">{s.phone}</a> : ""],
     ["Business", s.business_name],
     ["Industry", s.industry],
     ["Style they like", s.style],
     ["Current website", s.current_site],
     [s.form_type === "contact" ? "Message" : "Notes", s.form_type === "contact" ? s.message : s.goals],
-    ["Demo", s.demo_url ? <a key="d" href={s.demo_url} target="_blank" rel="noreferrer" className="underline underline-offset-4">{s.demo_url}</a> : ""],
-    ["Live site", s.live_url ? <a key="l" href={s.live_url} target="_blank" rel="noreferrer" className="underline underline-offset-4">{s.live_url}</a> : ""],
+    ["Demo", s.demo_url ? <a key="d" href={s.demo_url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center break-all underline underline-offset-4">{s.demo_url}</a> : ""],
+    ["Live site", s.live_url ? <a key="l" href={s.live_url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center break-all underline underline-offset-4">{s.live_url}</a> : ""],
     ["Page", s.source_page],
     ["Referrer", s.referrer],
     ["UTM", [s.utm_source, s.utm_medium, s.utm_campaign, s.utm_term, s.utm_content].filter(Boolean).join(" / ")],
   ];
   return (
     <Panel title={s.form_type === "contact" ? "Their question" : "Form answers"}>
-      <dl className="grid gap-x-4 gap-y-2 sm:grid-cols-[10rem_minmax(0,1fr)]">
+      <dl className="grid gap-x-4 gap-y-1 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-y-2">
         {rows
           .filter(([, v]) => v)
           .map(([k, v]) => (

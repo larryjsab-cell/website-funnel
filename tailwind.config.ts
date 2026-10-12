@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
 
 /**
  * Ryzon design tokens. The theme is replaced, not extended: default palette,
@@ -9,6 +10,8 @@ import type { Config } from "tailwindcss";
 const v = (name: string) => `var(--${name})`;
 
 const config: Config = {
+  // hover: styles only on devices that can hover, so a tap never leaves a "stuck" hover look.
+  future: { hoverOnlyWhenSupported: true },
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   theme: {
     screens: {
@@ -152,7 +155,10 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // `short:` = phones in landscape (and any very short window): tighter bars and menus.
+    plugin(({ addVariant }) => addVariant("short", "@media (max-height: 500px)")),
+  ],
 };
 
 export default config;

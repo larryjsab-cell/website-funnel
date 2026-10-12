@@ -62,12 +62,15 @@ export function LegalPage({ doc }: { doc: Doc }) {
               <li aria-current="page">{page.title}</li>
             </ol>
           </nav>
-          <Heading as="h1" size="display">
-            {page.title}
-          </Heading>
-          <p className="mt-4 font-display text-sm text-muted display-ui">
-            {legal.updatedLabel}: {legal.updated}
-          </p>
+          {/* The phone demo bar waits until the title has scrolled away. */}
+          <div data-cta-bar-after="">
+            <Heading as="h1" size="display">
+              {page.title}
+            </Heading>
+            <p className="mt-4 font-display text-sm text-muted display-ui">
+              {legal.updatedLabel}: {legal.updated}
+            </p>
+          </div>
           <p className="mt-6 rounded-card border-2 border-dashed border-accent bg-surface p-4 font-display text-sm text-accent display-ui">
             {legal.draftNotice}
           </p>

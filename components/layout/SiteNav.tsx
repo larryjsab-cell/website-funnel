@@ -64,7 +64,7 @@ export function SiteNav({ items, labels, drawerFooter }: Props) {
   return (
     <>
       <nav aria-label={labels.label} className="hidden lg:block">
-        <ul className="flex items-center gap-1 xl:gap-2">
+        <ul className="flex items-center gap-2">
           {items.map((item) => (
             <li key={item.href}>
               <Link
@@ -98,9 +98,9 @@ export function SiteNav({ items, labels, drawerFooter }: Props) {
         ref={panelRef}
         id={panelId}
         hidden={!open}
-        className="rz-drawer fixed inset-x-0 bottom-0 top-16 z-drawer overflow-y-auto overscroll-contain border-t-2 border-ink bg-canvas lg:hidden"
+        className="rz-drawer fixed inset-x-0 bottom-0 top-14 z-drawer overflow-y-auto overscroll-contain border-t-2 border-ink bg-canvas pb-[env(safe-area-inset-bottom)] md:top-16 lg:hidden"
       >
-        <nav aria-label={labels.label} className="px-4 py-6">
+        <nav aria-label={labels.label} className="px-4 py-6 short:py-3 short:grid short:grid-cols-2 short:items-start short:gap-x-8">
           <ul className="border-t-2 border-ink">
             {items.map((item) => (
               <li key={item.href} className="border-b-2 border-ink">
@@ -108,14 +108,14 @@ export function SiteNav({ items, labels, drawerFooter }: Props) {
                   href={item.href}
                   prefetch={false}
                   onClick={() => close(false)}
-                  className="flex min-h-14 items-center font-display text-xl font-heavy display-tight"
+                  className="flex min-h-14 items-center font-display text-xl font-heavy display-tight short:min-h-12"
                 >
                   {item.label}
                 </Link>
               </li>
             ))}
           </ul>
-          <div className="mt-8">{drawerFooter}</div>
+          <div className="mt-8 short:mt-0">{drawerFooter}</div>
         </nav>
       </div>
     </>

@@ -50,8 +50,8 @@ export function CtaButton({
       ? "border-on-band bg-cta text-on-cta shadow-hard-inverse hover:-translate-x-lift-x hover:-translate-y-lift-y hover:shadow-hard-inverse-lg active:translate-x-lift-x active:translate-y-lift-y active:shadow-none"
       : "border-ink bg-cta text-on-cta shadow-hard hover:-translate-x-lift-x hover:-translate-y-lift-y hover:shadow-hard-lg active:translate-x-lift-x active:translate-y-lift-y active:shadow-none"
     : onInk
-      ? "border-on-band bg-transparent text-on-band hover:bg-on-band hover:text-band"
-      : "border-ink bg-transparent text-ink hover:bg-ink hover:text-on-ink";
+      ? "border-on-band bg-transparent text-on-band hover:bg-on-band hover:text-band active:bg-on-band active:text-band"
+      : "border-ink bg-transparent text-ink hover:bg-ink hover:text-on-ink active:bg-ink active:text-on-ink";
 
   return (
     <Link

@@ -49,6 +49,8 @@ Never use raw hex in components. If a role is missing, add it to every theme in 
 ### Breakpoints
 `xs` 375 · `sm` 480 · `md` 768 · `lg` 1024 · `xl` 1280 · `2xl` 1536. Design mobile first. No page may scroll sideways at 320px or wider.
 
+`short:` is a custom variant for screens 500px tall or less, which mostly means phones in landscape. Use it to tighten bars and menus, not to hide content.
+
 ## 3. The seven styles
 
 | id | Name | Display / body | Canvas · ink | Accent | CTA | Shape |
@@ -80,7 +82,8 @@ Every style must pass WCAG AA contrast for text, hover and disabled states. `a11
 | `Field` | Forms | Label above, control, then hint or error. Errors are linked by `aria-describedby`, get `aria-invalid`, and the first invalid field gets focus on submit |
 | `Placeholder` | Images not yet supplied | Typed slot with the image prompt and a visible label. Fixed aspect ratio, so it never shifts layout |
 | `Wordmark` | Headers | Text logo until a file is supplied. Its accessible name always contains the visible text |
-| `MobileCtaBar` | Phones | Fixed bottom demo CTA. Slides away (and goes `inert`) while a form section is on screen. Safe-area padded |
+| `MobileCtaBar` | Phones (below md) | Fixed bottom demo CTA. It stays hidden until the hero CTA (`[data-cta-bar-after]`) scrolls off the top, so a phone never shows two CTAs at once. On legal pages it waits for the title instead. It slides away and goes `inert` while a form section (`[data-hide-cta-bar]`) is on screen. Safe-area padded, and compact in `short:` |
+| `SiteHeader` + `HeaderAutoHide` | Every site page | Sticky. 56px on phones, 64px from md. On phones and short screens it slides away while you scroll down and returns on a real scroll up (touch, wheel or keys; layout shifts don't count), on focus, or near the top. Below md the header drops its CTA because the hero and the bottom bar carry it |
 | `Message` | Flow pages | Full-page card for confirmations, expired links and thank-yous. Defaults to call and email actions |
 | Admin `Button`, `Panel`, `Notice`, `StatusBadge` | `/admin` | Same tokens. `Notice` announces results (`role=status` or `alert`) |
 
@@ -92,6 +95,22 @@ Every style must pass WCAG AA contrast for text, hover and disabled states. `a11
   - Leaving the page with typed, unsent input asks first.
   - The demo form is two steps (name and email, then business details) to lower the first commitment.
   - With JavaScript off, both steps show and the form posts to `/api/lead`, which redirects to `/thank-you`.
+- **Phones.**
+  - Fixed bars never stack at the top of a page: the header shows, and the bar waits.
+  - While reading, only the bar is visible (66px; 62px in landscape).
+  - At 320×568 the headline, the offer line and the hero CTA all fit on the first screen.
+  - The menu drawer fits short landscape screens in two columns.
+  - Example cards turn sideways (image left) under 375px.
+  - The recommended plan comes first on /go-live.
+  - The admin table becomes cards, and its filters fold behind a button.
+- **Touch.**
+  - `hover:` styles only apply on devices that can hover (`hoverOnlyWhenSupported`, and `@media (hover: hover)` in the per-style CSS), so a tap never leaves a stuck hover state.
+  - Buttons get `active:` press states instead, and links, menu rows and FAQ rows dim while pressed.
+  - Every control is at least 44×44px. The only exceptions are text links inside a sentence.
+- **Phone browser chrome.**
+  - `theme-color` follows the active style (generated into `content/theme-canvas.json` by `scripts/themes.mjs`), so luxury gets a dark toolbar.
+  - iOS auto-linking of numbers, addresses and emails is off; the real phone numbers are explicit `tel:` links.
+  - Form fields set `enterkeyhint` and capitalize names.
 - **Focus.** One focus style everywhere: a 3px `accent` outline, offset 3px (`on-band` on dark bands). `scroll-padding` keeps focused and anchored content clear of the sticky header and the mobile bar.
 - **Flow pages** (`/go-live`, `/changes`, `/book`, `/unsubscribe`, `/thank-you`):
   - Minimal header (wordmark and phone), no sales nav, noindex.
@@ -119,6 +138,7 @@ Every style must pass WCAG AA contrast for text, hover and disabled states. `a11
 
 | Area | Bar | How it's checked |
 |---|---|---|
+| Mobile | No sideways scroll, text spill or undersized targets on 21 routes and states × 12 device profiles (phones 320–430, landscape, tablets), plus all 7 styles. First-screen and fixed-bar budgets met | `mobile.mjs`, contact sheets from `sheets.mjs` |
 | Accessibility | 0 axe violations on 52 pages and states. Full keyboard path with visible focus. AA contrast, including hover and disabled. Reduced motion respected | `a11y.mjs` (Playwright + axe-core) |
 | Performance | LCP < 2.5s, CLS < 0.1, INP < 200ms. Server components by default. Fonts at load: 2 | Lighthouse (DevTools throttling), INP script at 4× CPU |
 | SEO | Unique title ≤ 60 and description ≤ 155 per page. Canonical, OG/Twitter with 1200×630 images, one `h1`. JSON-LD on home (ProfessionalService, OfferCatalog, FAQPage, BreadcrumbList) | `seoaudit.mjs` |

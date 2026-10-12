@@ -5,8 +5,8 @@ import { site } from "@/lib/site";
 
 export const buttonClass =
   "inline-flex min-h-12 items-center justify-center rounded-ui border-2 border-ink px-6 text-center font-display text-sm font-bold display-ui transition-button duration-fast ease-out";
-export const primaryButton = `${buttonClass} bg-cta text-on-cta shadow-hard hover:-translate-x-lift-x hover:-translate-y-lift-y hover:shadow-hard-lg`;
-export const secondaryButton = `${buttonClass} bg-transparent text-ink hover:bg-ink hover:text-on-ink`;
+export const primaryButton = `${buttonClass} bg-cta text-on-cta shadow-hard hover:-translate-x-lift-x hover:-translate-y-lift-y hover:shadow-hard-lg active:translate-x-lift-x active:translate-y-lift-y active:shadow-none`;
+export const secondaryButton = `${buttonClass} bg-transparent text-ink hover:bg-ink hover:text-on-ink active:bg-ink active:text-on-ink`;
 
 /** A friendly full-page message: used for expired links, already-paid, thank-yous. */
 export function Message({ title, children, actions }: { title: string; children: ReactNode; actions?: ReactNode }) {

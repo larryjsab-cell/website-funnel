@@ -8,3 +8,4 @@ next-env.d.ts
 .website-audit/viewport/
 .netlify/
 scripts/emails/previews/
+.website-audit/mobile/

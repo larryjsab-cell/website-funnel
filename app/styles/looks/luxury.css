@@ -78,16 +78,20 @@
   border-color: #e3c983;
   color: #0e0d0b;
 }
-[data-theme="luxury"] .rz-btn-primary:hover {
-  filter: brightness(1.08);
+@media (hover: hover) and (pointer: fine) {
+  [data-theme="luxury"] .rz-btn-primary:hover {
+    filter: brightness(1.08);
+  }
 }
 [data-theme="luxury"] .rz-btn-secondary {
   border-color: var(--look-gold);
   color: var(--look-gold);
 }
-[data-theme="luxury"] .rz-btn-secondary:hover {
-  background: var(--look-gold);
-  color: #0e0d0b;
+@media (hover: hover) and (pointer: fine) {
+  [data-theme="luxury"] .rz-btn-secondary:hover {
+    background: var(--look-gold);
+    color: #0e0d0b;
+  }
 }
 
 /* Double frames: outer hairline, inner gold inset. */

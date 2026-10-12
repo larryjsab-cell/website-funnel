@@ -73,6 +73,8 @@ export const metadata: Metadata = {
   },
   description: landing.meta.description,
   applicationName: site.business.name,
+  // Phone numbers are real tel: links already; stop iOS from restyling other digits as links.
+  formatDetection: { telephone: false, address: false, email: false },
   openGraph: {
     type: "website",
     siteName: site.business.name,
@@ -82,7 +84,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: site.colors.concrete,
+  // theme-color is added by themeBootScript (lib/theme.ts) so it can match the saved style.
   width: "device-width",
   initialScale: 1,
 };

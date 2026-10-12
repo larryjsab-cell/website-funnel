@@ -5,7 +5,7 @@ import { site, formatAddress } from "@/lib/site";
 import { ui } from "@/lib/content";
 
 const linkClass =
-  "inline-flex min-h-11 items-center underline-offset-4 transition-colors duration-fast hover:underline hover:decoration-2";
+  "inline-flex min-h-11 min-w-11 items-center underline-offset-4 transition-colors duration-fast hover:underline hover:decoration-2";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -38,7 +38,7 @@ export function SiteFooter() {
 
         <div className="md:col-span-5">
           <h2 className="font-display text-sm font-bold display-ui">{ui.footer.contactHeading}</h2>
-          <address className="mt-3 grid gap-1 text-base not-italic">
+          <address className="mt-3 grid gap-2 text-base not-italic">
             <span>{site.business.name}</span>
             <span>{formatAddress()}</span>
             <a href={site.business.phoneHref} className={linkClass}>
@@ -55,7 +55,8 @@ export function SiteFooter() {
       </Container>
 
       <Container>
-        <div className="flex flex-col gap-2 border-t border-muted py-6 font-display text-sm sm:flex-row sm:items-center sm:justify-between">
+        {/* Phones: extra bottom room so the fixed demo bar never covers the legal links. */}
+        <div className="flex flex-col gap-2 border-t border-muted pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-6 font-display text-sm sm:flex-row sm:items-center sm:justify-between md:pb-6">
         <p>
           © {year} {site.business.name}. {ui.footer.rights}
         </p>

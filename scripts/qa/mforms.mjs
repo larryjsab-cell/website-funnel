@@ -1,0 +1,41 @@
+const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || "playwright");
+const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
+const ctx = await b.newContext({ viewport: { width: 375, height: 667 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
+const p = await ctx.newPage();
+const logs = [];
+p.on("console", (m) => ["error", "warning"].includes(m.type()) && logs.push(m.text()));
+await p.goto("http://localhost:3000/", { waitUntil: "networkidle" });
+const attrs = await p.evaluate(() => [...document.querySelectorAll("#demo input, #contact input, #demo textarea, #contact textarea")].filter((e) => e.type !== "hidden" && e.name !== "company_fax").map((e) => `${e.name}:${e.type}/${e.inputMode || "-"}/${e.enterKeyHint || "-"}/${e.autocapitalize || "-"}/${parseFloat(getComputedStyle(e).fontSize)}px`));
+console.log("fields:", attrs.join("  "));
+// tap the hero CTA, check the form lands in view clear of fixed bars
+await p.locator("[data-cta-bar-after] a").tap();
+await p.waitForTimeout(1200);
+const view = await p.evaluate(() => { const h = document.querySelector("#demo-heading").getBoundingClientRect(); const hdr = document.querySelector(".rz-header").getBoundingClientRect(); return { headingTop: Math.round(h.top), headerBottom: Math.round(hdr.bottom), bar: document.querySelector(".rz-mobile-bar").hasAttribute("inert") ? "hidden" : "shown" }; });
+console.log("after hero CTA tap:", JSON.stringify(view));
+await p.locator("#demo-name").tap();
+await p.keyboard.type("Tia Touch");
+await p.locator("#demo-email").tap();
+await p.keyboard.type("tia@example.com");
+await p.keyboard.press("Enter"); // the email field's Enter = "next" step
+await p.waitForTimeout(800);
+const step2 = await p.evaluate(() => { const h = [...document.querySelectorAll("#demo h3")].find((x) => x.offsetParent && /business/i.test(x.textContent)); const r = h?.getBoundingClientRect(); const hdr = document.querySelector(".rz-header").getBoundingClientRect(); return { focused: document.activeElement === h, top: r && Math.round(r.top), headerBottom: Math.round(Math.max(0, hdr.bottom)) }; });
+console.log("step 2 heading:", JSON.stringify(step2), step2.top >= step2.headerBottom ? "clear of header" : "UNDER HEADER");
+await p.locator("#demo-business").tap();
+await p.keyboard.type("Touch Tacos");
+await p.locator("#demo-phone").tap();
+await p.keyboard.type("5551234567");
+await p.selectOption("#demo-industry", { index: 2 });
+await p.locator("#demo form button[type=submit]").tap();
+await p.getByText("Got it. Your free demo is in the works.").waitFor({ timeout: 10000 });
+await p.waitForTimeout(1000);
+const ok = await p.evaluate(() => { const h = [...document.querySelectorAll("#demo h3")].find((x) => /in the works/.test(x.textContent)); const r = h.getBoundingClientRect(); return { top: Math.round(r.top), bottom: Math.round(r.bottom), vh: innerHeight, inView: r.top >= 0 && r.bottom <= innerHeight, focused: document.activeElement === h }; });
+console.log("success:", JSON.stringify(ok));
+// booking on a phone
+await p.goto(`http://localhost:3000/book?t=${"b".repeat(48)}`, { waitUntil: "networkidle" });
+await p.locator("fieldset").nth(0).locator("button").nth(1).tap();
+await p.locator("fieldset").nth(1).locator("button").first().tap();
+await p.locator("label:has(input[value=meet])").tap();
+const bk = await p.evaluate(() => ({ submit: document.querySelector("form button[type=submit]").textContent, sideScroll: document.documentElement.scrollWidth > innerWidth }));
+console.log("booking:", JSON.stringify(bk));
+console.log("console:", logs.length ? logs : "none");
+await b.close();

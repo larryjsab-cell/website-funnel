@@ -9,12 +9,17 @@ import { useUnsavedWarning } from "@/lib/useUnsavedWarning";
 type Props = { token: string; purpose: string; slots: string[]; knownPhone: string };
 
 const subscribe = () => () => {};
-/** The visitor's timezone, read only in the browser so slot times show in their local time. */
+const BUSINESS_TZ = "America/Detroit";
+/**
+ * The visitor's timezone, so slot times show in their local time. The server (and hydration)
+ * render the full calendar in the business timezone, so the page never jumps from a
+ * "loading" line to the calendar; the browser then swaps in the visitor's zone.
+ */
 function useTimezone() {
   return useSyncExternalStore(
     subscribe,
-    () => Intl.DateTimeFormat().resolvedOptions().timeZone || "America/Detroit",
-    () => null,
+    () => Intl.DateTimeFormat().resolvedOptions().timeZone || BUSINESS_TZ,
+    () => BUSINESS_TZ,
   );
 }
 
@@ -43,7 +48,6 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
   useUnsavedWarning(state !== "done" && (time !== "" || [notes, name, email, business].some((v) => v.trim() !== "")));
 
   const days = useMemo(() => {
-    if (!tz) return [];
     const dayKey = new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" });
     const dayLabel = new Intl.DateTimeFormat("en-US", { timeZone: tz, weekday: "short", month: "short", day: "numeric" });
     const map = new Map<string, { label: string; slots: string[] }>();
@@ -57,9 +61,9 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
     return [...map.entries()].map(([key, v]) => ({ key, ...v }));
   }, [slots, tz, taken]);
 
-  const timeLabel = useMemo(() => (tz ? new Intl.DateTimeFormat("en-US", { timeZone: tz, hour: "numeric", minute: "2-digit" }) : null), [tz]);
+  const timeLabel = useMemo(() => new Intl.DateTimeFormat("en-US", { timeZone: tz, hour: "numeric", minute: "2-digit" }), [tz]);
   const fullLabel = useMemo(
-    () => (tz ? new Intl.DateTimeFormat("en-US", { timeZone: tz, weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" }) : null),
+    () => new Intl.DateTimeFormat("en-US", { timeZone: tz, weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" }),
     [tz],
   );
   const activeDay = day || days[0]?.key || "";
@@ -109,14 +113,12 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
           You&rsquo;re booked
         </h2>
         <p className="mt-3 text-lg">
-          {fullLabel?.format(new Date(time))}, by {method === "meet" ? "Google Meet" : "phone"}.{" "}
+          {fullLabel.format(new Date(time))}, by {method === "meet" ? "Google Meet" : "phone"}.{" "}
           {method === "meet" ? "We’ll send a calendar invite with the Meet link." : `We’ll call you at ${phone}.`} A confirmation is in your inbox.
         </p>
       </div>
     );
   }
-
-  if (!tz) return <p className="mt-8 text-muted">Loading available times…</p>;
 
   return (
     <form onSubmit={submit} noValidate className="relative mt-8 space-y-6 rounded-card border-2 border-ink bg-surface p-5 md:p-6">
@@ -175,7 +177,7 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
               onClick={() => setTime(s)}
               className={`min-h-12 rounded-ui border-2 border-ink font-display text-sm font-bold ${time === s ? "bg-cta text-on-cta" : "bg-canvas"}`}
             >
-              {timeLabel?.format(new Date(s))}
+              {timeLabel.format(new Date(s))}
             </button>
           ))}
         </div>
@@ -199,19 +201,19 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
             <label htmlFor="b-name" className={label}>
               Your name
             </label>
-            <input id="b-name" name="name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} className={control} />
+            <input id="b-name" name="name" autoComplete="name" autoCapitalize="words" enterKeyHint="next" value={name} onChange={(e) => setName(e.target.value)} className={control} />
           </div>
           <div>
             <label htmlFor="b-email" className={label}>
               Email
             </label>
-            <input id="b-email" name="email" type="email" autoComplete="email" spellCheck={false} autoCapitalize="off" value={email} onChange={(e) => setEmail(e.target.value)} className={control} />
+            <input id="b-email" name="email" type="email" inputMode="email" enterKeyHint="next" autoComplete="email" spellCheck={false} autoCapitalize="off" value={email} onChange={(e) => setEmail(e.target.value)} className={control} />
           </div>
           <div className="md:col-span-2">
             <label htmlFor="b-business" className={label}>
               Business name <span className="font-normal text-muted">(optional)</span>
             </label>
-            <input id="b-business" name="business" autoComplete="organization" value={business} onChange={(e) => setBusiness(e.target.value)} className={control} />
+            <input id="b-business" name="business" autoComplete="organization" autoCapitalize="words" enterKeyHint="next" value={business} onChange={(e) => setBusiness(e.target.value)} className={control} />
           </div>
         </div>
       )}
@@ -220,7 +222,7 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
         <label htmlFor="b-phone" className={label}>
           Phone {method !== "phone" && <span className="font-normal text-muted">(optional for Meet)</span>}
         </label>
-        <input id="b-phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className={control} />
+        <input id="b-phone" name="phone" type="tel" inputMode="tel" enterKeyHint="next" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className={control} />
       </div>
 
       <div>
@@ -236,7 +238,7 @@ export function BookingForm({ token, purpose, slots, knownPhone }: Props) {
         </p>
       )}
       <button type="submit" disabled={state === "sending"} className={`${primaryButton} w-full md:w-auto`}>
-        {state === "sending" ? "Booking…" : time ? `Book ${timeLabel?.format(new Date(time))}` : "Book My Call"}
+        {state === "sending" ? "Booking…" : time ? `Book ${timeLabel.format(new Date(time))}` : "Book My Call"}
       </button>
     </form>
   );

@@ -78,18 +78,23 @@ export default async function GoLivePage({ searchParams }: { searchParams: Promi
             <FilesCard token={q.t!} />
           ) : (
             <div>
-              <div role="group" aria-label="Billing" className="mb-4 inline-flex rounded-ui border-2 border-ink">
-                <Link href={base} aria-current={interval === "month" ? "true" : undefined} className={`min-h-11 px-4 py-2 font-display text-sm font-bold ${interval === "month" ? "bg-ink text-on-ink" : ""}`}>
+              <div role="group" aria-label="Billing" className="mb-4 grid grid-cols-2 rounded-ui border-2 border-ink sm:inline-grid">
+                <Link
+                  href={base}
+                  aria-current={interval === "month" ? "true" : undefined}
+                  className={`flex min-h-12 items-center justify-center px-3 text-center font-display text-sm font-bold sm:px-4 ${interval === "month" ? "bg-ink text-on-ink" : ""}`}
+                >
                   Monthly
                 </Link>
                 <Link
                   href={`${base}&interval=year`}
                   aria-current={interval === "year" ? "true" : undefined}
-                  className={`min-h-11 px-4 py-2 font-display text-sm font-bold ${interval === "year" ? "bg-ink text-on-ink" : ""}`}
+                  className={`flex min-h-12 flex-col items-center justify-center px-2 py-1 text-center font-display text-sm font-bold sm:flex-row sm:gap-1 sm:px-4 ${interval === "year" ? "bg-ink text-on-ink" : ""}`}
                 >
-                  Yearly (2 Months Free)
+                  Yearly <span className="font-normal xs:whitespace-nowrap">2 Months Free</span>
                 </Link>
               </div>
+              {/* Phones see the recommended plan first; from md the cards sit in price order. */}
               <div className="grid gap-4 md:grid-cols-3">
                 {tiers.map((tier) => (
                   <PlanCard key={tier.id} tier={tier} interval={interval} offer={offer} token={q.t!} />
@@ -98,7 +103,13 @@ export default async function GoLivePage({ searchParams }: { searchParams: Promi
             </div>
           )}
         </div>
-        <p className="mt-8 text-sm text-muted">Secure checkout by Stripe. Questions first? Call {site.business.phone}, 9am to 10pm, 7 days a week.</p>
+        <p className="mt-8 text-sm text-muted">
+          Secure checkout by Stripe. Questions first? Call{" "}
+          <a href={site.business.phoneHref} className="underline underline-offset-4">
+            {site.business.phone}
+          </a>
+          , 9am to 10pm, 7 days a week.
+        </p>
       </div>
     </Container>
   );
@@ -152,7 +163,7 @@ function DemoPreview({ sub }: { sub: Lookup }) {
         </a>
       ) : null}
       <figcaption className="mt-3">
-        <a href={sub.demo_url} target="_blank" rel="noreferrer" className="font-display font-bold underline underline-offset-4">
+        <a href={sub.demo_url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center font-display font-bold underline underline-offset-4">
           View your demo
         </a>
       </figcaption>
@@ -165,14 +176,14 @@ function PlanCard({ tier, interval, offer, token }: { tier: (typeof tiers)[numbe
   const unit = interval === "month" ? "/mo" : "/yr";
   const discounted = price.first !== price.then;
   return (
-    <form action="/api/checkout" method="post" className={`flex flex-col rounded-card border-2 border-ink bg-surface p-4 ${tier.featured ? "shadow-hard" : ""}`}>
+    <form action="/api/checkout" method="post" className={`flex flex-col rounded-card border-2 border-ink bg-surface p-4 ${tier.featured ? "order-first shadow-hard md:order-none" : ""}`}>
       <input type="hidden" name="t" value={token} />
       <input type="hidden" name="offer" value={offer} />
       <input type="hidden" name="plan" value={tier.id} />
       <input type="hidden" name="interval" value={interval} />
       {tier.featured && <p className="mb-2 font-display text-sm font-bold text-accent">Most popular</p>}
       <h2 className="font-display text-xl font-heavy display-tight">{tier.name}</h2>
-      <p className="mt-3 font-display text-3xl font-heavy display-tight">
+      <p className="mt-3 font-display text-3xl font-heavy display-tight md:text-2xl xl:text-3xl">
         {formatPrice(price.first)}
         <span className="text-base font-normal">{unit}</span>
       </p>

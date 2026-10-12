@@ -11,9 +11,9 @@ export default function FlowLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="relative z-content flex min-h-screen flex-col">
       <header className="border-b-2 border-ink bg-canvas">
-        <Container className="flex min-h-16 items-center justify-between gap-4">
+        <Container className="flex min-h-14 items-center justify-between gap-4 md:min-h-16">
           <Wordmark />
-          <a href={site.business.phoneHref} className="font-display text-sm font-bold underline-offset-4 hover:underline">
+          <a href={site.business.phoneHref} className="inline-flex min-h-11 items-center font-display text-sm font-bold underline-offset-4 hover:underline">
             {site.business.phone}
           </a>
         </Container>
@@ -24,16 +24,20 @@ export default function FlowLayout({ children }: { children: React.ReactNode }) 
       <footer className="border-t-2 border-ink bg-canvas py-6 text-sm">
         <Container className="flex flex-wrap justify-between gap-3">
           <span>
-            Questions? Call {site.business.phone} or email{" "}
-            <a href={`mailto:${site.business.email}`} className="underline underline-offset-4">
+            Questions? Call{" "}
+            <a href={site.business.phoneHref} className="underline underline-offset-4">
+              {site.business.phone}
+            </a>{" "}
+            or email{" "}
+            <a href={`mailto:${site.business.email}`} className="break-words underline underline-offset-4">
               {site.business.email}
             </a>
           </span>
           <span className="flex gap-4">
-            <Link href="/privacy" className="underline underline-offset-4">
+            <Link href="/privacy" className="inline-flex min-h-11 min-w-11 items-center underline underline-offset-4">
               Privacy
             </Link>
-            <Link href="/terms" className="underline underline-offset-4">
+            <Link href="/terms" className="inline-flex min-h-11 min-w-11 items-center underline underline-offset-4">
               Terms
             </Link>
           </span>

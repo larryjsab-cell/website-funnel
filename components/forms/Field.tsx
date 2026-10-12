@@ -21,6 +21,8 @@ type Props =
       inputMode?: "text" | "email" | "tel" | "url";
       spellCheck?: boolean;
       autoCapitalize?: string;
+      /** Label for the phone keyboard's Enter key. */
+      enterKeyHint?: "next" | "done" | "send" | "go";
     })
   | (Common & { as: "textarea"; rows?: number })
   | (Common & { as: "select"; options: string[] });
@@ -77,6 +79,7 @@ export function Field(props: Props) {
             inputMode={props.inputMode}
             spellCheck={props.spellCheck}
             autoCapitalize={props.autoCapitalize}
+            enterKeyHint={props.enterKeyHint}
             placeholder={placeholder}
             className={`${control} ${state} min-h-12`}
           />

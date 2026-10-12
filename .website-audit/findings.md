@@ -81,3 +81,47 @@ Skills: `/impeccable` and `/ui-ux-pro-max` aren't installed. I substituted `next
 - [fixed] Created a separate project `ryzon-funnel-preview` (the existing `ryzon-automation` project was left untouched, per the owner). Added netlify.toml.
 - [fixed] Owner allowed the Netlify API hosts. First deploy was "ready" but broken: no functions and pages under server/app (Next.js runtime didn't run). Fixed by adding @netlify/plugin-nextjs 5.16.0 to netlify.toml + devDependencies. Redeploy 6acd1b26b5160ff3c0367b71: plugin_state success, Next.js Server Handler function deployed, 3 redirect + 1 header rules.
 - [not-verified] Live URL in a browser: this container can't reach ryzon-funnel-preview.netlify.app (only the Netlify API hosts are allowed). Verified via the Netlify deploy record only.
+
+## Mobile optimization (plan: `mobile-plan.md`)
+Baseline: `scripts/qa/mobile.mjs` on 21 routes and states × 12 device profiles (phones 320–430 portrait, landscape 568–932, tablets 768/1024), plus 7 styles. Every phone view was also reviewed by eye on contact sheets (`sheets.mjs`).
+- [fixed] Bars stacked on phones: three "Get My Free Demo" buttons at once (header, hero, bottom bar). Header plus bar took 25% of a 320×568 screen and up to 44% in landscape.
+  - Below md the header drops its CTA. The bar now waits until the hero CTA has scrolled off the top (on legal pages, until the title has).
+  - The header is 56px on phones and auto-hides on scroll down. It returns only on a user scroll up, on focus, or near the top.
+  - The bar is 66px, or 62px in `short:` landscape.
+  - While reading, fixed UI is now about 10% of the screen.
+- [fixed] Header returned mid-page when late fonts shifted the layout (luxury style). The reveal now needs real touch, wheel or key input.
+- [fixed] First screen at 320×568: the hero CTA was 19px below the fold. Tighter hero spacing and lede size under 375px; headline, offer line and CTA now fit.
+- [fixed] The logo mark was squeezed in the open-menu header (shrink-0). The "Ryzon" wordmark now shows at every width.
+- [fixed] Menu drawer was cut off in landscape. `short:` two-column layout; the drawer top follows the header height; safe-area bottom padding.
+- [fixed] Tap targets under 44px: footer nav (FAQ, Styles, Terms), flow header phone link, flow footer links, "View your demo", admin header and table links, admin contact links, "Back to the pipeline".
+- [fixed] Crowded targets: header gap, footer phone/email gap, tablet nav gap set to 8px.
+- [fixed] Example cards clipped "Neighborhood café" at 320px. Under 375px the cards turn sideways (image left); titles wrap.
+- [fixed] Trust strip "Nationwide" ran out of its cell at 320px. Smaller value size under 375px, cells wrap.
+- [fixed] /go-live on phones: the billing toggle is full width with the "2 Months Free" label on its own line; the recommended plan comes first under md; the price scales down in the narrow tablet layout.
+- [fixed] Flow footer email broke mid-word (break-all → break-words). Plain-text phone numbers are now tel: links.
+- [fixed] Admin on phones:
+  - Title and Account sit on one row, with Today, Board and Table as a full-width tab bar marked with aria-current.
+  - The table becomes cards under md, and filters fold behind "Filters (n)".
+  - Email rows wrap their buttons instead of squeezing the text to 14px.
+  - The customer name heading wraps.
+- [fixed] Sticky hover on touch: Tailwind `hoverOnlyWhenSupported`, and the per-style hover rules are wrapped in `@media (hover: hover) and (pointer: fine)`. Press feedback through `active:` states, plus link, summary and menu dimming on `(hover: none)`.
+- [fixed] Browser chrome: `theme-color` follows the active style (luxury gets a dark toolbar), generated from `scripts/themes.mjs`. iOS auto-linking of numbers, addresses and emails is off.
+- [fixed] Phone keyboards: `enterkeyhint="next"` on single-line fields and autocapitalized names (demo, contact and booking forms). Inputs are 17px, so iOS never zooms on focus.
+- [fixed] /book layout shift 0.186 on mobile: the calendar used to render as "Loading…" on the server. It now server-renders in the business timezone, then swaps in the visitor's zone. CLS is now 0.037.
+- [fixed] Mobile Lighthouse (DevTools throttling: 4× CPU and throttled network, median of 3):
+
+  | Page | Perf | LCP | CLS |
+  |---|---|---|---|
+  | home | 96 | 1.81s | 0 |
+  | /go-live | 98 | 1.61s | 0 |
+  | /book | 96 | 1.60s | 0.037 |
+  | /changes | 97 | 1.58s | 0 |
+  | /thank-you | 98 | 1.62s | 0 |
+  | /privacy | 97 | 1.62s | 0 |
+
+  TBT stays at 144–185ms on every page.
+- [fixed] Final sweep: `mobile.mjs` (full) is clean, apart from the two accepted items below. Phone form walkthrough (`mforms.mjs`): keyboard hints, step 2 heading clear of the header, success message in view.
+- [fixed] Regression suites all pass after the changes: a11y (52 scans, 0 violations), sweep (0 console or CSP errors), flow, admin, admin with 150 leads, JS and no-JS forms.
+- [deferred] Landscape phones (height 320–430): the hero CTA sits 40–100px below the first screen. The headline and offer are visible, and the bar takes over after one short scroll. Accepted, since forcing it up would shrink the headline.
+- [deferred] Organic style: the decorative hero shapes are clipped by the hero section on purpose (aria-hidden, not text).
+- [not-verified] Real iOS Safari and Android Chrome: notch and home-bar insets, the on-screen keyboard covering fields, and momentum scrolling with the auto-hiding header. This environment only has headless Chromium with mobile emulation. `viewport-fit=cover` was deliberately not enabled, so content never sits under the notch.

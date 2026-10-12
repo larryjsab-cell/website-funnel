@@ -13,7 +13,7 @@ export function Wordmark({ onInk = false }: Props) {
     >
       <span
         aria-hidden="true"
-        className={`rz-logo-mark flex h-8 w-8 items-center justify-center rounded-ui text-lg font-heavy display-tight ${
+        className={`rz-logo-mark flex h-8 w-8 shrink-0 items-center justify-center rounded-ui text-lg font-heavy display-tight ${
           onInk ? "bg-on-band text-band" : "bg-ink text-on-ink"
         }`}
       >
@@ -21,7 +21,7 @@ export function Wordmark({ onInk = false }: Props) {
       </span>
       {/* The accessible name is always the full "Ryzon Automation home", and it contains
           whatever part of the wordmark is visible at this width. */}
-      <span translate="no" className="sr-only text-lg font-heavy tracking-snug display-tight xs:not-sr-only">
+      <span translate="no" className="text-lg font-heavy tracking-snug display-tight">
         {site.business.shortName}
         <span className="sr-only font-normal xl:not-sr-only"> {site.business.name.replace(site.business.shortName, "").trim()}</span>
       </span>

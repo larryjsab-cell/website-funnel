@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState, type FormEvent, type ReactNode } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { Button, inputClass, labelClass, Notice } from "@/components/admin/ui";
 import { adminRpc, supabase } from "@/lib/admin/supabase";
@@ -52,22 +53,17 @@ export function AdminShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-canvas">
       <header className="border-b-2 border-ink bg-surface">
-        <div className="mx-auto flex max-w-page flex-wrap items-center justify-between gap-3 px-4 py-3">
-          <Link href="/admin" className="font-display text-lg font-heavy display-tight">
+        {/* Phones: title + Account on one row, the three views as a full-width tab bar below. */}
+        <div className="mx-auto grid max-w-page grid-cols-[1fr_auto] items-center gap-x-3 gap-y-2 px-4 py-2 md:flex md:justify-between md:py-3">
+          <Link href="/admin" className="inline-flex min-h-11 items-center font-display text-lg font-heavy display-tight">
             Ryzon pipeline
           </Link>
-          <nav aria-label="Dashboard" className="flex flex-wrap items-center gap-1">
-            <Link href="/admin?view=today" className="min-h-11 px-3 py-2 font-display text-sm font-bold underline-offset-4 hover:underline">
-              Today
-            </Link>
-            <Link href="/admin?view=board" className="min-h-11 px-3 py-2 font-display text-sm font-bold underline-offset-4 hover:underline">
-              Board
-            </Link>
-            <Link href="/admin?view=table" className="min-h-11 px-3 py-2 font-display text-sm font-bold underline-offset-4 hover:underline">
-              Table
-            </Link>
+          <div className="md:order-last">
             <AccountMenu email={session?.user.email ?? ""} />
-          </nav>
+          </div>
+          <Suspense fallback={null}>
+            <AdminTabs />
+          </Suspense>
         </div>
       </header>
       <main id="main" tabIndex={-1} className="mx-auto max-w-page px-4 py-6">
@@ -175,5 +171,33 @@ function AccountMenu({ email }: { email: string }) {
         </div>
       )}
     </div>
+  );
+}
+
+const VIEWS = [
+  ["today", "Today"],
+  ["board", "Board"],
+  ["table", "Table"],
+] as const;
+
+function AdminTabs() {
+  const pathname = usePathname();
+  const view = useSearchParams().get("view") ?? "today";
+  return (
+    <nav aria-label="Dashboard" className="col-span-2 grid grid-cols-3 overflow-hidden rounded-ui border-2 border-ink md:ml-auto md:flex md:gap-2 md:border-0">
+      {VIEWS.map(([id, label]) => {
+        const current = pathname === "/admin" && view === id;
+        return (
+          <Link
+            key={id}
+            href={`/admin?view=${id}`}
+            aria-current={current ? "page" : undefined}
+            className={`flex min-h-11 items-center justify-center px-3 font-display text-sm font-bold underline-offset-4 md:rounded-ui ${current ? "bg-ink text-on-ink" : "hover:underline"}`}
+          >
+            {label}
+          </Link>
+        );
+      })}
+    </nav>
   );
 }

@@ -10,10 +10,10 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { tone?: "primary" 
 export function Button({ tone = "plain", busy, className = "", children, disabled, ...rest }: ButtonProps) {
   const look =
     tone === "primary"
-      ? "border-ink bg-ink text-on-ink hover:bg-accent hover:text-on-accent"
+      ? "border-ink bg-ink text-on-ink hover:bg-accent hover:text-on-accent active:bg-accent active:text-on-accent"
       : tone === "danger"
-        ? "border-danger bg-surface text-danger hover:bg-danger hover:text-canvas"
-        : "border-ink bg-surface text-ink hover:bg-ink hover:text-on-ink";
+        ? "border-danger bg-surface text-danger hover:bg-danger hover:text-canvas active:bg-danger active:text-canvas"
+        : "border-ink bg-surface text-ink hover:bg-ink hover:text-on-ink active:bg-ink active:text-on-ink";
   return (
     <button
       type="button"

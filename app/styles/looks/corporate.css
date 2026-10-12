@@ -122,9 +122,13 @@
   border-bottom: 0;
 }
 
-[data-theme="corporate"] .rz-btn-primary:hover,
 [data-theme="corporate"] .rz-btn-primary:focus-visible {
   filter: brightness(0.92);
+}
+@media (hover: hover) and (pointer: fine) {
+  [data-theme="corporate"] .rz-btn-primary:hover {
+    filter: brightness(0.92);
+  }
 }
 [data-theme="corporate"] .rz-btn-primary {
   border-color: transparent;

@@ -134,14 +134,22 @@
   border-top: 2px solid var(--c-ink);
   padding-inline: 0;
 }
-
-[data-theme="editorial"] .rz-btn-primary:hover {
-  background: var(--c-ink);
-  color: var(--c-on-ink);
+@media (max-width: 374px) {
+  [data-theme="editorial"] .rz-example > div:last-child {
+    border-top: 0;
+    padding-inline: 0.75rem;
+  }
 }
-[data-theme="editorial"] .rz-tone-ink .rz-btn-primary:hover {
-  background: var(--c-on-band);
-  color: var(--c-band);
+
+@media (hover: hover) and (pointer: fine) {
+  [data-theme="editorial"] .rz-btn-primary:hover {
+    background: var(--c-ink);
+    color: var(--c-on-ink);
+  }
+  [data-theme="editorial"] .rz-tone-ink .rz-btn-primary:hover {
+    background: var(--c-on-band);
+    color: var(--c-band);
+  }
 }
 
 [data-theme="editorial"] .rz-offer-line {

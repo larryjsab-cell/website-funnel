@@ -90,6 +90,8 @@ export function ContactForm() {
         <Field
           id="contact-name"
           name="name"
+          autoCapitalize="words"
+          enterKeyHint="next"
           label={label("name")}
           value={values.name}
           onChange={onChange}
@@ -102,6 +104,7 @@ export function ContactForm() {
           id="contact-email"
           name="email"
           type="email"
+          enterKeyHint="next"
           inputMode="email"
           spellCheck={false}
           autoCapitalize="off"
