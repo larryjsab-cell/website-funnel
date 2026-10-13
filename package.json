@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "check:links": "node scripts/check-links.mjs"
+    "check:links": "node scripts/check-links.mjs",
+    "shots": "node scripts/example-shots.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",

@@ -1,0 +1,14 @@
+{
+  "landscaping": {
+    "full": {
+      "src": "/examples/landscaping.webp",
+      "width": 77,
+      "height": 2000
+    },
+    "card": {
+      "src": "/examples/landscaping-card.webp",
+      "width": 77,
+      "height": 58
+    }
+  }
+}

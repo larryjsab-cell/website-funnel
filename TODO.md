@@ -19,7 +19,7 @@ Every item below appears in the site or config. Nothing here was invented.
 - [ ] `[REVIEW_COUNT]`: real review count + source
 - [ ] `[SITES_LAUNCHED]`: real number
 - [ ] `[CLIENT_LOGOS]`: client logos (with permission)
-- [ ] Images: the 6 example design cards and the hero mockup show labeled placeholders. Each slot's image prompt is in `content/examples.json` / `content/landing.json`; drop in real screenshots or generated images (keep 4:3 and 16:10).
+- [ ] Images: example screenshots go in `assets/examples/<id>.png` (ids: landscaping, salon, cafe, plumbing, auto, cleaning), then `npm run shots`. Landscaping is in but only 77×2000 px (the chat shrank it), so it needs the full-size file. The other 5 cards and the hero mockup still show labeled placeholders. Each slot's image prompt is in `content/examples.json` / `content/landing.json`; drop in real screenshots or generated images (keep 4:3 and 16:10).
 
 ## Integrations
 - [ ] `[ANALYTICS_ID]`: analytics provider + ID

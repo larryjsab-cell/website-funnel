@@ -11,7 +11,7 @@ export function Examples() {
       <p className="mt-4 max-w-measure text-lg">{e.intro}</p>
       <div className="rz-examples mt-10 grid grid-cols-1 gap-3 xs:grid-cols-2 sm:gap-6 lg:grid-cols-3">
         {examples.items.map((item) => (
-          <ExampleCard key={item.id} item={item} ctaLabel={e.cardCta} />
+          <ExampleCard key={item.id} item={item} ctaLabel={e.cardCta} viewerCta={e.viewerCta} />
         ))}
       </div>
       <p className="mt-4 text-sm text-muted">{examples.note}</p>
