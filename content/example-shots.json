@@ -1,4 +1,40 @@
 {
+  "auto": {
+    "full": {
+      "src": "/examples/auto.webp",
+      "width": 544,
+      "height": 10573
+    },
+    "card": {
+      "src": "/examples/auto-card.webp",
+      "width": 544,
+      "height": 408
+    }
+  },
+  "cafe": {
+    "full": {
+      "src": "/examples/cafe.webp",
+      "width": 544,
+      "height": 9288
+    },
+    "card": {
+      "src": "/examples/cafe-card.webp",
+      "width": 544,
+      "height": 408
+    }
+  },
+  "cleaning": {
+    "full": {
+      "src": "/examples/cleaning.webp",
+      "width": 544,
+      "height": 14737
+    },
+    "card": {
+      "src": "/examples/cleaning-card.webp",
+      "width": 544,
+      "height": 408
+    }
+  },
   "landscaping": {
     "full": {
       "src": "/examples/landscaping.webp",
@@ -7,6 +43,30 @@
     },
     "card": {
       "src": "/examples/landscaping-card.webp",
+      "width": 544,
+      "height": 408
+    }
+  },
+  "plumbing": {
+    "full": {
+      "src": "/examples/plumbing.webp",
+      "width": 544,
+      "height": 11103
+    },
+    "card": {
+      "src": "/examples/plumbing-card.webp",
+      "width": 544,
+      "height": 408
+    }
+  },
+  "salon": {
+    "full": {
+      "src": "/examples/salon.webp",
+      "width": 544,
+      "height": 9893
+    },
+    "card": {
+      "src": "/examples/salon-card.webp",
       "width": 544,
       "height": 408
     }
