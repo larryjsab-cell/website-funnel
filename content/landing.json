@@ -31,6 +31,14 @@
     "heading": "Why owners pick Ryzon",
     "facts": [
       {
+        "value": "25",
+        "label": "Projects delivered"
+      },
+      {
+        "value": "17",
+        "label": "Client reviews"
+      },
+      {
         "value": "Next day",
         "label": "Your demo can be ready as soon as the next day"
       },
@@ -41,16 +49,6 @@
       {
         "value": "Nationwide",
         "label": "Working with small businesses across the US"
-      }
-    ],
-    "placeholders": [
-      {
-        "token": "[REVIEW_COUNT]",
-        "label": "Reviews"
-      },
-      {
-        "token": "[SITES_LAUNCHED]",
-        "label": "Sites launched"
       }
     ],
     "logosToken": "[CLIENT_LOGOS]"

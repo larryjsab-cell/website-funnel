@@ -16,8 +16,8 @@ Every item below appears in the site or config. Nothing here was invented.
 
 ## Proof (loud: these sections are live with placeholders)
 - [ ] `[TESTIMONIAL]` ×3 + `[CUSTOMER_NAME]`, `[BUSINESS_TYPE, CITY]`: real testimonials only
-- [ ] `[REVIEW_COUNT]`: real review count + source
-- [ ] `[SITES_LAUNCHED]`: real number
+- [x] Review count: 17 (owner)
+- [x] Projects delivered: 25 (owner)
 - [ ] `[CLIENT_LOGOS]`: client logos (with permission)
 - [ ] Images: example screenshots go in `assets/examples/<id>.png` (ids: landscaping, salon, cafe, plumbing, auto, cleaning), then `npm run shots`. All 6 example cards have screenshots. The hero mockup still shows labeled placeholders. Each slot's image prompt is in `content/examples.json` / `content/landing.json`; drop in real screenshots or generated images (keep 4:3 and 16:10).
 
