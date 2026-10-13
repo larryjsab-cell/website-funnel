@@ -228,3 +228,107 @@ details[open] > summary .faq-toggle {
     display: none;
   }
 }
+
+/* ---------- Blog article body (HTML from ryzon_landing_blog.content) ---------- */
+.rz-prose {
+  max-width: 42rem;
+  font-size: 1.125rem;
+  line-height: 1.75;
+  color: var(--c-ink);
+}
+.rz-prose > * + * {
+  margin-top: 1.25em;
+}
+.rz-prose h2,
+.rz-prose h3 {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-variation-settings: var(--display-variation);
+  font-weight: var(--w-heavy);
+  letter-spacing: var(--tracking-snug);
+  line-height: 1.15;
+  scroll-margin-top: 5rem;
+}
+.rz-prose h2 {
+  margin-top: 2.25em;
+  padding-top: 0.75em;
+  border-top: var(--bw-strong) solid var(--c-ink);
+  font-size: 1.75rem;
+}
+.rz-prose h3 {
+  margin-top: 1.75em;
+  font-size: 1.3rem;
+}
+.rz-prose > :first-child,
+.rz-prose section:first-child > h2:first-child,
+.rz-prose article:first-child > h2:first-child {
+  margin-top: 0;
+}
+.rz-prose section > * + *,
+.rz-prose article > * + * {
+  margin-top: 1.25em;
+}
+.rz-prose a {
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.rz-prose a:hover {
+  color: var(--c-accent);
+}
+.rz-prose ul,
+.rz-prose ol {
+  padding-left: 1.5em;
+}
+.rz-prose ul {
+  list-style: square;
+}
+.rz-prose ol {
+  list-style: decimal;
+}
+.rz-prose li + li {
+  margin-top: 0.5em;
+}
+.rz-prose li::marker {
+  color: var(--c-accent);
+  font-weight: 700;
+}
+.rz-prose strong {
+  font-weight: 700;
+}
+.rz-prose blockquote {
+  border-left: 4px solid var(--c-accent);
+  padding: 0.25em 0 0.25em 1.25em;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+.rz-prose img {
+  max-width: 100%;
+  height: auto;
+  border: var(--bw-strong) solid var(--c-ink);
+  border-radius: var(--radius-card);
+}
+.rz-prose table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+.rz-prose th,
+.rz-prose td {
+  border: var(--bw-hair) solid var(--c-rule);
+  padding: 0.6em 0.8em;
+  text-align: left;
+  vertical-align: top;
+}
+.rz-prose th {
+  background: var(--c-surface);
+  font-family: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
+}
+.rz-prose .callout {
+  border: var(--bw-strong) solid var(--c-ink);
+  border-radius: var(--radius-card);
+  background: var(--c-surface);
+  padding: 1.25em;
+}

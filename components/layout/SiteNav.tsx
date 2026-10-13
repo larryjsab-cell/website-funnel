@@ -70,7 +70,7 @@ export function SiteNav({ items, labels, drawerFooter }: Props) {
               <Link
                 href={item.href}
                 prefetch={false}
-                className="rz-nav-link flex min-h-11 items-center px-2 font-display text-sm font-medium underline-offset-4 transition-colors duration-fast display-ui hover:text-accent hover:underline hover:decoration-2 xl:px-3"
+                className="rz-nav-link flex min-h-11 items-center whitespace-nowrap px-2 font-display text-sm font-medium underline-offset-4 transition-colors duration-fast display-ui hover:text-accent hover:underline hover:decoration-2 xl:px-3"
               >
                 {item.label}
               </Link>

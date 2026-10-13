@@ -156,4 +156,9 @@ Every style must pass WCAG AA contrast for text, hover and disabled states. `a11
   1. Use `Section` with an id and an `h2`, and pull copy from `content/landing.json`.
   2. End it with a `CtaButton` to `/#demo` if it persuades.
   3. Add its anchor to `site.config.json → pages` and to the page map in `app/llms.txt/route.ts`.
+- **A blog post:** add a row to the Supabase table `ryzon_landing_blog` (table editor or SQL; `supabase/seed/ryzon_landing_blog_posts.sql` shows the format).
+  1. `content` is HTML. Use `<h2>`/`<h3>` for sections; the table of contents and heading ids are built from them, and reading time is computed when left empty.
+  2. Set `is_published = true`. `published_at` fills itself the first time.
+  3. `/blog`, the post page and the sitemap pick it up within 30 minutes (ISR). Only published rows are readable with the public key.
+  4. Optional fields: `featured_image_url` (and its alt), `meta_title`/`meta_description`, `internal_links`, `cta_text`/`cta_href` (defaults to the free demo), `schema_markup` to override the generated BlogPosting.
 - **A new third-party script, font or API:** add its origin to the Content-Security-Policy in `next.config.ts`.

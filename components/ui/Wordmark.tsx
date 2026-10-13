@@ -21,9 +21,9 @@ export function Wordmark({ onInk = false }: Props) {
       </span>
       {/* The accessible name is always the full "Ryzon Automation home", and it contains
           whatever part of the wordmark is visible at this width. */}
-      <span translate="no" className="text-lg font-heavy tracking-snug display-tight">
+      <span translate="no" className="whitespace-nowrap text-lg font-heavy tracking-snug display-tight">
         {site.business.shortName}
-        <span className="sr-only font-normal xl:not-sr-only"> {site.business.name.replace(site.business.shortName, "").trim()}</span>
+        <span className="sr-only font-normal xl:not-sr-only xl:whitespace-nowrap"> {site.business.name.replace(site.business.shortName, "").trim()}</span>
       </span>
       <span className="sr-only"> {ui.nav.homeLabel.replace(site.business.name, "").trim()}</span>
     </Link>

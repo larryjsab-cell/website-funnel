@@ -67,6 +67,7 @@ ${steps}
 - [Pricing](${url("/#pricing")}): The three plans, monthly and yearly prices, and what each includes.
 - [FAQ](${url("/#faq")}): Answers about the offer, the free demo and life after launch.
 - [Contact](${url("/#contact")}): Phone, email, hours, address and a short message form.
+- [Blog](${url("/blog")}): Guides for small business owners on website costs, what to include, and getting found locally.
 - [Privacy policy](${url("/privacy")}): What we collect through the forms and how we use it.
 - [Terms of service](${url("/terms")}): Plans, billing, cancellation, ownership and changes.
 
