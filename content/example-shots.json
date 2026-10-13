@@ -2,13 +2,13 @@
   "landscaping": {
     "full": {
       "src": "/examples/landscaping.webp",
-      "width": 77,
-      "height": 2000
+      "width": 544,
+      "height": 14104
     },
     "card": {
       "src": "/examples/landscaping-card.webp",
-      "width": 77,
-      "height": 58
+      "width": 544,
+      "height": 408
     }
   }
 }
