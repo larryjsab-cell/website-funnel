@@ -171,4 +171,5 @@ Every style must pass WCAG AA contrast for text, hover and disabled states. `a11
   2. The email links to `/review?t=<token>` with one-tap star buttons. The rating only saves when they press Send on the page, so email link scanners can't rate for them.
   3. 4–5 stars: buttons to post on Google (and Facebook or Yelp if set under "Where happy customers post"). Clicks go through `/api/review/go`, which records the platform.
   4. 1–3 stars: "what could we have done better?" and "would you like us to contact you?". Yes puts them under "Unhappy customers to contact" (Reviews and Today) and emails you (`review_contact_admin`). No ends it.
+- **Adding existing customers:** dashboard → Add Customer (`/admin/add`). Pick any stage, one person or a pasted list (name, email, phone, business per line). `ryzon_landing_admin_add_customer` inserts the row with no welcome email; automatic emails start paused unless ticked, and a review request goes out only if ticked. An email already in the pipeline is refused.
 - **A new third-party script, font or API:** add its origin to the Content-Security-Policy in `next.config.ts`.

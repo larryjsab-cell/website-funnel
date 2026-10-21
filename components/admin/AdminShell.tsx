@@ -181,8 +181,9 @@ const VIEWS = [
   ["table", "Table"],
   ["referrers", "Referrers"],
   ["reviews", "Reviews"],
+  ["add", "Add Customer"],
 ] as const;
-const PAGES: string[] = ["referrers", "reviews"];
+const PAGES: string[] = ["referrers", "reviews", "add"];
 
 function AdminTabs() {
   const pathname = usePathname();
