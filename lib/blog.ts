@@ -3,10 +3,9 @@
  * key: row-level security only returns published posts. Pages are statically generated
  * and refreshed every 30 minutes (ISR), so crawlers always get full HTML.
  */
+import { PUBLIC_API as API, publicHeaders } from "@/lib/publicApi";
 import { site, siteUrl } from "@/lib/site";
 
-const API = (process.env.BLOG_API_URL || `${process.env.NEXT_PUBLIC_SUPABASE_URL || "https://woejhqidgykrcdyktuio.supabase.co"}/rest/v1`).replace(/\/$/, "");
-const KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_8t4cZS-70QgdKp9DRTiVIQ_bE6rKQtU";
 export const BLOG_REVALIDATE = 1800;
 
 export type TocItem = { id: string; text: string; level: number; content_description?: string };
@@ -54,7 +53,7 @@ const CARD_FIELDS = "id,slug,title,excerpt,category,tags,featured_image_url,feat
 async function query<T>(params: string): Promise<T[]> {
   try {
     const res = await fetch(`${API}/ryzon_landing_blog?${params}`, {
-      headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, Accept: "application/json" },
+      headers: publicHeaders,
       next: { revalidate: BLOG_REVALIDATE, tags: ["blog"] },
     });
     if (!res.ok) throw new Error(`${res.status}`);

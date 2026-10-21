@@ -161,4 +161,9 @@ Every style must pass WCAG AA contrast for text, hover and disabled states. `a11
   2. Set `is_published = true`. `published_at` fills itself the first time.
   3. `/blog`, the post page and the sitemap pick it up within 30 minutes (ISR). Only published rows are readable with the public key.
   4. Optional fields: `featured_image_url` (and its alt), `meta_title`/`meta_description`, `internal_links`, `cta_text`/`cta_href` (defaults to the free demo), `schema_markup` to override the generated BlogPosting.
+- **A referrer:** dashboard → Referrers → Add a referrer.
+  1. They get a link like `/r/jane-k3p9` and, unless unticked, the `referral_link` email (their link, how it works, a $50 credit per signup, a message to copy).
+  2. The link opens the full sales page with "Jane sent you" above the headline. It is noindex, with the home page as canonical.
+  3. Leads from it carry `utm_source=referral`, `utm_medium=referrer`, `utm_campaign=<code>`, also when the visitor comes back on their own within 30 days.
+  4. Turning a link off sends it to the home page and stops its emails. Credits are tracked by hand: the card shows paid leads and $50 per paid lead.
 - **A new third-party script, font or API:** add its origin to the Content-Security-Policy in `next.config.ts`.

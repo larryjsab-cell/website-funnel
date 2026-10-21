@@ -16,6 +16,41 @@ function read(): Attribution {
   }
 }
 
+// A referral link (/r/<code>) is remembered for 30 days, so a visitor who comes back
+// later on their own still counts for the person who sent them.
+const REF_KEY = "rz-referral";
+const REF_DAYS = 30;
+
+function storedReferral(): string | null {
+  try {
+    const r = JSON.parse(localStorage.getItem(REF_KEY) || "null") as { code?: string; at?: number } | null;
+    if (r?.code && typeof r.at === "number" && Date.now() - r.at < REF_DAYS * 86_400_000) return r.code;
+  } catch {
+    // Storage blocked: the current session still carries the tags.
+  }
+  return null;
+}
+
+const referralTags = (code: string): Attribution => ({ utm_source: "referral", utm_medium: "referrer", utm_campaign: code });
+
+/** Called by the referral page. A referral link outranks earlier tags in this session. */
+export function setReferral(code: string) {
+  if (typeof window === "undefined") return;
+  const saved = read();
+  const next: Attribution = { ...saved, utm_term: undefined, utm_content: undefined, ...referralTags(code) };
+  if (!saved.landing_page) next.landing_page = window.location.pathname;
+  try {
+    sessionStorage.setItem(KEY, JSON.stringify(next));
+  } catch {
+    // Private mode: nothing to keep.
+  }
+  try {
+    localStorage.setItem(REF_KEY, JSON.stringify({ code, at: Date.now() }));
+  } catch {
+    // Storage blocked.
+  }
+}
+
 /** Record first-touch details once per session. Safe to call more than once. */
 export function rememberAttribution() {
   if (typeof window === "undefined") return;
@@ -26,6 +61,8 @@ export function rememberAttribution() {
     const v = params.get(k);
     if (v && !saved[k]) next[k] = v.slice(0, 200);
   }
+  const referral = !next.utm_source && storedReferral();
+  if (referral) Object.assign(next, referralTags(referral));
   if (!saved.landing_page) next.landing_page = window.location.pathname + window.location.search;
   const ref = document.referrer && !document.referrer.startsWith(window.location.origin) ? document.referrer : "";
   if (ref && !saved.referrer) next.referrer = ref.slice(0, 500);

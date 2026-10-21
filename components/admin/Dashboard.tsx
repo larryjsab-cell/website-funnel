@@ -22,7 +22,7 @@ import {
 } from "@/lib/admin/model";
 import { adminRpc, supabase } from "@/lib/admin/supabase";
 
-type FailedEmail = { id: number; submission_id: string; template_key: string; last_error: string | null; updated_at: string };
+type FailedEmail = { id: number; submission_id: string | null; template_key: string; last_error: string | null; updated_at: string };
 
 type Data = { subs: Submission[]; calls: ChangeRequest[]; failed: FailedEmail[]; loadedAt: number };
 
@@ -138,13 +138,13 @@ function TodayView({ subs, calls, failed, loadedAt }: Data) {
       ))}
 
       {failed.length > 0 && (
-        <TodayGroup title="Emails that failed" hint="Gmail refused these 3 times. Open the customer and press Resend." count={failed.length}>
+        <TodayGroup title="Emails that failed" hint="Gmail refused these 3 times. Open the customer (or Referrers) and resend." count={failed.length}>
           {failed.map((f) => {
-            const s = byId.get(f.submission_id);
+            const s = f.submission_id ? byId.get(f.submission_id) : undefined;
             return (
               <li key={f.id} className="border-t border-rule py-3 first:border-t-0">
-                <Link href={`/admin/s/${f.submission_id}`} className="font-bold underline underline-offset-4">
-                  {s ? displayName(s) : "Unknown"}
+                <Link href={f.submission_id ? `/admin/s/${f.submission_id}` : "/admin/referrers"} className="font-bold underline underline-offset-4">
+                  {s ? displayName(s) : f.submission_id ? "Unknown" : "A referrer"}
                 </Link>
                 <p className="text-sm">
                   {f.template_key} · {f.last_error}

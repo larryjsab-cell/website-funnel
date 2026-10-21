@@ -60,7 +60,8 @@ export type Submission = {
 
 export type QueueRow = {
   id: number;
-  submission_id: string;
+  submission_id: string | null;
+  referrer_id: string | null;
   template_key: string;
   send_at: string;
   state: "pending" | "sending" | "sent" | "cancelled" | "failed";
@@ -111,7 +112,23 @@ export type Payment = {
   created_at: string;
 };
 
-export type Template = { key: string; recipient: "customer" | "admin"; is_promotional: boolean; subject: string; description: string | null };
+export type Template = { key: string; recipient: "customer" | "admin" | "referrer"; is_promotional: boolean; subject: string; description: string | null };
+
+export type Referrer = {
+  id: string;
+  code: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  business_name: string | null;
+  notes: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+/** Leads from a referral link carry utm_source=referral and utm_campaign=<code>. */
+export const isReferral = (s: Pick<Submission, "utm_source" | "utm_campaign">) => s.utm_source === "referral" && !!s.utm_campaign;
 
 export const STATUSES: { id: Status; label: string; short: string }[] = [
   { id: "demo_in_progress", label: "Demo in progress", short: "Making demo" },

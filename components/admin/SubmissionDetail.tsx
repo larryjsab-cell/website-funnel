@@ -6,6 +6,7 @@ import { Button, inputClass, labelClass, Notice, Panel, StatusBadge, Tag } from 
 import {
   daysSince,
   displayName,
+  isReferral,
   OFFERS,
   PLANS,
   STATUSES,
@@ -22,7 +23,15 @@ import {
 import { adminRpc, FILES_BUCKET, supabase } from "@/lib/admin/supabase";
 import { useUnsavedWarning } from "@/lib/useUnsavedWarning";
 
-type Detail = { s: Submission; queue: QueueRow[]; history: HistoryRow[]; changes: ChangeRequest[]; payments: Payment[]; templates: Map<string, Template> };
+type Detail = {
+  s: Submission;
+  queue: QueueRow[];
+  history: HistoryRow[];
+  changes: ChangeRequest[];
+  payments: Payment[];
+  templates: Map<string, Template>;
+  referredBy: { name: string; business_name: string | null } | null;
+};
 type Note = { message?: string; error?: string };
 
 const FILE_LINK_DAYS = 7;
@@ -40,9 +49,14 @@ async function fetchDetail(id: string): Promise<{ detail?: Detail; error?: strin
   const err = s.error || queue.error || history.error || changes.error || payments.error || templates.error;
   if (err) return { error: err.message };
   if (!s.data) return { error: "This submission doesn’t exist." };
+  const sub = s.data as unknown as Submission;
+  const ref = isReferral(sub)
+    ? await db.from("ryzon_landing_referrers").select("name,business_name").eq("code", sub.utm_campaign!).maybeSingle()
+    : null;
   return {
     detail: {
-      s: s.data as unknown as Submission,
+      s: sub,
+      referredBy: (ref?.data as Detail["referredBy"]) ?? null,
       queue: (queue.data ?? []) as QueueRow[],
       history: (history.data ?? []) as HistoryRow[],
       changes: (changes.data ?? []) as ChangeRequest[],
@@ -126,7 +140,7 @@ export function SubmissionDetail({ id }: { id: string }) {
           {isFiles && <FilesPanel s={s} action={action} />}
           <EmailsPanel detail={detail} action={action} />
           <ChangesPanel changes={detail.changes} action={action} />
-          <AnswersPanel s={s} />
+          <AnswersPanel s={s} referredBy={detail.referredBy} />
         </div>
         <div className="space-y-6">
           <StatusPanel key={`${s.status}-${s.live_url ?? ""}`} s={s} action={action} />
@@ -470,8 +484,18 @@ function ChangesPanel({ changes, action }: { changes: ChangeRequest[]; action: A
   );
 }
 
-function AnswersPanel({ s }: { s: Submission }) {
+function AnswersPanel({ s, referredBy }: { s: Submission; referredBy: Detail["referredBy"] }) {
   const rows: [string, ReactNode][] = [
+    [
+      "Referred by",
+      isReferral(s) ? (
+        <Link key="r" href="/admin/referrers" className="inline-flex min-h-11 items-center font-bold underline underline-offset-4">
+          {referredBy ? `${referredBy.name}${referredBy.business_name ? ` (${referredBy.business_name})` : ""}` : s.utm_campaign} · $50 credit if they pay
+        </Link>
+      ) : (
+        ""
+      ),
+    ],
     ["Name", s.name],
     ["Email", <a key="e" href={`mailto:${s.email}`} className="inline-flex min-h-11 items-center break-all underline underline-offset-4">{s.email}</a>],
     ["Phone", s.phone ? <a key="p" href={`tel:${s.phone}`} className="inline-flex min-h-11 items-center break-all underline underline-offset-4">{s.phone}</a> : ""],
