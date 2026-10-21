@@ -15,7 +15,7 @@ export function AuthorBox({ post }: { post: BlogPost }) {
     <aside aria-label="About the author" className="mt-12 flex gap-4 rounded-card border-2 border-ink bg-surface p-5">
       {post.author_avatar_url ? (
         // eslint-disable-next-line @next/next/no-img-element -- small remote avatar
-        <img src={post.author_avatar_url} alt="" width={56} height={56} loading="lazy" className="h-14 w-14 shrink-0 rounded-full border-2 border-ink object-cover" />
+        <img src={post.author_avatar_url} alt="" width={56} height={56} loading="lazy" className="h-14 w-14 shrink-0 rounded-ui object-cover" />
       ) : (
         <span aria-hidden="true" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-ui bg-ink font-display text-xl font-heavy text-on-ink">
           {post.author_name.charAt(0)}

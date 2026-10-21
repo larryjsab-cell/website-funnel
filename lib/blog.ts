@@ -144,7 +144,13 @@ export function buildArticleSchema(post: BlogPost) {
     keywords: [post.focus_keyword, ...(post.secondary_keywords ?? []), ...(post.tags ?? [])].filter(Boolean).join(", ") || undefined,
     wordCount: stripTags(post.content).split(/\s+/).filter(Boolean).length,
     inLanguage: "en-US",
-    author: { "@type": post.author_slug ? "Person" : "Organization", name: post.author_name, url: siteUrl },
+    // A named person when there is one; the company team otherwise.
+    author: {
+      "@type": post.author_slug && !/\bteam\b/i.test(post.author_name) ? "Person" : "Organization",
+      name: post.author_name,
+      url: siteUrl,
+      image: post.author_avatar_url || undefined,
+    },
     publisher: { "@type": "Organization", "@id": `${siteUrl}/#business`, name: site.business.name, url: `${siteUrl}/` },
   };
 }
