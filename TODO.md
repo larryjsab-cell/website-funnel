@@ -6,7 +6,7 @@ Every item below appears in the site or config. Nothing here was invented.
 - ZIP 48382 · cancel anytime (no design files before year one) · edits $20/hr or free for simple tasks · demo changes need a plan unless it's a completely different design · $0 upfront on all plans (limited time) · no socials · no logo yet (wordmark in use)
 
 ## Business facts
-- [ ] `[SITE_URL]`: production domain
+- [x] Domain: https://ryzonautomationllc.com (site config, canonicals, sitemap, robots, structured data, llms.txt and email links all use it)
 - [ ] Confirm state is **MI** (inferred from Commerce Township + the 248 area code)
 - [ ] Logo file when ready (a text wordmark is in use)
 - [ ] **Limited-time $0 upfront:** is there an end date? Is Starter's $0 design fee permanent after it ends? The site currently says "Limited-time offer: $0 upfront on every plan" with no date.
@@ -40,15 +40,17 @@ Owner to-dos:
 - [ ] In Netlify, mark `STRIPE_SECRET_KEY` and `RYZON_EDGE_TOKEN` as secret (the API used here couldn't save secrets).
 - [ ] Optional hardening: move the two tokens in the n8n email sender into an n8n Header Auth credential; turn on Supabase Auth leaked-password protection; move the `pg_net` extension to the `extensions` schema from the Supabase dashboard.
 - [ ] Not built: Cloudflare Turnstile on the request form (needs a Cloudflare site key; the honeypot is in place), email open/click tracking (Gmail has no event webhook), file attachments on the change form (customers reply with files instead).
-- [ ] When the real domain is live: update `site_url` in `ryzon_landing_config` (email links) and `[SITE_URL]` in `site.config.json`.
+- [x] `site_url` in `ryzon_landing_config` (email links) and `site.url` in `site.config.json` set to https://ryzonautomationllc.com.
+- [ ] Stripe webhook still points at `https://ryzon-funnel-preview.netlify.app/api/stripe/webhook`. Payments are also recorded on the success page, so it is a backup, but re-register it on the domain: `POST https://ryzonautomationllc.com/api/stripe/setup` with the `x-ryzon-token` header (do this with the live keys at launch), then delete the old endpoint in Stripe → Developers → Webhooks.
 
 ## Legal (/privacy and /terms are real pages, draft copy from your terms; have a lawyer review)
 - [ ] Privacy: analytics provider (once chosen), how long form submissions are kept
 - [ ] Terms: billing method and renewal terms, confirm Michigan as governing law
 
 ## Launch (Phases 8–12)
-- [x] Netlify plan upgraded; Phases 8–12 are live on https://ryzon-funnel-preview.netlify.app.
-- [ ] Once the domain is set, submit `https://<domain>/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
+- [x] Netlify plan upgraded; the site is live on https://ryzonautomationllc.com (Netlify project `ryzon-funnel-preview`).
+- [ ] Add https://ryzonautomationllc.com in Google Search Console (Domain property, DNS TXT record) and Bing Webmaster Tools (can import from Search Console), then submit `https://ryzonautomationllc.com/sitemap.xml` in both.
+- [ ] Google Business Profile: set the website to https://ryzonautomationllc.com.
 - Security headers (CSP, HSTS, nosniff, frame-deny, referrer and permissions policies) are set in `next.config.ts`. A new third-party script, font or API needs its origin added to the CSP there.
 - `/llms.txt` is generated from `site.config.json` and the content files, so it updates itself.
 - Forms work without JavaScript: they post to `/api/lead` and land on `/thank-you` (noindex).

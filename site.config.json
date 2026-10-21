@@ -31,7 +31,7 @@
     "logo": null
   },
   "site": {
-    "url": "[SITE_URL]",
+    "url": "https://ryzonautomationllc.com",
     "locale": "en_US",
     "analyticsId": "[ANALYTICS_ID]",
     "formEndpoint": "/api/lead"
