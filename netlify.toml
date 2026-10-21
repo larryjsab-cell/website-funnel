@@ -1,5 +1,6 @@
 [build]
-  command = "npm run build"
+  # After the build, point the Stripe webhook at the site's domain (production only).
+  command = "npm run build && node scripts/stripe-webhook.mjs"
   publish = ".next"
 
 [build.environment]

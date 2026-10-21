@@ -41,7 +41,7 @@ Owner to-dos:
 - [ ] Optional hardening: move the two tokens in the n8n email sender into an n8n Header Auth credential; turn on Supabase Auth leaked-password protection; move the `pg_net` extension to the `extensions` schema from the Supabase dashboard.
 - [ ] Not built: Cloudflare Turnstile on the request form (needs a Cloudflare site key; the honeypot is in place), email open/click tracking (Gmail has no event webhook), file attachments on the change form (customers reply with files instead).
 - [x] `site_url` in `ryzon_landing_config` (email links) and `site.url` in `site.config.json` set to https://ryzonautomationllc.com.
-- [ ] Stripe webhook still points at `https://ryzon-funnel-preview.netlify.app/api/stripe/webhook`. Payments are also recorded on the success page, so it is a backup, but re-register it on the domain: `POST https://ryzonautomationllc.com/api/stripe/setup` with the `x-ryzon-token` header (do this with the live keys at launch), then delete the old endpoint in Stripe → Developers → Webhooks.
+- [x] Stripe webhook: every production deploy runs `scripts/stripe-webhook.mjs`, which points it at https://ryzonautomationllc.com/api/stripe/webhook and disables the old netlify.app one (look for `[stripe-webhook]` in the Netlify deploy log). Switching to live keys and redeploying sets up the live-mode webhook the same way.
 
 ## Legal (/privacy and /terms are real pages, draft copy from your terms; have a lawyer review)
 - [ ] Privacy: analytics provider (once chosen), how long form submissions are kept
