@@ -53,7 +53,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-canvas">
       <header className="border-b-2 border-ink bg-surface">
-        {/* Phones: title + Account on one row, the four views as a full-width tab bar below. */}
+        {/* Phones: title + Account on one row, the views as a full-width tab bar below. */}
         <div className="mx-auto grid max-w-page grid-cols-[1fr_auto] items-center gap-x-3 gap-y-2 px-4 py-2 md:flex md:justify-between md:py-3">
           <Link href="/admin" className="inline-flex min-h-11 items-center font-display text-lg font-heavy display-tight">
             Ryzon pipeline
@@ -174,27 +174,31 @@ function AccountMenu({ email }: { email: string }) {
   );
 }
 
+// [id, label]. Views of the pipeline live on /admin?view=; the others are their own pages.
 const VIEWS = [
   ["today", "Today"],
   ["board", "Board"],
   ["table", "Table"],
   ["referrers", "Referrers"],
+  ["reviews", "Reviews"],
 ] as const;
+const PAGES: string[] = ["referrers", "reviews"];
 
 function AdminTabs() {
   const pathname = usePathname();
   const view = useSearchParams().get("view") ?? "today";
   return (
-    <nav aria-label="Dashboard" className="col-span-2 grid grid-cols-2 overflow-hidden sm:grid-cols-4 rounded-ui border-2 border-ink md:ml-auto md:flex md:gap-2 md:border-0">
+    <nav aria-label="Dashboard" className="col-span-2 flex flex-wrap overflow-hidden rounded-ui border-2 border-ink md:ml-auto md:flex-nowrap md:gap-2 md:border-0">
       {VIEWS.map(([id, label]) => {
-        const href = id === "referrers" ? "/admin/referrers" : `/admin?view=${id}`;
-        const current = id === "referrers" ? pathname === "/admin/referrers" : pathname === "/admin" && view === id;
+        const page = PAGES.includes(id);
+        const href = page ? `/admin/${id}` : `/admin?view=${id}`;
+        const current = page ? pathname === `/admin/${id}` : pathname === "/admin" && view === id;
         return (
           <Link
             key={id}
             href={href}
             aria-current={current ? "page" : undefined}
-            className={`flex min-h-11 min-w-0 items-center justify-center px-1 font-display text-sm font-bold underline-offset-4 sm:px-3 md:rounded-ui ${current ? "bg-ink text-on-ink" : "hover:underline"}`}
+            className={`flex min-h-11 flex-auto items-center justify-center whitespace-nowrap px-3 font-display text-sm font-bold underline-offset-4 md:flex-none md:rounded-ui ${current ? "bg-ink text-on-ink" : "hover:underline"}`}
           >
             {label}
           </Link>

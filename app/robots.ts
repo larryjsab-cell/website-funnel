@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/site";
 
 /** Private, per-customer and API paths. Everything else is open to search and AI crawlers. */
-const PRIVATE = ["/admin", "/api/", "/go-live", "/changes", "/book", "/unsubscribe", "/thank-you"];
+const PRIVATE = ["/admin", "/api/", "/go-live", "/changes", "/book", "/unsubscribe", "/thank-you", "/review"];
 
 /**
  * AI assistants and answer engines we want to read the site, so people asking

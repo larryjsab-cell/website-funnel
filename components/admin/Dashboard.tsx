@@ -16,32 +16,36 @@ import {
   SUBMISSION_COLUMNS,
   toCsv,
   when,
+  REVIEW_COLUMNS,
   type ChangeRequest,
+  type Review,
   type Status,
   type Submission,
 } from "@/lib/admin/model";
 import { adminRpc, supabase } from "@/lib/admin/supabase";
 
-type FailedEmail = { id: number; submission_id: string | null; template_key: string; last_error: string | null; updated_at: string };
+type FailedEmail = { id: number; submission_id: string | null; review_id: string | null; template_key: string; last_error: string | null; updated_at: string };
 
-type Data = { subs: Submission[]; calls: ChangeRequest[]; failed: FailedEmail[]; loadedAt: number };
+type Data = { subs: Submission[]; calls: ChangeRequest[]; failed: FailedEmail[]; unhappy: Review[]; loadedAt: number };
 
 async function fetchDashboard(): Promise<{ data?: Data; error?: string }> {
   const db = supabase();
   const loadedAt = Date.now();
   const since = new Date(loadedAt - 2 * 3_600_000).toISOString();
-  const [subs, calls, failed] = await Promise.all([
+  const [subs, calls, failed, unhappy] = await Promise.all([
     db.from("ryzon_landing_submissions").select(SUBMISSION_COLUMNS).order("created_at", { ascending: false }).limit(2000),
     db.from("ryzon_landing_change_requests").select("*").eq("kind", "call").eq("call_status", "scheduled").gte("call_time", since).order("call_time"),
-    db.from("ryzon_landing_email_queue").select("id,submission_id,template_key,last_error,updated_at").eq("state", "failed").order("updated_at", { ascending: false }).limit(50),
+    db.from("ryzon_landing_email_queue").select("id,submission_id,review_id,template_key,last_error,updated_at").eq("state", "failed").order("updated_at", { ascending: false }).limit(50),
+    db.from("ryzon_landing_reviews").select(REVIEW_COLUMNS).eq("status", "feedback").eq("wants_contact", true).order("feedback_at"),
   ]);
-  const err = subs.error || calls.error || failed.error;
+  const err = subs.error || calls.error || failed.error || unhappy.error;
   if (err) return { error: err.message };
   return {
     data: {
       subs: (subs.data ?? []) as unknown as Submission[],
       calls: (calls.data ?? []) as ChangeRequest[],
       failed: (failed.data ?? []) as FailedEmail[],
+      unhappy: (unhappy.data ?? []) as unknown as Review[],
       loadedAt,
     },
   };
@@ -92,7 +96,7 @@ export function Dashboard() {
 
 // ---------------------------------------------------------------- Today
 
-function TodayView({ subs, calls, failed, loadedAt }: Data) {
+function TodayView({ subs, calls, failed, unhappy, loadedAt }: Data) {
   const byId = useMemo(() => new Map(subs.map((s) => [s.id, s])), [subs]);
   const oldestFirst = (a: Submission, b: Submission) => a.last_status_at.localeCompare(b.last_status_at);
   const pick = (statuses: Status[]) => subs.filter((s) => statuses.includes(s.status)).sort(oldestFirst);
@@ -129,6 +133,21 @@ function TodayView({ subs, calls, failed, loadedAt }: Data) {
         })}
       </TodayGroup>
 
+      {unhappy.length > 0 && (
+        <TodayGroup title="Unhappy customers to contact" hint="They rated 1–3 stars and asked us to reach out." count={unhappy.length}>
+          {unhappy.map((r) => (
+            <li key={r.id} className="border-t border-rule py-3 first:border-t-0">
+              <Link href="/admin/reviews" className="font-bold underline underline-offset-4">
+                {r.name || r.email}
+              </Link>{" "}
+              <span className="text-sm text-muted">
+                {r.rating} of 5 stars · {when(r.feedback_at)}
+              </span>
+            </li>
+          ))}
+        </TodayGroup>
+      )}
+
       {groups.map((g) => (
         <TodayGroup key={g.title} title={g.title} hint={g.hint} count={g.rows.length}>
           {g.rows.map((s) => (
@@ -143,8 +162,8 @@ function TodayView({ subs, calls, failed, loadedAt }: Data) {
             const s = f.submission_id ? byId.get(f.submission_id) : undefined;
             return (
               <li key={f.id} className="border-t border-rule py-3 first:border-t-0">
-                <Link href={f.submission_id ? `/admin/s/${f.submission_id}` : "/admin/referrers"} className="font-bold underline underline-offset-4">
-                  {s ? displayName(s) : f.submission_id ? "Unknown" : "A referrer"}
+                <Link href={f.submission_id ? `/admin/s/${f.submission_id}` : f.review_id ? "/admin/reviews" : "/admin/referrers"} className="font-bold underline underline-offset-4">
+                  {s ? displayName(s) : f.submission_id ? "Unknown" : f.review_id ? "A review email" : "A referrer"}
                 </Link>
                 <p className="text-sm">
                   {f.template_key} · {f.last_error}

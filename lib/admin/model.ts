@@ -62,6 +62,7 @@ export type QueueRow = {
   id: number;
   submission_id: string | null;
   referrer_id: string | null;
+  review_id: string | null;
   template_key: string;
   send_at: string;
   state: "pending" | "sending" | "sent" | "cancelled" | "failed";
@@ -112,7 +113,7 @@ export type Payment = {
   created_at: string;
 };
 
-export type Template = { key: string; recipient: "customer" | "admin" | "referrer"; is_promotional: boolean; subject: string; description: string | null };
+export type Template = { key: string; recipient: "customer" | "admin" | "referrer" | "reviewer";is_promotional: boolean; subject: string; description: string | null };
 
 export type Referrer = {
   id: string;
@@ -126,6 +127,33 @@ export type Referrer = {
   created_at: string;
   updated_at: string;
 };
+
+export type Review = {
+  id: string;
+  submission_id: string | null;
+  source: "manual" | "converted";
+  name: string | null;
+  email: string;
+  status: "sent" | "rated" | "feedback" | "resolved";
+  rating: number | null;
+  feedback: string | null;
+  wants_contact: boolean | null;
+  platform_clicked: string | null;
+  platform_clicked_at: string | null;
+  rated_at: string | null;
+  feedback_at: string | null;
+  resolved_at: string | null;
+  resolution_note: string | null;
+  created_at: string;
+};
+
+export const REVIEW_COLUMNS =
+  "id,submission_id,source,name,email,status,rating,feedback,wants_contact,platform_clicked,platform_clicked_at,rated_at,feedback_at,resolved_at,resolution_note,created_at";
+
+/** Someone who rated 1-3 stars, asked to be contacted, and hasn't been sorted out yet. */
+export const needsContact = (r: Pick<Review, "status" | "wants_contact">) => r.status === "feedback" && r.wants_contact === true;
+
+export const stars = (n: number | null) => (n ? "★".repeat(n) + "☆".repeat(5 - n) : "");
 
 /** Leads from a referral link carry utm_source=referral and utm_campaign=<code>. */
 export const isReferral = (s: Pick<Submission, "utm_source" | "utm_campaign">) => s.utm_source === "referral" && !!s.utm_campaign;

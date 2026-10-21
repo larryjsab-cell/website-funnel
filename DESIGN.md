@@ -166,4 +166,9 @@ Every style must pass WCAG AA contrast for text, hover and disabled states. `a11
   2. The link opens the full sales page with "Jane sent you" above the headline. It is noindex, with the home page as canonical.
   3. Leads from it carry `utm_source=referral`, `utm_medium=referrer`, `utm_campaign=<code>`, also when the visitor comes back on their own within 30 days.
   4. Turning a link off sends it to the home page and stops its emails. Credits are tracked by hand: the card shows paid leads and $50 per paid lead.
+- **Review requests:** dashboard → Reviews.
+  1. Paste names and emails (one per line) and press Send. Anyone asked in the last 30 days is skipped. Every customer also gets a request automatically the moment they pay (`ryzon_landing_review_on_convert`).
+  2. The email links to `/review?t=<token>` with one-tap star buttons. The rating only saves when they press Send on the page, so email link scanners can't rate for them.
+  3. 4–5 stars: buttons to post on Google (and Facebook or Yelp if set under "Where happy customers post"). Clicks go through `/api/review/go`, which records the platform.
+  4. 1–3 stars: "what could we have done better?" and "would you like us to contact you?". Yes puts them under "Unhappy customers to contact" (Reviews and Today) and emails you (`review_contact_admin`). No ends it.
 - **A new third-party script, font or API:** add its origin to the Content-Security-Policy in `next.config.ts`.

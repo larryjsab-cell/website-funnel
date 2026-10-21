@@ -43,6 +43,8 @@ Owner to-dos:
 - [x] `site_url` in `ryzon_landing_config` (email links) and `site.url` in `site.config.json` set to https://ryzonautomationllc.com.
 - [x] Stripe webhook: every production deploy runs `scripts/stripe-webhook.mjs`, which points it at https://ryzonautomationllc.com/api/stripe/webhook and disables the old netlify.app one (look for `[stripe-webhook]` in the Netlify deploy log). Switching to live keys and redeploying sets up the live-mode webhook the same way.
 
+- [ ] **Reviews:** add your Google review link in the dashboard (Reviews → Where happy customers post). In Google Business Profile choose "Ask for reviews" and copy the link. Until it's set, happy customers see a thank-you without a Google button.
+
 ## Legal (/privacy and /terms are real pages, draft copy from your terms; have a lawyer review)
 - [ ] Privacy: analytics provider (once chosen), how long form submissions are kept
 - [ ] Terms: billing method and renewal terms, confirm Michigan as governing law
