@@ -1,0 +1,14 @@
+# Blog image prompts
+
+Made with Higgsfield GPT Image 2.5 (3:2, 1K; medium quality for the two with phones). Each is cropped to 16:10 (1024x640) and saved as WebP in `public/images/blog/<slug>.webp`. They are attached to posts by `supabase/seed/ryzon_landing_blog_images.sql`.
+
+Every prompt ends with the same style line so the set matches: *Natural documentary photography, realistic colors, shallow depth of field, no text, no logos.* For new images, keep words out of the picture (AI tools garble them) and keep the subject in the middle 80% so link previews don't crop it.
+
+| Post | Prompt |
+|---|---|
+| local-seo-for-small-business | A small business owner standing in the doorway of a bright neighborhood storefront, smiling, holding a smartphone in one hand with the screen turned toward the camera. The phone screen is clearly lit and visible, showing a colorful street map app with several red location pins and a highlighted pin in the center. Natural, relaxed hand with correct anatomy: four fingers and a thumb, fingers wrapped around the side of the phone, nothing covering the screen. Warm morning light, a quiet main street with other shops softly blurred behind, candid, not posed. |
+| contractor-website-design | A plumber in work clothes kneeling beside an open toolbox in a customer's driveway, checking a new job request on a smartphone, a clean white work van parked behind with no lettering, late afternoon sun, suburban home in the background. |
+| website-maintenance-cost | Overhead view of a wooden cafe counter with a laptop showing a simple website dashboard, a small paper notebook with handwritten figures, a calculator and a cup of coffee, soft window light, tidy and calm. |
+| local-service-business-website-checklist | A landscaper in a plain green polo shirt with no logo standing on a freshly mowed front lawn, holding a smartphone out to a smiling homeowner so both can see it. The phone screen faces the camera and is clearly lit, showing a clean small business website: a large photo of a green lawn across the top, a bold button below it and a few simple content blocks. Natural hands with correct anatomy, the landscaper holds the phone by its edges with nothing covering the screen. Bright daylight, a house in the soft background. |
+| do-i-need-a-website-if-i-have-a-facebook-page | A hair salon owner at the front desk comparing two devices, a tablet and a smartphone side by side on the counter, thoughtful expression, salon chairs and plants softly blurred behind, warm indoor lighting. |
+| how-much-does-a-small-business-website-cost | An auto repair shop owner sitting at a small desk in the shop office, reviewing a laptop with a calm, decided expression, a mug and invoices on the desk, garage bay with a car on a lift visible through an office window, natural light. |
