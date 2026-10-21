@@ -110,7 +110,9 @@ function withToc(post: BlogPost): BlogPost {
     found.push({ id, text: stripTags(inner), level: Number(level) });
     return `<h${level}${existing ? attrs : `${attrs} id="${id}"`}>${inner}</h${level}>`;
   });
-  const toc = post.table_of_contents?.length ? post.table_of_contents : found;
+  // Long posts list main sections only, so the sidebar stays scannable.
+  const outline = found.length > 14 ? found.filter((t) => t.level === 2) : found;
+  const toc = post.table_of_contents?.length ? post.table_of_contents : outline;
   const words = stripTags(content).split(/\s+/).filter(Boolean).length;
   return { ...post, content, table_of_contents: toc, reading_time_minutes: post.reading_time_minutes ?? Math.max(1, Math.round(words / 230)) };
 }
@@ -144,6 +146,27 @@ export function buildArticleSchema(post: BlogPost) {
     inLanguage: "en-US",
     author: { "@type": post.author_slug ? "Person" : "Organization", name: post.author_name, url: siteUrl },
     publisher: { "@type": "Organization", "@id": `${siteUrl}/#business`, name: site.business.name, url: `${siteUrl}/` },
+  };
+}
+
+/**
+ * FAQPage data from the post's FAQ section: an h2 with id="faq", then each h3 is a
+ * question and the text up to the next h3 is its answer. Null when there is none.
+ */
+export function buildFaqSchema(post: Pick<BlogPost, "content" | "slug" | "canonical_url">) {
+  const start = post.content.search(/<h2[^>]*\sid=["']faq["'][^>]*>/i);
+  if (start < 0) return null;
+  const rest = post.content.slice(start).replace(/^<h2[\s\S]*?<\/h2>/i, "");
+  const section = rest.split(/<h2[\s>]/i)[0];
+  const questions = [...section.matchAll(/<h3[^>]*>([\s\S]*?)<\/h3>([\s\S]*?)(?=<h3[\s>]|$)/gi)]
+    .map(([, q, a]) => ({ q: stripTags(q), a: stripTags(a.replace(/<\/(p|li)>/gi, " ")).replace(/\s+/g, " ") }))
+    .filter((x) => x.q && x.a);
+  if (!questions.length) return null;
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${postUrl(post)}#faq`,
+    mainEntity: questions.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
   };
 }
 

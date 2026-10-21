@@ -8,6 +8,7 @@ import { Container } from "@/components/ui/Container";
 import {
   buildArticleSchema,
   buildBreadcrumbSchema,
+  buildFaqSchema,
   categoryLabel,
   formatDate,
   getAllPublishedPosts,
@@ -68,11 +69,14 @@ export default async function BlogPostPage({ params }: Params) {
   if (!post) notFound();
   const related = await getRelatedPosts(post);
   const toc = post.table_of_contents ?? [];
+  const faq = buildFaqSchema(post);
 
   return (
     <>
-      <JsonLd data={post.schema_markup ?? buildArticleSchema(post)} />
+      <JsonLd data={buildArticleSchema(post)} />
       <JsonLd data={buildBreadcrumbSchema(post)} />
+      {faq && <JsonLd data={faq} />}
+      {post.schema_markup && <JsonLd data={post.schema_markup} />}
 
       <article>
         <header className="border-b-2 border-ink bg-band text-on-band">

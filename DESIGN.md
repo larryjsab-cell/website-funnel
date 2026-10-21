@@ -160,7 +160,7 @@ Every style must pass WCAG AA contrast for text, hover and disabled states. `a11
   1. `content` is HTML. Use `<h2>`/`<h3>` for sections; the table of contents and heading ids are built from them, and reading time is computed when left empty.
   2. Set `is_published = true`. `published_at` fills itself the first time.
   3. `/blog`, the post page and the sitemap pick it up within 30 minutes (ISR). Only published rows are readable with the public key.
-  4. Optional fields: `featured_image_url` (and its alt), `meta_title`/`meta_description`, `internal_links`, `cta_text`/`cta_href` (defaults to the free demo), `schema_markup` to override the generated BlogPosting.
+  4. Optional fields: `featured_image_url` (and its alt), `meta_title`/`meta_description`, `internal_links`, `cta_text`/`cta_href` (defaults to the free demo), `schema_markup` for extra structured data (added next to the generated BlogPosting). An `<h2 id="faq">` section with `<h3>` questions gets FAQPage data automatically.
 - **A referrer:** dashboard → Referrers → Add a referrer.
   1. They get a link like `/r/jane-k3p9` and, unless unticked, the `referral_link` email (their link, how it works, a $50 credit per signup, a message to copy).
   2. The link opens the full sales page with "Jane sent you" above the headline. It is noindex, with the home page as canonical.
