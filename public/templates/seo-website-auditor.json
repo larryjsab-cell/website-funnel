@@ -1,0 +1,1238 @@
+{
+  "name": "SEO Website Auditor",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Free SEO Website Audit",
+        "formDescription": "Enter any website. We figure out the business, location and main keyword from the site itself, then run an in-depth SEO audit with a step-by-step checklist. Takes about 2 to 3 minutes, so keep this page open.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Website URL",
+              "placeholder": "example.com",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Your email",
+              "fieldType": "email",
+              "placeholder": "you@business.com (optional)"
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false,
+          "buttonLabel": "Run my audit",
+          "path": "seo-audit"
+        }
+      },
+      "id": "88a6c48f-8b08-4d93-83d0-0a9d170cb7ae",
+      "name": "Audit Form",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -96,
+        0
+      ],
+      "webhookId": "bec45808-b713-4d13-b796-e22b19b96451"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Final business profile: AI detection + fallbacks. Every later step (Google search, Business Profile, report) uses this.\nconst s = $('Read URL').first().json;\nconst clues = $('Detection Prompt').first().json;\nlet r = $input.first().json;\nif (typeof r.data === 'string') { try { r = JSON.parse(r.data); } catch (e) {} }\nconst raw = String((((r.choices || [])[0] || {}).message || {}).content || '');\nlet d = {};\ntry { d = JSON.parse((raw.match(/\\{[\\s\\S]*\\}/) || ['{}'])[0]); } catch (e) { d = {}; }\nconst ldName = (String(clues.ld || '').match(/\"name\"\\s*:\\s*\"([^\"]{2,80})\"/) || [])[1] || '';\nconst ldCity = (String(clues.ld || '').match(/\"addressLocality\"\\s*:\\s*\"([^\"]{2,60})\"/) || [])[1] || '';\nconst ldRegion = (String(clues.ld || '').match(/\"addressRegion\"\\s*:\\s*\"([^\"]{2,40})\"/) || [])[1] || '';\nconst titleName = String(clues.title || '').split(/\\s[|\\-–:]\\s/).map((x) => x.trim()).filter(Boolean).pop() || '';\nconst business = String(d.business_name || clues.og_site_name || ldName || titleName || s.business).trim();\nconst city = String(d.city || ldCity || '').trim();\nconst region = String(d.region || ldRegion || '').trim();\nconst keyword = String(d.main_keyword || '').toLowerCase().replace(/\\s+/g, ' ').trim();\nconst isLocal = !!city; // a city on the site = local business (map pack + city in the Google search)\nconst cityLabel = city ? city + (region ? ', ' + region : '') : '';\nconst serpKeyword = keyword ? (isLocal ? keyword + ' ' + city : keyword) : business;\nreturn [{ json: Object.assign({}, s, {\n  business: business, city: cityLabel, keyword: keyword, serp_keyword: serpKeyword, is_local: isLocal,\n  industry: String(d.industry || ''), services: Array.isArray(d.services) ? d.services.slice(0, 6) : [], detect_confidence: d.confidence || (raw ? 'low' : 'none (AI reply failed)')\n}) }];\n"
+      },
+      "id": "e9e90ceb-3e7c-4bc9-8eed-27f25f3313e2",
+      "name": "Settings",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $(\"Settings\").first().json.robots_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (compatible; SEOAuditBot/1.0)"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {
+              "maxRedirects": 5
+            }
+          },
+          "response": {
+            "response": {
+              "neverError": true,
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 20000
+        }
+      },
+      "id": "a59938bd-d8e4-4e0a-9316-5be028f863ae",
+      "name": "Fetch robots.txt",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        528,
+        128
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "={{ $(\"Settings\").first().json.sitemap_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (compatible; SEOAuditBot/1.0)"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {
+              "maxRedirects": 5
+            }
+          },
+          "response": {
+            "response": {
+              "neverError": true,
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 20000
+        }
+      },
+      "id": "2e48ae3d-d58a-4907-9a0d-822c979432f3",
+      "name": "Fetch Sitemap",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        752,
+        128
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Picks the homepage + up to 5 important pages from the sitemap (service, about, contact, pricing first) to audit.\nconst s = $('Settings').first().json;\nconst txt = (n) => { try { const j = $(n).first().json || {}; return typeof j.data === 'string' ? j.data : ''; } catch (e) { return ''; } };\nlet xml = txt('Fetch Sitemap');\nconst locs = (xml.match(/<loc>\\s*([^<]+?)\\s*<\\/loc>/gi) || []).map((l) => l.replace(/<\\/?loc>/gi, '').trim());\nconst pages = locs.filter((u) => !/\\.xml(\\?|$)/i.test(u) && u.toLowerCase().indexOf(s.domain) !== -1);\nconst pathOf = (u) => ((u.match(/^https?:\\/\\/[^\\/]+(\\/[^?#]*)?/i) || [])[1] || '/');\nconst weight = (u) => {\n  const p = pathOf(u).toLowerCase();\n  let w = 10 - p.split('/').filter(Boolean).length * 2;\n  if (/(service|pricing|price|plans|about|contact|location|areas?|book|quote|menu|products?)/.test(p)) w += 6;\n  if (/(blog|news|tag|category|author|page\\/\\d|privacy|terms|cookie|login|cart|wp-)/.test(p)) w -= 8;\n  return w;\n};\nconst seen = {};\nconst picked = [s.home];\nseen[s.home.replace(/\\/+$/, '')] = 1;\npages.sort((a, b) => weight(b) - weight(a)).forEach((u) => {\n  const k = u.replace(/\\/+$/, '');\n  if (picked.length < 6 && !seen[k] && weight(u) > 0) { seen[k] = 1; picked.push(u); }\n});\nreturn picked.map((u) => ({ json: { url: u, sitemap_urls: pages.length } }));\n"
+      },
+      "id": "768e3677-4825-4ae5-8bf7-51e753d378ab",
+      "name": "Pick Pages To Audit",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.dataforseo.com/v3/on_page/instant_pages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify([{ url: $json.url, enable_javascript: true, load_resources: true, enable_browser_rendering: true }]) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 150000
+        }
+      },
+      "id": "51505258-c1b0-4b6a-bf75-0c64bf0b81f8",
+      "name": "DataForSEO: Audit Pages",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1184,
+        128
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "={{ \"https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=\" + encodeURIComponent($(\"Settings\").first().json.home) + \"&strategy=mobile&category=performance&category=seo&category=accessibility&category=best-practices\" + ($(\"Settings\").first().json.psi_key ? \"&key=\" + $(\"Settings\").first().json.psi_key : \"\") }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 180000
+        }
+      },
+      "id": "ec623a70-c610-4527-aa5d-756d0735e61d",
+      "name": "PageSpeed: Mobile",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1408,
+        128
+      ],
+      "executeOnce": true,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "={{ \"https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=\" + encodeURIComponent($(\"Settings\").first().json.home) + \"&strategy=desktop&category=performance&category=seo&category=accessibility&category=best-practices\" + ($(\"Settings\").first().json.psi_key ? \"&key=\" + $(\"Settings\").first().json.psi_key : \"\") }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 180000
+        }
+      },
+      "id": "54c0016b-2c26-4f27-832d-98c20be57d85",
+      "name": "PageSpeed: Desktop",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1632,
+        128
+      ],
+      "executeOnce": true,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.dataforseo.com/v3/dataforseo_labs/google/domain_rank_overview/live",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify([{ target: $(\"Settings\").first().json.domain, location_code: $(\"Settings\").first().json.location_code, language_code: $(\"Settings\").first().json.language_code }]) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 150000
+        }
+      },
+      "id": "bc014e81-3df7-4d8f-bc6a-d5d1e1884bb7",
+      "name": "DataForSEO: Domain Overview",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        960,
+        128
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.dataforseo.com/v3/dataforseo_labs/google/ranked_keywords/live",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify([{ target: $(\"Settings\").first().json.domain, location_code: $(\"Settings\").first().json.location_code, language_code: $(\"Settings\").first().json.language_code, limit: 200, order_by: [\"keyword_data.keyword_info.search_volume,desc\"] }]) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 150000
+        }
+      },
+      "id": "9ed0f3e7-7bf0-43b0-a754-9c89f0da992c",
+      "name": "DataForSEO: Ranked Keywords",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1184,
+        128
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.dataforseo.com/v3/dataforseo_labs/google/competitors_domain/live",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify([{ target: $(\"Settings\").first().json.domain, location_code: $(\"Settings\").first().json.location_code, language_code: $(\"Settings\").first().json.language_code, limit: 20 }]) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 150000
+        }
+      },
+      "id": "ab1a9ff7-0733-4463-ad09-a4a2b0898d3a",
+      "name": "DataForSEO: Competitors",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1408,
+        128
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.dataforseo.com/v3/serp/google/organic/live/advanced",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify([{ keyword: $(\"Settings\").first().json.serp_keyword, location_code: $(\"Settings\").first().json.location_code, language_code: $(\"Settings\").first().json.language_code, device: \"mobile\", depth: 100 }]) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 150000
+        }
+      },
+      "id": "96cec85c-b0a7-4e93-8c59-74be63a4e62f",
+      "name": "DataForSEO: Google Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1632,
+        128
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.dataforseo.com/v3/business_data/google/my_business_info/live",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify([{ keyword: ($(\"Settings\").first().json.business + \" \" + $(\"Settings\").first().json.city).trim(), location_code: $(\"Settings\").first().json.location_code, language_code: $(\"Settings\").first().json.language_code }]) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 150000
+        }
+      },
+      "id": "5822911b-a463-4b2f-9655-3cc5cb07484e",
+      "name": "DataForSEO: Google Business Profile",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1840,
+        128
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.dataforseo.com/v3/backlinks/summary/live",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify([{ target: $(\"Settings\").first().json.domain, include_subdomains: true }]) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 150000
+        }
+      },
+      "id": "844dbc50-a4d0-4bc8-afdd-9936cf61c5c3",
+      "name": "DataForSEO: Backlinks",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2064,
+        128
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Turns all the raw data (DataForSEO + Google PageSpeed) into scores, findings and a prioritized fix list.\n// Then builds the prompt for the AI strategist. No AI here: every number comes from the APIs.\nconst s = $('Settings').first().json;\nconst parse = (j) => { let r = j || {}; if (typeof r.data === 'string') { try { r = JSON.parse(r.data); } catch (e) {} } return r; };\nconst one = (n) => { try { return parse($(n).first().json); } catch (e) { return {}; } };\nconst all = (n) => { try { return $(n).all().map((i) => parse(i.json)); } catch (e) { return []; } };\nconst task = (j) => ((j.tasks || [])[0]) || {};\nconst res0 = (j) => ((task(j).result || [])[0]) || {};\nconst txt = (n) => { try { const j = $(n).first().json || {}; return typeof j.data === 'string' ? j.data : ''; } catch (e) { return ''; } };\nconst r1 = (x) => Math.round(x * 10) / 10;\nconst issues = []; // { cat, pri: 1 high | 2 medium | 3 low, title, why, fix, where }\nconst add = (cat, pri, title, why, fix, where) => issues.push({ cat: cat, pri: pri, title: title, why: why, fix: fix, where: where || '' });\n\n// ---------- 1. Pages (DataForSEO On-Page instant pages) ----------\nconst CHECKS = {\n  // bad when TRUE\n  no_title: [1, 'Page has no title tag', 'The title is the biggest on-page ranking signal and the blue link people click in Google.', 'Add a unique title (50 to 60 characters) with the main keyword and city near the front.'],\n  no_description: [2, 'Missing meta description', 'Google often uses it as the snippet under your link; a good one lifts clicks.', 'Write a 140 to 155 character description with the keyword and a clear reason to click.'],\n  no_h1_tag: [1, 'No H1 heading', 'The H1 tells Google and visitors what the page is about.', 'Add exactly one H1 that includes the main keyword for that page.'],\n  title_too_long: [3, 'Title is too long', 'Google cuts titles around 60 characters, so the end gets lost.', 'Shorten the title to about 50 to 60 characters, most important words first.'],\n  title_too_short: [2, 'Title is too short', 'A short title wastes space you could use for keywords and a reason to click.', 'Expand the title to 50 to 60 characters: service + city + benefit or brand.'],\n  duplicate_title_tag: [2, 'More than one title tag', 'Search engines may pick the wrong one.', 'Keep a single title tag in the page head.'],\n  duplicate_meta_tags: [3, 'Duplicate meta tags', 'Conflicting meta tags send mixed signals.', 'Remove the duplicates so each meta tag appears once.'],\n  irrelevant_title: [2, 'Title does not match the page content', 'Google rewrites or ignores titles that do not match the page.', 'Rewrite the title so it describes what the page actually covers.'],\n  irrelevant_description: [3, 'Meta description does not match the content', 'Google will replace it with its own snippet.', 'Rewrite it to summarize the page and include the main keyword.'],\n  no_image_alt: [2, 'Images without alt text', 'Alt text helps Google Images, accessibility and context for the page.', 'Add short descriptive alt text to every meaningful image (include the service or city where natural).'],\n  no_favicon: [3, 'No favicon', 'Google shows the favicon next to your result on mobile; missing looks unprofessional.', 'Add a square favicon (at least 48x48) and link it in the page head.'],\n  high_loading_time: [1, 'Slow page load', 'Slow pages lose visitors and rank lower, especially on phones.', 'Compress images, lazy-load below-the-fold media, cut unused scripts, use caching/CDN.'],\n  has_render_blocking_resources: [2, 'Render-blocking scripts or CSS', 'The browser waits for these files before showing anything.', 'Defer or async non-critical JavaScript and inline or preload critical CSS.'],\n  large_page_size: [2, 'Page is very large', 'Heavy pages are slow on mobile data.', 'Compress images (WebP/AVIF), remove unused code and fonts.'],\n  size_greater_than_3mb: [1, 'Page is over 3 MB', 'Very heavy pages often fail Core Web Vitals.', 'Shrink images and video, remove unused scripts.'],\n  low_content_rate: [3, 'Little visible text compared to code', 'Thin pages give Google little to understand or rank.', 'Add useful text: what you offer, who it is for, where, prices or process, FAQs.'],\n  low_character_count: [2, 'Very little text on the page', 'Thin content rarely ranks for competitive searches.', 'Expand the page with helpful, specific content (aim for 400+ words on service pages).'],\n  low_readability_rate: [3, 'Text is hard to read', 'Hard copy makes visitors leave.', 'Use shorter sentences, plain words and subheadings.'],\n  is_redirect: [3, 'URL redirects', 'Linking to redirects wastes crawl budget and slows users.', 'Link straight to the final URL.'],\n  is_4xx_code: [1, 'Page returns an error (4xx)', 'Broken pages lose rankings and visitors.', 'Fix or 301-redirect the URL to the right page.'],\n  is_5xx_code: [1, 'Server error (5xx)', 'Google drops pages that keep erroring.', 'Check hosting and server logs; fix the error.'],\n  is_broken: [1, 'Page is broken', 'Broken pages hurt trust and rankings.', 'Fix the page or redirect it.'],\n  broken_links: [1, 'Broken links on the page', 'Broken links frustrate visitors and waste link value.', 'Update or remove every broken link.'],\n  broken_resources: [2, 'Broken images, scripts or CSS', 'Missing files break the page and slow it down.', 'Fix the file paths or remove the missing resources.'],\n  has_links_to_redirects: [3, 'Links point to redirects', 'Each redirect adds delay.', 'Update links to point to the final URL.'],\n  https_to_http_links: [2, 'HTTPS page links to HTTP pages', 'Mixed links look insecure and leak trust.', 'Change every internal link to https://.'],\n  no_doctype: [3, 'Missing doctype', 'Browsers may render the page in quirks mode.', 'Add <!DOCTYPE html> at the very top.'],\n  no_encoding_meta_tag: [3, 'No character encoding tag', 'Text can display wrong characters.', 'Add <meta charset=\"utf-8\"> in the head.'],\n  deprecated_html_tags: [3, 'Old HTML tags in use', 'Outdated code can display badly.', 'Replace deprecated tags with modern HTML/CSS.'],\n  has_meta_refresh_redirect: [2, 'Meta refresh redirect', 'Google treats these as weak, slow redirects.', 'Use a server 301 redirect instead.'],\n  canonical_to_broken: [1, 'Canonical points to a broken page', 'Google may drop the page from the index.', 'Point the canonical to the correct live URL.'],\n  canonical_to_redirect: [2, 'Canonical points to a redirect', 'Confuses Google about the main URL.', 'Set the canonical to the final URL.'],\n  recursive_canonical: [2, 'Canonical loop', 'Google cannot tell which URL is the main one.', 'Make each page canonical to itself or one final URL.'],\n  redirect_chain: [2, 'Redirect chain', 'Multiple hops slow pages and lose link value.', 'Redirect straight to the final URL in one step.'],\n  lorem_ipsum: [1, 'Placeholder lorem ipsum text', 'Looks unfinished to visitors and Google.', 'Replace it with real content.'],\n  has_misspelling: [3, 'Spelling mistakes', 'Typos hurt trust.', 'Proofread and fix the misspellings.'],\n  flash: [2, 'Uses Flash', 'Flash no longer works in browsers.', 'Replace with HTML5.'],\n  frame: [3, 'Uses frames', 'Frames are hard for Google to index.', 'Rebuild without frames.'],\n  is_orphan_page: [2, 'Orphan page (no internal links point here)', 'Google finds and values pages through internal links.', 'Link to this page from your menu or related pages.']\n};\nconst GOOD = {\n  is_https: [1, 'Site is not on HTTPS', 'Browsers warn visitors and Google uses HTTPS as a ranking signal.', 'Install an SSL certificate and redirect all http:// to https://.'],\n  canonical: [2, 'No canonical tag', 'Without it, duplicate URLs can split your ranking power.', 'Add <link rel=\"canonical\"> pointing to the page\\'s own preferred URL.'],\n  has_html_doctype: [3, 'No HTML5 doctype', 'Browsers may render in quirks mode.', 'Add <!DOCTYPE html>.'],\n  seo_friendly_url: [3, 'URL is not SEO friendly', 'Clean, readable URLs help users and Google.', 'Use short, lowercase, hyphenated URLs with the keyword.']\n};\nconst pageRows = [];\nconst pagesIn = $('Pick Pages To Audit').all().map((i) => i.json.url);\nall('DataForSEO: Audit Pages').forEach((j, idx) => {\n  const it = (res0(j).items || [])[0];\n  const url = (it && it.url) || pagesIn[idx] || '';\n  if (!it) { pageRows.push({ url: url, failed: (task(j).status_message || j.message || 'could not crawl') }); return; }\n  const m = it.meta || {};\n  const c = it.checks || {};\n  const pt = it.page_timing || {};\n  const content = m.content || {};\n  const h1 = ((m.htags || {}).h1) || [];\n  const row = {\n    url: url, status: it.status_code, score: Math.round(it.onpage_score || 0), title: m.title || '', title_len: m.title_length || 0,\n    desc: m.description || '', desc_len: m.description_length || 0, h1: h1, h2_count: (((m.htags || {}).h2) || []).length,\n    words: content.plain_text_word_count || 0, readability: content.flesch_kincaid_readability_index ? r1(content.flesch_kincaid_readability_index) : null,\n    internal_links: m.internal_links_count || 0, external_links: m.external_links_count || 0, images: m.images_count || 0,\n    lcp_ms: pt.largest_contentful_paint || null, load_ms: pt.duration_time || null, size_kb: it.total_transfer_size ? Math.round(it.total_transfer_size / 1024) : null,\n    og: !!((m.social_media_tags || {})['og:title']), canonical: m.canonical || '', failed_checks: []\n  };\n  Object.keys(CHECKS).forEach((k) => { if (c[k] === true) { row.failed_checks.push(k); const d = CHECKS[k]; add('Technical & on-page', d[0], d[1], d[2], d[3], url); } });\n  Object.keys(GOOD).forEach((k) => { if (c[k] === false) { row.failed_checks.push('not_' + k); const d = GOOD[k]; add('Technical & on-page', d[0], d[1], d[2], d[3], url); } });\n  if (h1.length > 1) add('Technical & on-page', 3, 'More than one H1', 'Several H1s blur the main topic of the page.', 'Keep one H1; turn the others into H2s.', url);\n  if (!row.og) add('Technical & on-page', 3, 'No Open Graph tags', 'Links shared on Facebook, LinkedIn and texts show no image or title.', 'Add og:title, og:description and og:image (1200x630).', url);\n  if (s.keyword && idx === 0) {\n    const kw = s.keyword.toLowerCase(); const sig = kw.split(' ').filter((w) => w.length > 3);\n    const has = (t) => { t = String(t || '').toLowerCase(); return t.indexOf(kw) !== -1 || (sig.length && sig.every((w) => t.indexOf(w) !== -1)); };\n    if (!has(row.title)) add('Keywords & content', 1, 'Main keyword missing from the homepage title', 'The title is the strongest signal for what the page should rank for.', 'Put \"' + s.keyword + '\" (or a close variant) near the start of the homepage title.', url);\n    if (!h1.some(has)) add('Keywords & content', 2, 'Main keyword missing from the homepage H1', 'The H1 confirms the topic to Google and visitors.', 'Work \"' + s.keyword + '\" naturally into the H1.', url);\n    if (!has(row.desc)) add('Keywords & content', 3, 'Main keyword missing from the meta description', 'Google bolds matching words in the snippet, which lifts clicks.', 'Include the keyword in the meta description.', url);\n  }\n  if (s.city && idx === 0) {\n    const cityW = s.city.toLowerCase().split(',')[0].trim();\n    if (cityW && String(row.title + ' ' + h1.join(' ') + ' ' + row.desc).toLowerCase().indexOf(cityW) === -1) add('Local SEO', 1, 'City not mentioned in the homepage title, H1 or description', 'Local rankings depend on Google clearly connecting you to the area you serve.', 'Add \"' + s.city.split(',')[0] + '\" to the homepage title and H1, and list your service areas on the page.', url);\n  }\n  if (row.words && row.words < 300) add('Keywords & content', 2, 'Thin page (' + row.words + ' words)', 'Pages with little text rarely rank for anything competitive.', 'Expand to 400 to 800 helpful words: services, process, pricing info, FAQs, proof.', url);\n  pageRows.push(row);\n});\nconst okPages = pageRows.filter((p) => !p.failed);\nconst titles = {}; okPages.forEach((p) => { const t = p.title.toLowerCase(); if (t) titles[t] = (titles[t] || 0) + 1; });\nObject.keys(titles).forEach((t) => { if (titles[t] > 1) add('Technical & on-page', 2, 'Duplicate titles across pages', 'Pages with the same title compete with each other in Google.', 'Give every page a unique title that describes that page.', t); });\nconst descs = {}; okPages.forEach((p) => { const t = p.desc.toLowerCase(); if (t) descs[t] = (descs[t] || 0) + 1; });\nif (Object.keys(descs).some((d) => descs[d] > 1)) add('Technical & on-page', 3, 'Duplicate meta descriptions across pages', 'Google ignores repeated descriptions.', 'Write a unique description for each page.', '');\nconst avgOnpage = okPages.length ? Math.round(okPages.reduce((a, p) => a + p.score, 0) / okPages.length) : null;\n\n// ---------- 2. Robots + sitemap ----------\nconst robots = txt('Fetch robots.txt');\nconst sitemap = txt('Fetch Sitemap');\nconst robotsOk = /user-agent/i.test(robots);\nconst sitemapOk = /<urlset|<sitemapindex/i.test(sitemap);\nconst sitemapCount = (sitemap.match(/<loc>/gi) || []).length;\nif (!robotsOk) add('Indexing', 2, 'No robots.txt file', 'Robots.txt tells search engines what to crawl and where your sitemap is.', 'Create /robots.txt with \"User-agent: *\", \"Allow: /\" and a \"Sitemap: ' + s.sitemap_url + '\" line.', s.robots_url);\nif (robotsOk && /disallow:\\s*\\/\\s*$/im.test(robots) && !/allow:\\s*\\/\\S/i.test(robots)) add('Indexing', 1, 'robots.txt may block the whole site', '\"Disallow: /\" can stop Google crawling every page.', 'Remove \"Disallow: /\" unless the site is meant to be hidden.', s.robots_url);\nif (robotsOk && !/sitemap:/i.test(robots)) add('Indexing', 3, 'robots.txt does not list your sitemap', 'Listing it helps every search engine find all your pages.', 'Add the line \"Sitemap: ' + s.sitemap_url + '\" to robots.txt.', s.robots_url);\nif (!sitemapOk) add('Indexing', 1, 'No XML sitemap found at /sitemap.xml', 'A sitemap helps Google discover and index all your pages faster.', 'Create a sitemap (most site builders and SEO plugins do it automatically), then submit it in Google Search Console.', s.sitemap_url);\nadd('Indexing', 2, 'Confirm Google Search Console is set up', 'Search Console shows indexing errors, real search queries and lets you submit your sitemap.', 'Verify the site in Google Search Console, submit the sitemap and check the Pages report for errors.', '');\n\n// ---------- 3. PageSpeed Insights (Google Lighthouse + real-user data) ----------\nconst psi = (n) => {\n  const j = one(n);\n  if (j.error || !j.lighthouseResult) return { error: (j.error && j.error.message) || 'no data' };\n  const lr = j.lighthouseResult; const cats = lr.categories || {}; const a = lr.audits || {};\n  const sc = (k) => (cats[k] && cats[k].score !== null && cats[k].score !== undefined) ? Math.round(cats[k].score * 100) : null;\n  const dv = (k) => (a[k] && a[k].displayValue) || '';\n  const lab = { fcp: dv('first-contentful-paint'), lcp: dv('largest-contentful-paint'), tbt: dv('total-blocking-time'), cls: dv('cumulative-layout-shift'), si: dv('speed-index') };\n  const fm = (j.loadingExperience && j.loadingExperience.metrics) || {};\n  const fv = (k) => fm[k] ? { p75: fm[k].percentile, cat: fm[k].category } : null;\n  const field = { lcp: fv('LARGEST_CONTENTFUL_PAINT_MS'), inp: fv('INTERACTION_TO_NEXT_PAINT'), cls: fv('CUMULATIVE_LAYOUT_SHIFT_SCORE'), overall: (j.loadingExperience || {}).overall_category || '' };\n  const opps = Object.keys(a).map((k) => a[k]).filter((x) => x && x.details && x.details.type === 'opportunity' && (x.details.overallSavingsMs || 0) >= 150)\n    .sort((x, y) => (y.details.overallSavingsMs || 0) - (x.details.overallSavingsMs || 0)).slice(0, 8)\n    .map((x) => ({ title: x.title, save_ms: Math.round(x.details.overallSavingsMs), save_kb: x.details.overallSavingsBytes ? Math.round(x.details.overallSavingsBytes / 1024) : null }));\n  const failing = (cat) => ((cats[cat] || {}).auditRefs || []).map((r) => a[r.id]).filter((x) => x && x.score !== null && x.score < 0.9 && ['notApplicable', 'manual', 'informative'].indexOf(x.scoreDisplayMode) === -1).map((x) => x.title).slice(0, 12);\n  return { perf: sc('performance'), seo: sc('seo'), a11y: sc('accessibility'), bp: sc('best-practices'), lab: lab, field: field, opps: opps, fail_seo: failing('seo'), fail_a11y: failing('accessibility'), fail_bp: failing('best-practices') };\n};\nconst mob = psi('PageSpeed: Mobile');\nconst desk = psi('PageSpeed: Desktop');\nif (!mob.error) {\n  if (mob.perf !== null && mob.perf < 50) add('Speed & Core Web Vitals', 1, 'Mobile speed score is poor (' + mob.perf + '/100)', 'Most local searches happen on phones; slow mobile pages lose rankings and calls.', 'Work through the speed fixes below, starting with the biggest savings.', s.home);\n  else if (mob.perf !== null && mob.perf < 90) add('Speed & Core Web Vitals', 2, 'Mobile speed score needs work (' + mob.perf + '/100)', 'Faster pages keep more visitors and help Core Web Vitals.', 'Apply the top speed fixes below.', s.home);\n  if (mob.field.lcp && mob.field.lcp.cat && mob.field.lcp.cat !== 'FAST') add('Speed & Core Web Vitals', 1, 'Real visitors see a slow main image/text (LCP ' + r1(mob.field.lcp.p75 / 1000) + 's)', 'Largest Contentful Paint is a Core Web Vital Google uses for ranking; good is under 2.5s.', 'Compress and preload the hero image, use a CDN, cut render-blocking code.', s.home);\n  if (mob.field.inp && mob.field.inp.cat && mob.field.inp.cat !== 'FAST') add('Speed & Core Web Vitals', 2, 'Page reacts slowly to taps (INP ' + mob.field.inp.p75 + 'ms)', 'Interaction to Next Paint is a Core Web Vital; good is under 200ms.', 'Reduce heavy JavaScript, chat widgets and third-party scripts.', s.home);\n  if (mob.field.cls && mob.field.cls.cat && mob.field.cls.cat !== 'FAST') add('Speed & Core Web Vitals', 2, 'Layout jumps while loading (CLS ' + r1(mob.field.cls.p75 / 100) + ')', 'Cumulative Layout Shift is a Core Web Vital; good is under 0.1.', 'Set width/height on images and embeds, reserve space for banners.', s.home);\n  mob.opps.slice(0, 5).forEach((o) => add('Speed & Core Web Vitals', o.save_ms > 1000 ? 1 : 2, 'Speed fix: ' + o.title, 'Google estimates this saves about ' + r1(o.save_ms / 1000) + 's on mobile' + (o.save_kb ? ' (' + o.save_kb + ' KB)' : '') + '.', 'Ask your developer or site builder support to apply: \"' + o.title + '\".', s.home));\n  mob.fail_seo.forEach((t) => add('Technical & on-page', 2, 'Google Lighthouse SEO check failed: ' + t, 'Lighthouse flags basic SEO problems Google can see.', 'Fix: ' + t + '.', s.home));\n  mob.fail_a11y.slice(0, 6).forEach((t) => add('Accessibility & trust', 3, 'Accessibility: ' + t, 'Accessible sites are easier for everyone to use and reduce legal risk.', 'Fix: ' + t + '.', s.home));\n  mob.fail_bp.slice(0, 4).forEach((t) => add('Accessibility & trust', 3, 'Best practice: ' + t, 'Lighthouse best-practice failures can signal security or quality issues.', 'Fix: ' + t + '.', s.home));\n}\n\n// ---------- 4. Visibility (DataForSEO Labs) ----------\nconst ov = ((res0(one('DataForSEO: Domain Overview')).items || [])[0] || {}).metrics || {};\nconst org = ov.organic || {};\nconst rankedItems = (res0(one('DataForSEO: Ranked Keywords')).items || []).map((it) => ({\n  kw: ((it.keyword_data || {}).keyword) || '', vol: (((it.keyword_data || {}).keyword_info) || {}).search_volume || 0,\n  pos: (((it.ranked_serp_element || {}).serp_item) || {}).rank_group || null, url: (((it.ranked_serp_element || {}).serp_item) || {}).relative_url || (((it.ranked_serp_element || {}).serp_item) || {}).url || ''\n})).filter((k) => k.kw);\nconst top3 = rankedItems.filter((k) => k.pos && k.pos <= 3).length;\nconst top10 = rankedItems.filter((k) => k.pos && k.pos <= 10).length;\nconst striking = rankedItems.filter((k) => k.pos && k.pos > 10 && k.pos <= 30).sort((a, b) => b.vol - a.vol).slice(0, 15);\nconst vis = { keywords: org.count || rankedItems.length, top3: (org.pos_1 || 0) + (org.pos_2_3 || 0) || top3, top10: ((org.pos_1 || 0) + (org.pos_2_3 || 0) + (org.pos_4_10 || 0)) || top10, etv: org.etv ? Math.round(org.etv) : 0, traffic_value: org.estimated_paid_traffic_cost ? Math.round(org.estimated_paid_traffic_cost) : 0 };\nif (!vis.keywords) add('Keywords & content', 1, 'Google shows almost no rankings for this site yet', 'If you do not rank for any searches, customers cannot find you on Google.', 'Build one strong page per service and per main city, then add helpful blog posts targeting real customer questions.', '');\nelse if (vis.top10 < 10) add('Keywords & content', 2, 'Only ' + vis.top10 + ' keywords on page 1 of Google', 'Page 1 gets almost all the clicks.', 'Improve the pages ranking 11 to 30 (list below) first: they are the fastest wins.', '');\nif (striking.length) add('Keywords & content', 1, striking.length + ' keywords are close to page 1 (positions 11 to 30)', 'Small improvements to these pages can move them onto page 1 quickly.', 'For each, expand the ranking page, add the exact phrase in a heading, add FAQs and internal links. See \"Striking distance keywords\".', '');\n\n// ---------- 5. Competitors ----------\nconst giant = /(youtube|facebook|instagram|linkedin|yelp|reddit|wikipedia|amazon|pinterest|tiktok|twitter|x\\.com|quora|google|apple|bbb\\.org|angi|homeadvisor|thumbtack|indeed|nextdoor|tripadvisor|yellowpages|mapquest)/i;\nconst comps = (res0(one('DataForSEO: Competitors')).items || []).filter((c) => c.domain && c.domain.indexOf(s.domain) === -1 && !giant.test(c.domain)).slice(0, 8)\n  .map((c) => ({ domain: c.domain, shared: c.intersections || 0, avg_pos: c.avg_position ? r1(c.avg_position) : null, etv: (((c.full_domain_metrics || {}).organic) || {}).etv ? Math.round(c.full_domain_metrics.organic.etv) : null, kws: (((c.full_domain_metrics || {}).organic) || {}).count || null }));\nconst beat = comps.filter((c) => c.etv && vis.etv && c.etv > vis.etv * 2).slice(0, 3);\nif (beat.length) add('Keywords & content', 2, 'Competitors get far more search traffic (' + beat.map((c) => c.domain).join(', ') + ')', 'They rank for many more searches in your space.', 'Look at which service and location pages they have that you do not, and build better versions.', '');\n\n// ---------- 6. Google search for the main keyword (live SERP + local pack) ----------\nconst serpItems = res0(one('DataForSEO: Google Search')).items || [];\nconst orgSerp = serpItems.filter((i) => i.type === 'organic');\nconst myOrg = orgSerp.find((i) => String(i.domain || '').indexOf(s.domain) !== -1);\nconst lp = serpItems.find((i) => i.type === 'local_pack' || i.type === 'maps');\nconst localPack = serpItems.filter((i) => i.type === 'local_pack').slice(0, 5).map((i) => ({ title: i.title, domain: i.domain || '', rating: i.rating ? i.rating.value : null, reviews: i.rating ? i.rating.votes_count : null }));\nconst inPack = localPack.some((p) => (p.domain && p.domain.indexOf(s.domain) !== -1) || (p.title && s.business && p.title.toLowerCase().indexOf(s.business.toLowerCase()) !== -1));\nconst serp = { keyword: s.serp_keyword, my_position: myOrg ? myOrg.rank_group : null, my_url: myOrg ? myOrg.url : '', top: orgSerp.slice(0, 10).map((o) => ({ pos: o.rank_group, domain: o.domain, title: o.title })), local_pack: localPack, in_local_pack: inPack, features: Array.from(new Set(serpItems.map((i) => i.type))).filter((t) => t !== 'organic') };\nif (s.keyword && !myOrg) add('Keywords & content', 1, 'Not in the Google top 100 for \"' + s.serp_keyword + '\"', 'This is the search you said matters most.', 'Create or improve a dedicated page for this exact search: keyword in title, H1 and URL, 800+ helpful words, FAQs, reviews, internal links from the homepage.', '');\nelse if (s.keyword && myOrg && myOrg.rank_group > 3) add('Keywords & content', 1, 'Ranking #' + myOrg.rank_group + ' for \"' + s.serp_keyword + '\"', 'The top 3 results get most of the clicks.', 'Strengthen ' + (myOrg.url || 'the ranking page') + ': expand content, match search intent, add FAQs, get local links and reviews.', myOrg.url);\nif (localPack.length && !inPack) add('Local SEO', 1, 'Not in the Google map pack for \"' + s.serp_keyword + '\"', 'The map pack sits above normal results and gets a huge share of local calls.', 'Optimize your Google Business Profile (categories, services, photos, posts) and grow reviews; make NAP identical everywhere.', '');\n\n// ---------- 7. Google Business Profile ----------\nconst gb = (res0(one('DataForSEO: Google Business Profile')).items || [])[0] || null;\nconst gbp = gb ? { name: gb.title, rating: gb.rating ? gb.rating.value : null, reviews: gb.rating ? gb.rating.votes_count : 0, claimed: gb.is_claimed, category: gb.category, extra_categories: (gb.additional_categories || []).length, photos: gb.total_photos || 0, website: gb.url || gb.domain || '', phone: gb.phone || '', address: gb.address || '', hours: !!gb.work_time } : null;\nif (!gbp) add('Local SEO', 1, 'No Google Business Profile found for \"' + s.business + (s.city ? ' ' + s.city : '') + '\"', 'Your Business Profile is the #1 factor for showing up in Google Maps and the local pack.', 'Create or claim it at business.google.com, verify it, add categories, services, hours, photos and your website.', '');\nelse {\n  if (gbp.claimed === false) add('Local SEO', 1, 'Google Business Profile is not claimed', 'Unclaimed profiles can be edited by anyone and rank poorly.', 'Claim and verify it at business.google.com.', '');\n  if ((gbp.reviews || 0) < 25) add('Local SEO', 1, 'Only ' + (gbp.reviews || 0) + ' Google reviews', 'Review count and rating strongly influence map rankings and clicks.', 'Ask every happy customer for a review (text a short link after each job) and reply to every review.', '');\n  if (gbp.rating && gbp.rating < 4.3) add('Local SEO', 2, 'Google rating is ' + gbp.rating, 'Most people filter for 4+ stars.', 'Fix the common complaints, reply professionally to negative reviews, and keep asking happy customers.', '');\n  if ((gbp.photos || 0) < 20) add('Local SEO', 2, 'Few photos on the Business Profile (' + (gbp.photos || 0) + ')', 'Profiles with more photos get more calls and direction requests.', 'Add real photos of your work, team, location and vehicles every month.', '');\n  if (!gbp.extra_categories) add('Local SEO', 2, 'No secondary categories on the Business Profile', 'Extra categories help you show for more related searches.', 'Add every secondary category that truly matches your services.', '');\n  if (!gbp.hours) add('Local SEO', 3, 'Business hours missing on the profile', 'Google favors complete profiles and searchers want to know you are open.', 'Add regular and holiday hours.', '');\n  if (gbp.website && String(gbp.website).toLowerCase().indexOf(s.domain) === -1) add('Local SEO', 1, 'Business Profile links to a different website (' + gbp.website + ')', 'Your profile should send traffic and trust to this site.', 'Update the website field in your Business Profile to ' + s.site + '.', '');\n}\nadd('Local SEO', 2, 'Keep your name, address and phone (NAP) identical everywhere', 'Matching details across your site, Google, Yelp, Facebook and directories build trust with Google.', 'Put NAP in the site footer, add LocalBusiness schema markup, and fix any directory listings that differ.', '');\n\n// ---------- 8. Backlinks (needs DataForSEO Backlinks access) ----------\nconst bl = one('DataForSEO: Backlinks');\nconst blRes = res0(bl);\nconst backlinks = (task(bl).status_code === 20000 && blRes && blRes.target) ? { backlinks: blRes.backlinks || 0, ref_domains: blRes.referring_domains || 0, rank: blRes.rank || 0, broken: blRes.broken_backlinks || 0 } : { unavailable: task(bl).status_message || bl.status_message || 'not available' };\nif (!backlinks.unavailable) {\n  if (backlinks.ref_domains < 30) add('Authority & links', 1, 'Only ' + backlinks.ref_domains + ' websites link to you', 'Links from other sites are one of Google\\'s strongest ranking signals.', 'Get listed in local directories and chambers, ask suppliers and partners for links, sponsor local events, publish guides others want to cite.', '');\n  if (backlinks.broken > 0) add('Authority & links', 2, backlinks.broken + ' backlinks point to broken pages', 'That link value is being wasted.', '301-redirect the broken URLs to the closest live page.', '');\n}\n\n// ---------- 9. Scores ----------\nconst clamp = (x) => Math.max(0, Math.min(100, Math.round(x)));\nconst parts = [];\nconst push = (name, val, w) => { if (val !== null && val !== undefined && !isNaN(val)) parts.push({ name: name, val: clamp(val), w: w }); };\npush('On-page health', avgOnpage, 20);\npush('Mobile speed', mob.perf, 15);\npush('Desktop speed', desk.perf, 5);\npush('Lighthouse SEO', mob.seo, 10);\npush('Accessibility', mob.a11y, 5);\npush('Best practices', mob.bp, 5);\npush('Search visibility', vis.keywords ? Math.min(100, 30 + Math.log10(vis.keywords + 1) * 20 + Math.min(vis.top10, 50)) : 10, 20);\npush('Local presence', gbp ? Math.min(100, (gbp.claimed === false ? 20 : 50) + Math.min(gbp.reviews || 0, 100) * 0.3 + (gbp.rating ? (gbp.rating - 3) * 10 : 0) + (inPack ? 10 : 0)) : 10, 20);\nconst wsum = parts.reduce((a, p) => a + p.w, 0) || 1;\nconst overall = clamp(parts.reduce((a, p) => a + p.val * p.w, 0) / wsum);\nconst grade = overall >= 90 ? 'A' : overall >= 80 ? 'B' : overall >= 70 ? 'C' : overall >= 55 ? 'D' : 'F';\n\n// dedupe issues (same title + where)\nconst seen = {}; const fixes = [];\nissues.forEach((i) => { const k = i.title + '|' + (i.cat === 'Technical & on-page' && i.where ? i.title : i.where); if (seen[i.title]) { seen[i.title].where = Array.from(new Set((seen[i.title].where + ', ' + i.where).split(', ').filter(Boolean))).slice(0, 6).join(', '); return; } seen[i.title] = i; fixes.push(i); });\nfixes.sort((a, b) => a.pri - b.pri);\n\nconst findings = {\n  site: s.site, business: s.business, city: s.city, keyword: s.keyword, country: s.country,\n  overall: overall, grade: grade, parts: parts,\n  pages: pageRows, avg_onpage: avgOnpage, robots: robotsOk, sitemap: sitemapOk, sitemap_urls: sitemapCount,\n  mobile: mob, desktop: desk, visibility: vis, ranked_top: rankedItems.sort((a, b) => b.vol - a.vol).slice(0, 15), striking: striking,\n  competitors: comps, serp: serp, gbp: gbp, backlinks: backlinks,\n  issue_counts: { high: fixes.filter((f) => f.pri === 1).length, medium: fixes.filter((f) => f.pri === 2).length, low: fixes.filter((f) => f.pri === 3).length }\n};\nconst compact = JSON.stringify({\n  site: s.site, business: s.business, city: s.city, keyword: s.keyword, overall: overall, grade: grade, parts: parts,\n  pages: pageRows.map((p) => ({ url: p.url, score: p.score, title: p.title, words: p.words, issues: p.failed_checks })),\n  mobile: { perf: mob.perf, seo: mob.seo, field: mob.field, top_opps: (mob.opps || []).slice(0, 4) }, desktop_perf: desk.perf,\n  visibility: vis, striking: striking.slice(0, 10), top_keywords: findings.ranked_top.slice(0, 10), competitors: comps.slice(0, 5),\n  serp: { keyword: serp.keyword, my_position: serp.my_position, top3: serp.top.slice(0, 3), in_local_pack: inPack, local_pack: localPack.slice(0, 3) },\n  gbp: gbp, backlinks: backlinks, high_priority_fixes: fixes.filter((f) => f.pri === 1).map((f) => f.title), other_fixes: fixes.filter((f) => f.pri > 1).map((f) => f.title).slice(0, 25)\n});\n\nconst system = 'You are a senior SEO consultant who has helped hundreds of local and small businesses climb to the top of Google and the map pack. You explain things in plain words a busy owner understands, you are specific and practical, and you never invent numbers or promise rankings.';\nconst prompt = 'Write the strategy part of a website SEO audit for ' + s.business + ' (' + s.site + ')' + (s.city ? ', serving ' + s.city : '') + '.\\n\\n' +\n  'AUDIT DATA (from DataForSEO and Google PageSpeed Insights; the only facts you may use):\\n' + compact + '\\n\\n' +\n  'Write these sections in Markdown:\\n' +\n  '## Executive summary\\n4 to 6 sentences: the overall grade and what it means, the 2 or 3 biggest things holding the site back, and the biggest opportunity. Plain words.\\n\\n' +\n  '## The 7 fixes that will move rankings fastest\\nA numbered list. For each: what to do (specific), why it matters for rankings or calls, effort (Quick / Medium / Big) and expected impact (High / Medium). Base them on the data, highest impact first.\\n\\n' +\n  '## Content and keyword opportunities\\n5 to 8 specific page or blog ideas tied to the striking-distance keywords, the main keyword, competitor gaps and local intent. For each: the exact search phrase to target and what the page must include.\\n\\n' +\n  '## Local SEO game plan\\nSpecific steps for the Google Business Profile, reviews, citations, local pages and the map pack, based on the data.\\n\\n' +\n  '## 30 / 60 / 90 day plan\\nThree short lists of tasks in the order to do them.\\n\\n' +\n  'Rules: use only numbers that appear in the data. Never promise rankings or traffic. No em dashes. No filler. Write a line with only ===REPORT===, then the Markdown, then a line with only ===END===.';\n\nreturn [{ json: { findings: findings, fixes: fixes, system: system, prompt: prompt } }];\n"
+      },
+      "id": "e5159678-1af2-4859-87b4-ac1835d508a4",
+      "name": "Analyze Website",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1408,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/gpt-5-2/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: \"gpt-5-2\", messages: [{ role: \"system\", content: $json.system }, { role: \"user\", content: $json.prompt }] }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 300000
+        }
+      },
+      "id": "395c8d7b-7f15-48ae-8bfd-75135f0b7f6d",
+      "name": "kie GPT: Audit Strategist",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1632,
+        128
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// kie.ai sometimes repeats chunks of a long reply (\"If youARTICLE=== ... If you run\").\n// This removes any chunk (40+ chars) that exactly repeats the text right before it, then passes the reply on.\nconst fix = (t) => {\n  let out = '';\n  let i = 0;\n  const n = t.length;\n  while (i < n) {\n    let skip = 0;\n    const maxL = Math.min(600, out.length, n - i);\n    for (let L = maxL; L >= 40; L--) {\n      if (t.charCodeAt(i) !== out.charCodeAt(out.length - L)) continue;\n      if (t.substr(i, L) === out.slice(-L)) { skip = L; break; }\n    }\n    if (skip) i += skip; else { out += t[i]; i++; }\n  }\n  return out;\n};\nlet parsed = $json;\nif (typeof $json.data === 'string') { try { parsed = JSON.parse($json.data); } catch (e) { parsed = null; } }\nconst msg = parsed && parsed.choices && parsed.choices[0] && parsed.choices[0].message;\nif (!msg) return { json: $json };\nconst before = String(msg.content || '');\nmsg.content = fix(before);\nreturn { json: { data: JSON.stringify(parsed), removed_repeated_chars: before.length - msg.content.length } };\n"
+      },
+      "id": "5010ae5e-9848-41b4-a8d2-3f13b2d6d8ad",
+      "name": "Clean AI Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Builds the report two ways:\n//  1) a designed, easy-to-read HTML version -> Google Doc -> PDF (for the business owner)\n//  2) a Markdown version (download fallback / for editing)\nconst a = $('Polish Findings').first().json;\nconst f = a.findings;\nconst fixes = a.fixes || [];\nlet r = $input.first().json;\nif (typeof r.data === 'string') { try { r = JSON.parse(r.data); } catch (e) {} }\nconst raw = String((((r.choices || [])[0] || {}).message || {}).content || '');\nconst between = (t, s1, s2) => { const i = t.indexOf(s1); if (i === -1) return ''; const j = t.indexOf(s2, i + s1.length); return t.slice(i + s1.length, j === -1 ? t.length : j); };\nconst cleanAi = (t) => String(t || '').replace(/<\\/?[a-zA-Z][^>]*>/g, '').replace(/\\{`|`\\}/g, '').replace(/^[\\s`{}]+/, '').replace(/[ \\t]*—[ \\t]*/g, ', ').replace(/```[a-z]*\\n?/gi, '').trim();\nlet ai = cleanAi(between(raw, '===REPORT===', '===END==='));\nif (!ai) ai = cleanAi(raw.replace(/===REPORT===|===END===/g, ''));\nconst today = new Date().toISOString().slice(0, 10);\nconst prettyDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });\nconst num = (x) => (x === null || x === undefined || x === '' ? 'n/a' : Number(x).toLocaleString('en-US'));\nconst path = (u) => { const p = String(u || '').replace(/^https?:\\/\\/[^\\/]+/i, ''); return p === '' || p === '/' ? 'Homepage' : p; };\nconst where = (w) => Array.from(new Set(String(w || '').split(/,\\s*/).filter(Boolean).map(path))).join(', ');\nconst speedErr = (e) => /quota/i.test(String(e)) ? 'Google\\'s free daily speed-test limit was reached. Add a free PageSpeed key in the \"Read URL\" box and run the audit again.' : 'Google could not load the site for a speed test (' + String(e).slice(0, 120) + ').';\n\n// ============ DESIGN TOKENS (Google Docs friendly: inline styles + tables only) ============\nconst C = { navy: '#15304D', ink: '#1F2933', muted: '#5F6B7A', line: '#DDE3EA', soft: '#F4F6F9', accent: '#2563EB', accentBg: '#E8F0FE',\n  green: '#137333', greenBg: '#E6F4EA', blue: '#1A56B8', blueBg: '#E8F0FE', amber: '#9A5B00', amberBg: '#FEF3D6', red: '#B3261E', redBg: '#FCE8E6' };\nconst FONT = \"font-family:Arial,Helvetica,sans-serif;\";\nconst tone = (v) => v === null || v === undefined ? { fg: C.muted, bg: C.soft, word: 'Not tested' }\n  : v >= 90 ? { fg: C.green, bg: C.greenBg, word: 'Great' } : v >= 70 ? { fg: C.blue, bg: C.blueBg, word: 'Good' }\n  : v >= 50 ? { fg: C.amber, bg: C.amberBg, word: 'Needs work' } : { fg: C.red, bg: C.redBg, word: 'Poor' };\nconst hesc = (t) => String(t === null || t === undefined ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nconst inl = (t) => hesc(t).replace(/\\*\\*([^*]+)\\*\\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<b>$1</b>').replace(/(^|[^*])\\*([^*\\n]+)\\*/g, '$1<i>$2</i>');\nconst P = (t, st) => '<p style=\"' + FONT + 'font-size:11pt;line-height:1.5;color:' + C.ink + ';margin:0 0 8pt 0;' + (st || '') + '\">' + t + '</p>';\nconst small = (t, st) => '<p style=\"' + FONT + 'font-size:9pt;line-height:1.4;color:' + C.muted + ';margin:0 0 4pt 0;' + (st || '') + '\">' + t + '</p>';\nconst td = (inner, st) => '<td style=\"' + FONT + 'vertical-align:top;padding:8pt 10pt;' + (st || '') + '\">' + inner + '</td>';\nconst table = (rows, st) => '<table style=\"width:100%;border-collapse:collapse;margin:0 0 12pt 0;' + (st || '') + '\" cellpadding=\"0\" cellspacing=\"0\">' + rows + '</table>';\nconst pill = (txt, t) => '<span style=\"' + FONT + 'background-color:' + t.bg + ';color:' + t.fg + ';font-weight:bold;font-size:9pt;\">&nbsp;' + hesc(txt) + '&nbsp;</span>';\nconst pageBreak = '<p style=\"page-break-before:always;margin:0;\"></p>';\n// Section banner: number + title + one plain-English line about what the section is\nlet secNo = 0;\nconst section = (title, sub, br) => { secNo++; return (br ? pageBreak : '') + table('<tr>' + td('<span style=\"' + FONT + 'font-size:18pt;font-weight:bold;color:#FFFFFF;\">' + secNo + '</span>', 'background-color:' + C.accent + ';width:34pt;text-align:center;vertical-align:middle;') +\n  td('<p style=\"' + FONT + 'font-size:15pt;font-weight:bold;color:' + C.navy + ';margin:0;\">' + hesc(title) + '</p>' + (sub ? '<p style=\"' + FONT + 'font-size:10pt;color:' + C.muted + ';margin:2pt 0 0 0;\">' + hesc(sub) + '</p>' : ''), 'background-color:' + C.soft + ';vertical-align:middle;') + '</tr>', 'margin-top:14pt;'); };\n// Callout: coloured box with a bold label (\"What this means for you\")\nconst callout = (label, text, t) => table('<tr>' + td('<p style=\"' + FONT + 'font-size:10.5pt;line-height:1.5;color:' + C.ink + ';margin:0;\"><b style=\"color:' + t.fg + ';\">' + hesc(label) + '</b> ' + text + '</p>', 'background-color:' + t.bg + ';border-left:4pt solid ' + t.fg + ';') + '</tr>');\n// Simple data table with a header row\nconst dataTable = (head, rows, widths) => table('<tr>' + head.map((h, i) => td('<b style=\"font-size:9.5pt;color:' + C.navy + ';\">' + hesc(h) + '</b>', 'background-color:' + C.soft + ';border-bottom:1.5pt solid ' + C.navy + ';padding:6pt 8pt;' + (widths && widths[i] ? 'width:' + widths[i] + ';' : ''))).join('') + '</tr>' +\n  rows.map((rw) => '<tr>' + rw.map((c) => td('<span style=\"font-size:10pt;color:' + C.ink + ';\">' + c + '</span>', 'border-bottom:1pt solid ' + C.line + ';padding:6pt 8pt;')).join('') + '</tr>').join(''));\n\nconst H = [];\nconst overallT = tone(f.overall);\nconst verdict = f.overall >= 90 ? 'Your website is in great shape. A few fixes will keep you ahead of competitors.'\n  : f.overall >= 75 ? 'Your website has a solid base. Fixing the items marked \"Do first\" should bring more calls from Google.'\n  : f.overall >= 55 ? 'Your website works, but several problems are holding it back on Google. The good news: most are fixable.'\n  : 'Your website is losing customers on Google right now. Start with the \"Do first\" list. Each fix helps.';\n\n// ---------------- COVER ----------------\nH.push(table('<tr>' + td('<p style=\"' + FONT + 'font-size:10pt;letter-spacing:2pt;color:#BFD3FF;margin:0 0 6pt 0;\"><b>WEBSITE &amp; GOOGLE HEALTH CHECK</b></p>' +\n  '<p style=\"' + FONT + 'font-size:26pt;font-weight:bold;color:#FFFFFF;margin:0 0 6pt 0;line-height:1.15;\">' + hesc(f.business) + '</p>' +\n  '<p style=\"' + FONT + 'font-size:11pt;color:#E3ECFA;margin:0;\">' + hesc(f.site.replace(/^https?:\\/\\//, '')) + (f.city ? '&nbsp;&nbsp;|&nbsp;&nbsp;' + hesc(f.city) : '') + '&nbsp;&nbsp;|&nbsp;&nbsp;' + prettyDate + '</p>', 'background-color:' + C.navy + ';padding:22pt 20pt;') + '</tr>'));\n// Score cards: combined + website build (technical, you control it today) + Google presence (real-world data, grows with time)\nconst sc = f.scores || { build: f.overall, presence: f.overall, new_site: false, young_signals: [] };\nconst gradeOf = (v) => v === null || v === undefined ? '-' : v >= 90 ? 'A' : v >= 80 ? 'B' : v >= 70 ? 'C' : v >= 55 ? 'D' : 'F';\nconst bigCard = (val, title, note, w) => { const t = tone(val); return td('<p style=\"' + FONT + 'font-size:9.5pt;font-weight:bold;letter-spacing:1pt;color:' + C.muted + ';margin:0 0 4pt 0;\">' + title + '</p>' +\n  '<p style=\"' + FONT + 'font-size:30pt;font-weight:bold;color:' + t.fg + ';margin:0;line-height:1;\">' + (val === null || val === undefined ? '-' : val) + '<span style=\"font-size:11pt;color:' + C.muted + ';\"> /100</span></p>' +\n  '<p style=\"' + FONT + 'margin:4pt 0 4pt 0;\">' + pill('Grade ' + gradeOf(val) + ': ' + t.word, t) + '</p>' +\n  '<p style=\"' + FONT + 'font-size:8.5pt;line-height:1.35;color:' + C.ink + ';margin:0;\">' + note + '</p>', 'background-color:' + t.bg + ';border:3pt solid #FFFFFF;width:' + w + ';padding:12pt;'); };\nH.push(table('<tr>' +\n  bigCard(f.overall, 'OVERALL SCORE', 'Both scores combined.', '30%') +\n  bigCard(sc.build, 'WEBSITE BUILD', 'How well your site is built: speed, setup and pages. You control this today, even on a brand new site.', '35%') +\n  bigCard(sc.presence, 'GOOGLE PRESENCE', 'How much Google already shows and trusts you: searches, visitors, reviews. This grows over months.', '35%') + '</tr>'));\nH.push(P(sc.new_site ? 'Your website looks new, so Google is still getting to know it. Your build score shows how ready the site is. Start with the \"Do first\" list.' : verdict, 'margin:4pt 0 6pt 0;'));\nif (sc.new_site) H.push(callout('Brand new website?', 'Your Google presence score is low because Google has not had time to find and trust your site yet (' + hesc(sc.young_signals.join(', ')) + '). That is normal for websites and domains under 6 to 12 months old. For now, judge your site by the <b>Website build</b> score. Fix the build items, then Google presence grows over time.', tone(75)));\nelse if (sc.presence !== null && sc.presence < 50) H.push(callout('Why is Google presence low?', 'Google is not showing your site for many searches yet. If your website or domain is less than a year old, this is normal. If it is older, the fixes in this report will help Google find and trust you.', tone(55)));\nH.push(small('Score guide:&nbsp; ' + pill('90+ Great', tone(95)) + ' ' + pill('70-89 Good', tone(75)) + ' ' + pill('50-69 Needs work', tone(55)) + ' ' + pill('Under 50 Poor', tone(10))));\n// At a glance tiles\nconst tile = (big, label, note, t) => td('<p style=\"' + FONT + 'font-size:20pt;font-weight:bold;color:' + (t ? t.fg : C.navy) + ';margin:0;\">' + big + '</p><p style=\"' + FONT + 'font-size:9.5pt;font-weight:bold;color:' + C.ink + ';margin:2pt 0 2pt 0;\">' + label + '</p><p style=\"' + FONT + 'font-size:8.5pt;color:' + C.muted + ';margin:0;\">' + note + '</p>', 'background-color:' + C.soft + ';border:3pt solid #FFFFFF;width:25%;');\nH.push(table('<tr>' +\n  tile(String(f.issue_counts.high), 'Fixes to do first', 'The biggest problems we found', f.issue_counts.high ? tone(10) : tone(95)) +\n  tile(num(f.visibility.keywords || 0), 'Google searches you show up for', num(f.visibility.top10 || 0) + ' of them on page 1') +\n  tile(num(f.visibility.etv || 0), 'Visitors from Google / month', 'Estimate from DataForSEO') +\n  tile(f.gbp ? (f.gbp.rating || 'n/a') + ' &#9733;' : 'None', 'Google rating', f.gbp ? num(f.gbp.reviews) + ' reviews' : 'No Business Profile found') + '</tr>'));\n// Scorecard\n// (scorecard below)\nconst AREA = { 'On-page health': 'Are your pages set up so Google understands them? (titles, headings, images, text)', 'Mobile speed': 'How fast your site loads on a phone. Most customers visit on a phone.',\n  'Desktop speed': 'How fast your site loads on a computer.', 'Lighthouse SEO': 'Google\\'s own checklist of basic search settings.', 'Accessibility': 'Can everyone use your site, including people with poor eyesight?',\n  'Best practices': 'Security and modern web standards.', 'Search visibility': 'How often your site shows up when people search on Google.', 'Local presence': 'How strong your Google Business Profile and reviews are.' };\nconst BUILD_AREAS = ['On-page health', 'Mobile speed', 'Desktop speed', 'Lighthouse SEO', 'Accessibility', 'Best practices'];\nconst scoreRows = (list) => list.map((p) => { const t = tone(p.val); return ['<b>' + hesc(p.name) + '</b>', '<span style=\"color:' + C.muted + ';\">' + hesc(AREA[p.name] || '') + '</span>', '<b style=\"color:' + t.fg + ';font-size:12pt;\">' + (p.val === null || p.val === undefined ? '-' : p.val) + '</b>', pill(t.word, t)]; });\nconst subHead = (t, val, note) => '<p style=\"' + FONT + 'font-size:13pt;font-weight:bold;color:' + C.navy + ';margin:10pt 0 2pt 0;\">' + t + ' <span style=\"color:' + tone(val).fg + ';\">' + (val === null || val === undefined ? '' : val + '/100') + '</span></p>' + small(note);\nH.push(subHead('Website build scores', sc.build, 'Technical checks of the site itself. These do not depend on how old your website is.'));\nH.push(dataTable(['Area', 'What it means', 'Score', 'Result'], scoreRows(f.parts.filter((p) => BUILD_AREAS.indexOf(p.name) !== -1)), ['24%', '50%', '10%', '16%']));\nH.push(subHead('Google presence scores', sc.presence, 'Real-world data from Google. New websites start low and grow as Google finds and trusts them.'));\nH.push(dataTable(['Area', 'What it means', 'Score', 'Result'], scoreRows(f.parts.filter((p) => BUILD_AREAS.indexOf(p.name) === -1)), ['24%', '50%', '10%', '16%']));\nif (f.mobile && f.mobile.error) H.push(small('<b>Speed was not tested:</b> ' + hesc(speedErr(f.mobile.error)) + ' The build score is based on the other checks.'));\n\n// ---------------- AI STRATEGY (rendered from its Markdown) ----------------\nconst LABELS = ['What to do', 'Why it matters', 'Who can do it', 'Search phrase', 'What to include', 'Effort', 'Impact'];\nconst renderAi = (md) => {\n  const out = []; let card = null; let list = null; let first = true;\n  const flushList = () => { if (list) { const items = list.items.map((x) => '<li style=\"' + FONT + 'font-size:11pt;line-height:1.5;color:' + C.ink + ';margin:0 0 4pt 0;\">' + x + '</li>').join(''); (card ? card.body : out).push('<' + list.t + ' style=\"margin:0 0 8pt 0;\">' + items + '</' + list.t + '>'); list = null; } };\n  const flushCard = () => { flushList(); if (!card) return; const chips = card.chips.length ? '<p style=\"' + FONT + 'margin:6pt 0 0 0;font-size:9pt;\">' + card.chips.join('&nbsp;&nbsp;') + '</p>' : '';\n    out.push(table('<tr>' + td('<p style=\"' + FONT + 'font-size:12pt;font-weight:bold;color:' + C.navy + ';margin:0 0 6pt 0;\">' + card.title + '</p>' + card.body.join('') + chips, 'border:1pt solid ' + C.line + ';border-left:4pt solid ' + C.accent + ';padding:10pt 12pt;') + '</tr>', 'margin-bottom:8pt;')); card = null; };\n  md.split('\\n').forEach((line) => {\n    let m; const t = line.trim();\n    if (!t) { flushList(); return; }\n    if ((m = t.match(/^##\\s+(.*)$/)) && !/^###/.test(t)) { flushCard(); const title = m[1].replace(/\\*\\*/g, '');\n      const SUB = { 'in plain english': 'The short version of this whole report', 'your 7 most important fixes': 'Start here. These will make the biggest difference.', 'new pages and posts to create': 'Pages that can bring you new customers from Google', 'your local google plan': 'How to show up when people nearby search', 'your 30 / 60 / 90 day plan': 'What to do, in order, over the next 3 months' };\n      out.push(section(title, SUB[title.toLowerCase()] || '', first || /30 \\/ 60/.test(title))); first = false; return; }\n    if ((m = t.match(/^###\\s+(.*)$/))) { flushCard(); card = { title: inl(m[1].replace(/\\*\\*/g, '')), body: [], chips: [] }; return; }\n    const lm = t.replace(/^[-*]\\s+/, '').replace(/\\*\\*/g, '').match(/^([A-Za-z ]{4,22}):\\s*(.*)$/);\n    if (lm && LABELS.indexOf(lm[1].trim()) !== -1) {\n      flushList(); const lab = lm[1].trim(); const val = lm[2].trim();\n      if ((lab === 'Effort' || lab === 'Impact' || lab === 'Who can do it') && card) {\n        const v = val.toLowerCase(); const tt = lab === 'Impact' ? (v.indexOf('high') !== -1 ? tone(10) : tone(55)) : lab === 'Effort' ? (v.indexOf('quick') !== -1 ? tone(95) : v.indexOf('big') !== -1 ? tone(10) : tone(55)) : tone(75);\n        card.chips.push('<span style=\"color:' + C.muted + ';\">' + lab + ':</span> ' + pill(val, tt)); return; }\n      (card ? card.body : out).push(P('<b style=\"color:' + C.navy + ';\">' + lab + ':</b> ' + inl(val), 'margin:0 0 5pt 0;')); return; }\n    if ((m = t.match(/^[-*]\\s+(.*)$/))) { if (!list || list.t !== 'ul') { flushList(); list = { t: 'ul', items: [] }; } list.items.push(inl(m[1])); return; }\n    if ((m = t.match(/^\\d+[.)]\\s+(.*)$/))) { if (!list || list.t !== 'ol') { flushList(); list = { t: 'ol', items: [] }; } list.items.push(inl(m[1])); return; }\n    if (list && /^\\s{2,}\\S/.test(line)) { list.items[list.items.length - 1] += '<br>' + inl(t); return; }\n    flushList(); (card ? card.body : out).push(P(inl(t)));\n  });\n  flushCard();\n  return out.join('\\n');\n};\nif (ai) H.push(renderAi(ai));\n\n// ---------------- DETAILED FINDINGS (plain-English explanations) ----------------\nH.push(section('What we found on your website', 'The details behind your score, explained', true));\n// Speed\nH.push('<p style=\"' + FONT + 'font-size:12.5pt;font-weight:bold;color:' + C.navy + ';margin:8pt 0 4pt 0;\">Speed: how fast your pages load</p>');\nif (f.mobile && f.mobile.error) H.push(callout('Not tested this time.', hesc(speedErr(f.mobile.error)), tone(null)));\nelse {\n  const ms = (v) => v || 'n/a';\n  H.push(dataTable(['', 'On a phone', 'On a computer'], [\n    ['<b>Speed score</b> (out of 100)', pill(String(f.mobile.perf), tone(f.mobile.perf)), pill(String(f.desktop.perf), tone(f.desktop.perf))],\n    ['<b>Time until the main content shows</b>', ms(f.mobile.lab.lcp), ms((f.desktop.lab || {}).lcp)],\n    ['<b>Page jumping around while loading</b> (lower is better)', ms(f.mobile.lab.cls), ms((f.desktop.lab || {}).cls)]\n  ], ['46%', '27%', '27%']));\n  H.push(callout('What this means for you:', f.mobile.perf >= 90 ? 'Your site loads fast on phones. Keep it that way when you add new photos or tools.' : f.mobile.perf >= 50 ? 'Your site is a bit slow on phones. Some visitors will leave before it loads. Google aims for the main content in under 2.5 seconds.' : 'Your site is slow on phones. Many visitors leave before it loads, and Google ranks slow sites lower.', tone(f.mobile.perf)));\n  if ((f.mobile.opps || []).length) H.push(small('<b>Biggest speed wins (for your web person):</b> ' + f.mobile.opps.slice(0, 5).map((o) => hesc(o.title) + ' (about ' + (Math.round(o.save_ms / 100) / 10) + 's faster)').join('; ')));\n}\n// Pages\nH.push('<p style=\"' + FONT + 'font-size:12.5pt;font-weight:bold;color:' + C.navy + ';margin:14pt 0 4pt 0;\">Your pages: are they set up for Google?</p>');\nH.push(small('Title = the blue headline Google shows. Description = the grey text under it. Main heading (H1) = the big headline on the page.'));\nconst yes = '<b style=\"color:' + C.green + ';\">&#10003; Yes</b>'; const no = (txt) => '<b style=\"color:' + C.red + ';\">&#10007; ' + (txt || 'No') + '</b>';\nH.push(dataTable(['Page', 'Health', 'Good title?', 'Description?', 'One main heading?', 'Words'], f.pages.map((p) => p.failed ? [hesc(path(p.url)), 'Could not check', '', '', '', ''] : [\n  hesc(path(p.url)), pill(String(p.score), tone(p.score)), p.title_len >= 30 && p.title_len <= 65 ? yes : no(p.title_len < 30 ? 'Too short' : 'Too long'),\n  p.desc_len ? (p.desc_len > 165 ? '<b style=\"color:' + C.amber + ';\">Too long</b>' : yes) : no('Missing'), p.h1.length === 1 ? yes : p.h1.length ? '<b style=\"color:' + C.amber + ';\">' + p.h1.length + ' found</b>' : no('Missing'), num(p.words)]),\n  ['26%', '12%', '16%', '16%', '18%', '12%']));\nH.push(callout('Can Google find all your pages?', (f.sitemap ? 'Yes. You have a sitemap (a list of your pages for Google) with ' + num(f.sitemap_urls) + ' pages.' : 'We could not find a sitemap (a list of your pages for Google). Ask your web person to add one at /sitemap.xml.') + (f.robots ? '' : ' There is also no robots.txt file (instructions for search engines).'), f.sitemap ? tone(95) : tone(55)));\n// Visibility\nH.push(section('How you show up on Google', 'The searches that bring you visitors, and the ones you are close to winning', true));\nH.push(dataTable(['', 'Your result', 'What it means'], [\n  ['<b>Searches you appear for</b>', '<b>' + num(f.visibility.keywords || 0) + '</b>', 'Different phrases people type where your site appears in the top 100.'],\n  ['<b>On page 1 of Google</b>', '<b>' + num(f.visibility.top10 || 0) + '</b>', 'Most people never click past page 1.'],\n  ['<b>In the top 3</b>', '<b>' + num(f.visibility.top3 || 0) + '</b>', 'The top 3 results get most of the clicks.'],\n  ['<b>Visitors from Google / month</b>', '<b>' + num(f.visibility.etv || 0) + '</b>', 'Estimated free visitors from Google searches.'],\n  ['<b>What those visitors are worth</b>', '<b>$' + num(f.visibility.traffic_value || 0) + '</b>', 'What it would cost to buy the same visitors with Google Ads each month.']\n], ['32%', '18%', '50%']));\nif ((f.striking || []).length) {\n  H.push('<p style=\"' + FONT + 'font-size:12.5pt;font-weight:bold;color:' + C.navy + ';margin:12pt 0 4pt 0;\">Quick wins: searches you are close to winning</p>');\n  H.push(small('You already show up on page 2 or 3 for these. A little work on the page can move them to page 1.'));\n  H.push(dataTable(['Search phrase', 'Searches / month', 'Your spot now', 'Page to improve'], f.striking.slice(0, 10).map((k) => ['<b>' + hesc(k.kw) + '</b>', num(k.vol), '#' + k.pos + ' <span style=\"color:' + C.muted + ';\">(page ' + Math.ceil(k.pos / 10) + ')</span>', hesc(path(k.url))]), ['40%', '18%', '20%', '22%']));\n}\nif ((f.ranked_top || []).length) {\n  H.push('<p style=\"' + FONT + 'font-size:12.5pt;font-weight:bold;color:' + C.navy + ';margin:12pt 0 4pt 0;\">Your best searches today</p>');\n  H.push(dataTable(['Search phrase', 'Searches / month', 'Your spot'], f.ranked_top.slice(0, 10).map((k) => ['<b>' + hesc(k.kw) + '</b>', num(k.vol), k.pos ? (k.pos <= 3 ? pill('#' + k.pos, tone(95)) : k.pos <= 10 ? pill('#' + k.pos, tone(75)) : pill('#' + k.pos, tone(55))) : '-']), ['56%', '22%', '22%']));\n}\n// Live search\nH.push('<p style=\"' + FONT + 'font-size:12.5pt;font-weight:bold;color:' + C.navy + ';margin:12pt 0 4pt 0;\">Live Google check: \"' + hesc(f.serp.keyword) + '\"</p>');\nif (!f.serp.top.length) H.push(callout('Not checked this time.', 'Google did not return results for this search during the audit. Try searching it yourself in a private browser window.', tone(null)));\nelse {\n  H.push(callout('Your spot:', f.serp.my_position ? '#' + f.serp.my_position + ' on Google for this search.' + (f.serp.my_position <= 3 ? ' Excellent.' : f.serp.my_position <= 10 ? ' You are on page 1. The top 3 get most clicks.' : ' You are not on page 1 yet.') : 'Your site is not in the top 100 for this search yet.', tone(f.serp.my_position ? (f.serp.my_position <= 3 ? 95 : f.serp.my_position <= 10 ? 75 : 55) : 10)));\n  if (f.serp.local_pack.length) H.push(callout('Google map results:', (f.serp.in_local_pack ? 'You are in the map results (the 3 businesses Google shows on a map). Great.' : 'You are not in the map results (the 3 businesses Google shows on a map). These get many of the calls.') + ' Showing now: ' + f.serp.local_pack.map((p) => hesc(p.title) + (p.rating ? ' (' + p.rating + '&#9733;, ' + num(p.reviews) + ' reviews)' : '')).join(', ') + '.', f.serp.in_local_pack ? tone(95) : tone(55)));\n  H.push(dataTable(['#', 'Who ranks above you', 'Their headline'], f.serp.top.slice(0, 10).map((o) => [String(o.pos), '<b>' + hesc(o.domain) + '</b>', hesc(String(o.title || '').slice(0, 70))]), ['8%', '34%', '58%']));\n}\n// Competitors\nif ((f.competitors || []).length) {\n  H.push('<p style=\"' + FONT + 'font-size:12.5pt;font-weight:bold;color:' + C.navy + ';margin:12pt 0 4pt 0;\">Who you compete with on Google</p>');\n  H.push(small('Websites that show up for many of the same searches as you.'));\n  H.push(dataTable(['Website', 'Searches you both show up for', 'Their visitors / month'], f.competitors.slice(0, 8).map((c) => ['<b>' + hesc(c.domain) + '</b>', num(c.shared), num(c.etv)]), ['44%', '30%', '26%']));\n}\n// Local\nH.push(section('Your Google Business Profile', 'The listing that shows your business on Google Maps', true));\nif (f.gbp) {\n  const g = f.gbp;\n  H.push(dataTable(['', 'Your profile', 'Good?'], [\n    ['<b>Name</b>', hesc(g.name), yes], ['<b>Rating</b>', (g.rating || 'n/a') + ' &#9733; from ' + num(g.reviews) + ' reviews', g.rating >= 4.5 && g.reviews >= 50 ? yes : '<b style=\"color:' + C.amber + ';\">Get more reviews</b>'],\n    ['<b>Claimed by you</b>', g.claimed === false ? 'No' : 'Yes', g.claimed === false ? no('Claim it') : yes], ['<b>Main category</b>', hesc(g.category || 'n/a') + ' (+' + g.extra_categories + ' more)', g.category ? yes : no('Add one')],\n    ['<b>Photos</b>', num(g.photos), g.photos >= 20 ? yes : '<b style=\"color:' + C.amber + ';\">Add more</b>'], ['<b>Website link</b>', hesc(g.website || 'none'), g.website ? yes : no('Add it')], ['<b>Opening hours</b>', g.hours ? 'Listed' : 'Missing', g.hours ? yes : no('Add them')]\n  ], ['30%', '45%', '25%']));\n} else H.push(callout('No profile found.', 'We could not find a Google Business Profile for this business. It is free and is the #1 way local customers find you on Google Maps. Create one at business.google.com.', tone(10)));\n// Backlinks\nH.push('<p style=\"' + FONT + 'font-size:12.5pt;font-weight:bold;color:' + C.navy + ';margin:12pt 0 4pt 0;\">Other websites that link to you</p>');\nif (f.backlinks.unavailable) H.push(small('Not included in this audit (needs the DataForSEO Backlinks add-on).'));\nelse H.push(callout('Why it matters:', 'Links from other websites act like votes of trust for Google. ' + num(f.backlinks.ref_domains) + ' different websites link to you' + (f.backlinks.broken ? ', and ' + num(f.backlinks.broken) + ' of those links point to pages that no longer work. Ask your web person to redirect them.' : '.'), f.backlinks.ref_domains >= 50 ? tone(95) : tone(55)));\n\n// ---------------- CHECKLIST ----------------\nH.push(section('Your to-do checklist', 'Tick each box as you go. Start at the top.', true));\nconst WHO = { 'Technical & on-page': 'Web person', 'Keywords & content': 'You or web person', 'Local SEO': 'You' };\n[[1, 'Do first', tone(10)], [2, 'Do next', tone(55)], [3, 'When you have time', tone(75)]].forEach((g) => {\n  const list = fixes.filter((x) => x.pri === g[0]); if (!list.length) return;\n  H.push(table('<tr>' + td('<b style=\"font-size:11.5pt;color:' + g[2].fg + ';\">' + g[1] + '</b> <span style=\"font-size:9.5pt;color:' + C.muted + ';\">(' + list.length + ' item' + (list.length > 1 ? 's' : '') + ')</span>', 'background-color:' + g[2].bg + ';padding:6pt 10pt;') + '</tr>', 'margin:10pt 0 0 0;'));\n  H.push(table(list.map((x) => '<tr>' + td('<span style=\"font-size:14pt;color:' + C.muted + ';\">&#9744;</span>', 'width:22pt;border-bottom:1pt solid ' + C.line + ';padding:6pt 4pt 6pt 8pt;') +\n    td('<p style=\"' + FONT + 'font-size:10.5pt;font-weight:bold;color:' + C.ink + ';margin:0 0 3pt 0;\">' + hesc(x.title) + '</p><p style=\"' + FONT + 'font-size:9.5pt;line-height:1.45;color:' + C.ink + ';margin:0 0 2pt 0;\"><b>Why:</b> ' + hesc(x.why) + '</p><p style=\"' + FONT + 'font-size:9.5pt;line-height:1.45;color:' + C.ink + ';margin:0;\"><b>How:</b> ' + hesc(x.fix) + '</p>' + (x.where ? '<p style=\"' + FONT + 'font-size:8.5pt;color:' + C.muted + ';margin:2pt 0 0 0;\">Pages: ' + hesc(where(x.where)) + '</p>' : ''), 'border-bottom:1pt solid ' + C.line + ';padding:6pt 8pt;') +\n    td('<span style=\"font-size:8.5pt;color:' + C.muted + ';\">' + (WHO[x.cat] || 'Either') + '</span>', 'width:70pt;border-bottom:1pt solid ' + C.line + ';padding:6pt 8pt;') + '</tr>').join('')));\n});\n\n// ---------------- GLOSSARY ----------------\nH.push(section('Words in this report', 'Plain-English meanings', false));\nH.push(dataTable(['Word', 'What it means'], [\n  ['SEO', 'Search engine optimization. Making your website easier to find on Google.'], ['Keyword / search phrase', 'The words people type into Google, like \"plumber near me\".'],\n  ['Ranking / spot', 'Where your site appears in Google results. #1 is the top.'], ['Map pack', 'The 3 businesses Google shows on a map above the normal results.'],\n  ['Google Business Profile', 'Your free business listing on Google Maps and Search (hours, reviews, photos).'], ['Title tag', 'The blue headline Google shows for your page.'],\n  ['Meta description', 'The short grey text under the headline in Google.'], ['H1 / main heading', 'The biggest headline on a page. Each page should have one.'],\n  ['Alt text', 'A short hidden description of an image. Helps Google and people who use screen readers.'], ['Backlink', 'A link from another website to yours. Like a vote of trust.'],\n  ['Sitemap', 'A list of all your pages that helps Google find them.'], ['Page speed', 'How fast your page loads. Google aims for under 2.5 seconds.']\n], ['30%', '70%']));\nH.push(small('Made from live data by DataForSEO and Google PageSpeed Insights on ' + prettyDate + '. No one can guarantee Google rankings. Run this check again after making changes to see your progress.', 'margin-top:14pt;text-align:center;'));\nconst html = '<html><head><meta charset=\"utf-8\"></head><body style=\"' + FONT + 'color:' + C.ink + ';\">' + H.join('\\n') + '</body></html>';\n\n// ---------------- MARKDOWN VERSION (download fallback) ----------------\nconst L = [];\nL.push('# ' + f.business + ': Website & Google Health Check');\nL.push('');\nL.push('**Website:** ' + f.site + (f.city ? '  \\n**Area:** ' + f.city : '') + '  \\n**Date:** ' + prettyDate);\nL.push('');\nL.push('## Overall score: ' + f.overall + '/100 (grade ' + f.grade + ', ' + overallT.word + ')');\nL.push('');\nL.push('- **Website build:** ' + sc.build + '/100 (' + tone(sc.build).word + '). How well the site is built. You control this today.');\nL.push('- **Google presence:** ' + sc.presence + '/100 (' + tone(sc.presence).word + '). How much Google already shows and trusts you. Grows over time.');\nif (sc.new_site) { L.push(''); L.push('> **Brand new website?** A low Google presence score is normal for sites under 6 to 12 months old. Judge the site by the Website build score for now.'); }\nL.push('');\nL.push(verdict);\nL.push('');\nL.push('| Area | Score | Result |');\nL.push('| --- | --- | --- |');\nf.parts.forEach((p) => L.push('| ' + p.name + ' | ' + (p.val === null || p.val === undefined ? '-' : p.val) + ' | ' + tone(p.val).word + ' |'));\nL.push('');\nL.push(ai);\nL.push('');\nL.push('# Your to-do checklist');\n[[1, 'Do first'], [2, 'Do next'], [3, 'When you have time']].forEach((g) => {\n  const list = fixes.filter((x) => x.pri === g[0]); if (!list.length) return;\n  L.push(''); L.push('## ' + g[1]); L.push('');\n  list.forEach((x) => { L.push('- [ ] **' + x.title + '**  '); L.push('  Why: ' + x.why + '  '); L.push('  How: ' + x.fix + (x.where ? '  ' : '')); if (x.where) L.push('  Pages: ' + where(x.where)); });\n});\nL.push('');\nL.push('*Made from live DataForSEO and Google PageSpeed Insights data. No one can guarantee Google rankings.*');\nconst md = L.join('\\n');\n\n// ---------------- FILES ----------------\nconst baseName = String(f.business || f.site).replace(/[\\\\/:*?\"<>|]+/g, ' ').replace(/\\s+/g, ' ').trim() + ' SEO Audit ' + today;\nconst fileName = baseName + '.md';\nconst folder = String($('Settings').first().json.gdrive_folder_id || '').trim();\nconst boundary = 'auditboundary' + Date.now();\nconst meta = { name: baseName + ' (temp)', mimeType: 'application/vnd.google-apps.document' };\nconst multipart = '--' + boundary + '\\r\\nContent-Type: application/json; charset=UTF-8\\r\\n\\r\\n' + JSON.stringify(meta) + '\\r\\n--' + boundary + '\\r\\nContent-Type: text/html; charset=UTF-8\\r\\n\\r\\n' + html + '\\r\\n--' + boundary + '--';\nreturn [{ json: { file_name: fileName, pdf_name: baseName + '.pdf', folder_id: folder, boundary: boundary, multipart: multipart, overall: f.overall, grade: f.grade, high: f.issue_counts.high, business: f.business, chars: md.length, html_chars: html.length }, binary: { data: { data: Buffer.from(md, 'utf8').toString('base64'), mimeType: 'text/markdown', fileName: fileName, fileExtension: 'md' } } }];\n"
+      },
+      "id": "a97b5850-33b3-4e83-add8-d0a2fd42b2cd",
+      "name": "Build Report File",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2064,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "respondWith": "returnBinary",
+        "completionTitle": "Your SEO audit is ready",
+        "completionMessage": "={{ 'Overall score: ' + $json.overall + '/100 (grade ' + $json.grade + '), ' + $json.high + ' high-priority fixes. Your full report is downloading now.' + ($json.saved_pdf ? ' A PDF copy was saved to Google Drive: ' + $json.drive_link : '') }}",
+        "options": {}
+      },
+      "id": "68e2467f-ca38-47d1-bf2a-af13971006f6",
+      "name": "Download Report",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        2544,
+        128
+      ],
+      "webhookId": "4772a8c0-eb27-48df-9a89-9f453f12dc04"
+    },
+    {
+      "parameters": {
+        "content": "## SEO Website Auditor (one workflow)\n\nEnter just a website. About 2 to 3 minutes later you get an in-depth report (PDF saved to Google Drive + download) with a master checklist.\n\n**Data:**\n- **DataForSEO On-Page**: homepage + up to 5 key pages (titles, meta, H1, content, links, images, 40+ technical checks)\n- **Google PageSpeed Insights**: mobile + desktop Lighthouse, Core Web Vitals (lab + real Chrome users), biggest speed fixes\n- **DataForSEO Labs**: keywords ranked, page-1 count, traffic, striking-distance keywords, competitors\n- **AI detection**: business name, city and main keyword read from the site\n- **DataForSEO SERP**: live Google top 100 + map pack for that keyword\n- **DataForSEO Business Data**: Google Business Profile rating, reviews, claimed, photos, categories\n- **DataForSEO Backlinks** (optional)\n\n**kie.ai GPT 5.2** writes the summary, top 7 fixes, content ideas, local plan and 30/60/90 day plan from the data only.",
+        "height": 420,
+        "width": 620,
+        "color": 4
+      },
+      "id": "467ef0c7-3a7f-4622-b700-b794e22fee3b",
+      "name": "About this workflow",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        -512
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Setup (5 minutes)\n1. **DataForSEO** credential: Basic Auth, User = API login, Password = API password (DataForSEO dashboard > API Access). Select it on every DataForSEO box\n2. **kie.ai** credential: Header Auth, Name `Authorization`, Value `Bearer YOUR_KEY`. Select it on both kie GPT boxes\n3. **Google Drive** credential (Google Drive OAuth2 API, sign in with Google). Select it on the 5 \"Drive:\" boxes. Optional: paste a folder ID in **Read URL** (`GDRIVE_FOLDER_ID`). Without Drive, the form still downloads the Markdown report\n4. Optional: free **Google PageSpeed API key** in **Read URL** (`PSI_API_KEY`)\n5. **Publish**, open the Audit Form box, copy the **Production URL**\n\nThe form only asks for the website. Business name, city and main keyword are detected from the site. PDF is saved as \"Business Name SEO Audit YYYY-MM-DD.pdf\".",
+        "height": 420,
+        "width": 520,
+        "color": 6
+      },
+      "id": "0d9efdae-1f11-4323-a0c2-e46b50bfb38a",
+      "name": "Setup",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        608,
+        -528
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Reads the website from the form. Everything else (business, city, keyword) is detected from the site later.\n// Optional: paste a Google PageSpeed Insights API key below (free at console.cloud.google.com, \"PageSpeed Insights API\").\nconst PSI_API_KEY = '';\n// Optional: Google Drive folder ID for the PDF reports (the code after /folders/ in the folder's address). Empty = My Drive.\nconst GDRIVE_FOLDER_ID = '';\nconst f = $json;\nlet site = String(f['Website URL'] || '').trim();\nif (site && !/^https?:\\/\\//i.test(site)) site = 'https://' + site;\nconst base = site.replace(/[?#].*$/, '').replace(/\\/+$/, '');\nconst domain = ((base.match(/^https?:\\/\\/([^\\/]+)/i) || [])[1] || '').replace(/^www\\./i, '').toLowerCase();\n// country from the domain ending (used for Google data before the site is analyzed)\nconst tld = [['.co.uk', 2826, 'United Kingdom'], ['.uk', 2826, 'United Kingdom'], ['.ca', 2124, 'Canada'], ['.com.au', 2036, 'Australia'], ['.au', 2036, 'Australia'], ['.co.nz', 2554, 'New Zealand'], ['.nz', 2554, 'New Zealand'], ['.ie', 2372, 'Ireland']].find((t) => domain.endsWith(t[0]));\nreturn { json: {\n  site: base, home: base + '/', domain: domain, business: domain.split('.')[0], city: '', keyword: '', serp_keyword: domain.split('.')[0],\n  email: String(f['Your email'] || '').trim(), location_code: tld ? tld[1] : 2840, language_code: 'en', country: tld ? tld[2] : 'United States',\n  psi_key: PSI_API_KEY, gdrive_folder_id: GDRIVE_FOLDER_ID, sitemap_url: base + '/sitemap.xml', robots_url: base + '/robots.txt', started: new Date().toISOString()\n} };\n"
+      },
+      "id": "042ab668-aae1-4cce-b696-b97a33447645",
+      "name": "Read URL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $(\"Read URL\").first().json.home }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (compatible; SEOAuditBot/1.0)"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {
+              "maxRedirects": 5
+            }
+          },
+          "response": {
+            "response": {
+              "neverError": true,
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 25000
+        }
+      },
+      "id": "2723589e-0c1d-49b6-9bca-a9390b3b6016",
+      "name": "Fetch Homepage",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        240,
+        128
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Gathers clues about the business from the homepage + its Google rankings, then asks the AI to identify it.\nconst s = $('Read URL').first().json;\nlet html = '';\ntry { const j = $('Fetch Homepage').first().json || {}; html = typeof j.data === 'string' ? j.data : ''; } catch (e) {}\nconst strip = (h) => String(h || '').replace(/<script[\\s\\S]*?<\\/script>/gi, ' ').replace(/<style[\\s\\S]*?<\\/style>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&#0?39;|&#8217;|&rsquo;/g, \"'\").replace(/\\s+/g, ' ').trim();\nconst title = strip((html.match(/<title[^>]*>([\\s\\S]*?)<\\/title>/i) || [])[1]);\nconst meta = (n) => ((html.match(new RegExp('<meta[^>]+(?:name|property)=[\"\\']' + n + '[\"\\'][^>]+content=[\"\\']([^\"\\']*)[\"\\']', 'i')) || [])[1] || '');\nconst heads = (html.match(/<h[1-3][^>]*>[\\s\\S]*?<\\/h[1-3]>/gi) || []).map(strip).filter(Boolean).slice(0, 15);\nconst ld = (html.match(/<script[^>]+application\\/ld\\+json[^>]*>([\\s\\S]*?)<\\/script>/gi) || []).map((b) => b.replace(/<[^>]+>/g, '')).join(' ').slice(0, 2500);\nconst tels = Array.from(new Set((html.match(/tel:[+\\d\\-() ]{7,}/gi) || []))).slice(0, 2);\nconst body = strip(html);\nconst footer = body.slice(-1200);\nconst clues = 'WEBSITE: ' + s.site + '\\nTITLE: ' + title + '\\nMETA DESCRIPTION: ' + meta('description') + '\\nOG SITE NAME: ' + meta('og:site_name') +\n  '\\nHEADINGS: ' + heads.join(' | ') + '\\nSTRUCTURED DATA (JSON-LD): ' + (ld || '(none)') + '\\nPHONE LINKS: ' + (tels.join(', ') || '(none)') +\n  '\\nPAGE TEXT (start): ' + body.slice(0, 1500) + '\\nPAGE TEXT (footer): ' + footer;\nconst system = 'You are a senior local SEO strategist. From a website\\'s own content you identify the business and the single search phrase that matters most for winning customers.';\nconst prompt = 'Identify this business from the clues below. Use only the clues; leave a field empty if it is not supported.\\n\\n' + clues + '\\n\\n' +\n  'main_keyword = the 2 to 4 word phrase a potential CUSTOMER types into Google to find this kind of business (the core service, no brand name, no city), e.g. \"emergency plumber\", \"family dentist\", \"website design for small business\".\\n' +\n  'is_local = true if the business serves customers in a specific city or area (trades, clinics, restaurants, salons, local services), false if it sells nationwide or online.\\n' +\n  'city = the main city it serves (from the address, structured data or text), state/region as a 2-letter code or name.\\n' +\n  'Reply with ONLY JSON: {\"business_name\":\"\",\"industry\":\"\",\"services\":[\"up to 6\"],\"city\":\"\",\"region\":\"\",\"country\":\"\",\"main_keyword\":\"\",\"is_local\":true,\"confidence\":\"high|medium|low\"}';\nreturn [{ json: { system: system, prompt: prompt, title: title, og_site_name: meta('og:site_name'), ld: ld } }];\n"
+      },
+      "id": "5dc425c9-dc2a-4599-98b3-d898ab98e4a5",
+      "name": "Detection Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/gpt-5-2/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: \"gpt-5-2\", messages: [{ role: \"system\", content: $json.system }, { role: \"user\", content: $json.prompt }] }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 180000
+        }
+      },
+      "id": "df0588f0-967a-4a59-a735-4f467465b745",
+      "name": "kie GPT: Detect Business",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        592,
+        128
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// kie.ai sometimes repeats chunks of a long reply (\"If youARTICLE=== ... If you run\").\n// This removes any chunk (40+ chars) that exactly repeats the text right before it, then passes the reply on.\nconst fix = (t) => {\n  let out = '';\n  let i = 0;\n  const n = t.length;\n  while (i < n) {\n    let skip = 0;\n    const maxL = Math.min(600, out.length, n - i);\n    for (let L = maxL; L >= 40; L--) {\n      if (t.charCodeAt(i) !== out.charCodeAt(out.length - L)) continue;\n      if (t.substr(i, L) === out.slice(-L)) { skip = L; break; }\n    }\n    if (skip) i += skip; else { out += t[i]; i++; }\n  }\n  return out;\n};\nlet parsed = $json;\nif (typeof $json.data === 'string') { try { parsed = JSON.parse($json.data); } catch (e) { parsed = null; } }\nconst msg = parsed && parsed.choices && parsed.choices[0] && parsed.choices[0].message;\nif (!msg) return { json: $json };\nconst before = String(msg.content || '');\nmsg.content = fix(before);\nreturn { json: { data: JSON.stringify(parsed), removed_repeated_chars: before.length - msg.content.length } };\n"
+      },
+      "id": "269f1ed3-28f3-4c1a-b433-8b205f77dbf7",
+      "name": "Clean Reply: Detect",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        784,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "={{ 'multipart/related; boundary=' + $json.boundary }}",
+        "body": "={{ $json.multipart }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 60000
+        }
+      },
+      "id": "87f65608-8633-4ee0-baa3-088a680b9f6b",
+      "name": "Drive: Create Doc From Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1856,
+        128
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://www.googleapis.com/drive/v3/files/{{ $json.id || 'missing' }}/export?mimeType=application/pdf",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true,
+              "responseFormat": "file"
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "id": "3edfb84c-fe26-4c08-bc53-8f0f15c7fd86",
+      "name": "Drive: Export PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2064,
+        128
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.googleapis.com/upload/drive/v3/files?uploadType=media&supportsAllDrives=true&fields=id",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "id": "b091fa72-4aca-4b6d-916b-b86192d8dfb2",
+      "name": "Drive: Upload PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2272,
+        128
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://www.googleapis.com/drive/v3/files/{{ $json.id || 'missing' }}?supportsAllDrives=true&fields=id,name,webViewLink{{ $('Build Report File').first().json.folder_id ? '&addParents=' + $('Build Report File').first().json.folder_id + '&removeParents=root' : '' }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ name: $('Build Report File').first().json.pdf_name }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "a9cae51a-6a20-44db-b114-2f215b190989",
+      "name": "Drive: Name & File PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2512,
+        128
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://www.googleapis.com/drive/v3/files/{{ $('Drive: Create Doc From Report').first().json.id || 'missing' }}?supportsAllDrives=true",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "7c74a855-7957-4d61-b7b5-bdb5a8e59ca9",
+      "name": "Drive: Delete Temp Doc",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2736,
+        128
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Gives the form the PDF (if Google Drive worked) or the Markdown file, plus the Drive link.\nconst rep = $('Build Report File').first();\nlet pdf = null, link = '';\ntry { const e = $('Drive: Export PDF').first(); if (e.binary && e.binary.data && /pdf/i.test(e.binary.data.mimeType || '')) pdf = e.binary.data; } catch (e) {}\ntry { link = $('Drive: Name & File PDF').first().json.webViewLink || ''; } catch (e) {}\nconst out = pdf ? Object.assign({}, pdf, { fileName: rep.json.pdf_name, fileExtension: 'pdf', mimeType: 'application/pdf' }) : rep.binary.data;\nreturn [{ json: Object.assign({}, rep.json, { drive_link: link, saved_pdf: !!(pdf && link) }), binary: { data: out } }];\n"
+      },
+      "id": "94dac1b6-60a9-47c4-b7f5-3425838ebbc3",
+      "name": "Attach Report File",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2352,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Cleans up the analysis before the AI writes: removes claims the data can't back up, and asks the AI\n// to write in plain English for a business owner with no SEO experience (used by the PDF design).\nconst a = $input.first().json;\nconst findings = JSON.parse(JSON.stringify(a.findings));\nlet fixes = (a.fixes || []).slice();\n// Google search came back empty -> we can't say \"not in the top 100\"\nif (!((findings.serp || {}).top || []).length) fixes = fixes.filter((x) => !/^Not in the Google top 100|^Not in the Google map pack/.test(x.title));\nfixes = fixes.map((x) => Object.assign({}, x, { why: String(x.why).replace('This is the search you said matters most.', 'This is the main search customers use to find a business like yours.') }));\nfindings.issue_counts = { high: fixes.filter((x) => x.pri === 1).length, medium: fixes.filter((x) => x.pri === 2).length, low: fixes.filter((x) => x.pri === 3).length };\n// Two scores: Website build (technical, works for brand-new sites) and Google presence (real-world data that grows over time)\nconst BUILD_AREAS = ['On-page health', 'Mobile speed', 'Desktop speed', 'Lighthouse SEO', 'Accessibility', 'Best practices'];\nconst wavg = (list) => { const ok = list.filter((p) => p.val !== null && p.val !== undefined); const w = ok.reduce((t, p) => t + p.w, 0); return w ? Math.round(ok.reduce((t, p) => t + p.val * p.w, 0) / w) : null; };\nconst parts = findings.parts || [];\nconst vis = findings.visibility || {}; const gbp = findings.gbp; const bl = findings.backlinks || {};\nconst young = [];\nif ((vis.keywords || 0) < 10) young.push('Google shows you for ' + (vis.keywords || 0) + ' searches');\nif ((vis.etv || 0) < 20) young.push('very few visitors from Google so far');\nif (!gbp) young.push('no Google Business Profile found'); else if ((gbp.reviews || 0) < 10) young.push('only ' + (gbp.reviews || 0) + ' Google reviews');\nif (!bl.unavailable && (bl.ref_domains || 0) < 10) young.push((bl.ref_domains || 0) + ' websites link to you');\nfindings.scores = { build: wavg(parts.filter((p) => BUILD_AREAS.indexOf(p.name) !== -1)), presence: wavg(parts.filter((p) => BUILD_AREAS.indexOf(p.name) === -1)), new_site: (vis.keywords || 0) < 10 && young.length >= 2, young_signals: young };\nconst s = { business: findings.business, site: findings.site, city: findings.city };\nconst p0 = String(a.prompt || '');\nconst k1 = 'the only facts you may use):\\n'; const k2 = '\\n\\nWrite these sections';\nlet compact = p0.indexOf(k1) !== -1 ? p0.slice(p0.indexOf(k1) + k1.length, p0.indexOf(k2)) : '{}';\ntry { const c = JSON.parse(compact); if (c.high_priority_fixes) c.high_priority_fixes = fixes.filter((x) => x.pri === 1).map((x) => x.title); if (c.other_fixes) c.other_fixes = fixes.filter((x) => x.pri > 1).map((x) => x.title).slice(0, 25); if (c.serp && !(c.serp.top || []).length) c.serp = { keyword: c.serp.keyword, note: 'Live Google search returned no results during the audit. Do not say anything about this search.' }; c.issue_counts = findings.issue_counts; c.scores = findings.scores; compact = JSON.stringify(c); } catch (e) {}\nconst prompt = 'Write the strategy part of a website SEO audit for ' + s.business + ' (' + s.site + ')' + (s.city ? ', serving ' + s.city : '') + '.\\n\\n' +\n  'THE READER: the business owner. Assume they have never heard of SEO and are not technical. Write like a friendly expert explaining it across a kitchen table: short sentences (under 20 words), everyday words, 6th to 8th grade reading level. The first time you use any technical term, explain it in brackets, for example: title tag (the blue headline Google shows for your page), backlinks (other websites linking to yours), map pack (the 3 businesses Google shows on a map). Tell them what to do, not theory.\\n\\n' +\n  'AUDIT DATA (from DataForSEO and Google PageSpeed Insights; the only facts you may use):\\n' + compact + '\\n\\n' +\n  'Write these sections in Markdown, using EXACTLY these headings and layouts:\\n\\n' +\n  '## In plain English\\n4 to 6 short sentences: what the score means, the 2 or 3 biggest things holding the site back, and the single biggest opportunity. Start with something genuinely good about the site if the data shows one.\\n\\n' +\n  '## Your 7 most important fixes\\nHighest impact first, based on the data. Each fix uses exactly this layout:\\n### 1. A short plain-English title (what to do, not the problem)\\nWhat to do: 1 to 3 short, specific sentences. Name the exact page, phrase or number from the data.\\nWhy it matters: 1 or 2 sentences about customers, calls or Google, in plain words.\\nWho can do it: You | Your web person | Either\\nEffort: Quick | Medium | Big\\nImpact: High | Medium\\n\\n' +\n  '## New pages and posts to create\\n5 to 7 ideas tied to the striking-distance keywords, the main keyword, competitor gaps and local searches. Each uses exactly this layout:\\n### Page title idea\\nSearch phrase: the exact phrase to target\\nWhat to include: 1 to 2 sentences.\\n\\n' +\n  '## Your local Google plan\\n5 to 8 bullet points (start each with a verb) for the Google Business Profile, reviews, listings on other sites and the map pack, based on the data.\\n\\n' +\n  '## Your 30 / 60 / 90 day plan\\n### First 30 days\\n3 to 5 bullets\\n### Days 31 to 60\\n3 to 5 bullets\\n### Days 61 to 90\\n3 to 5 bullets\\n\\n' +\n  'Rules: use only numbers that appear in the data. Never promise rankings or traffic. No em dashes. No tables, no code blocks, no emojis. If a data source shows an error or is missing, do not guess about it. The data has two scores: website build (technical, the owner controls it today) and Google presence (real-world data that grows over months). If scores.new_site is true, say early in plain English that the site looks new, that a low Google presence score is normal for a new website or domain, and focus the fixes on the build and on getting found (Business Profile, reviews, first links, core service pages). Write a line with only ===REPORT===, then the Markdown, then a line with only ===END===.';\n\nreturn [{ json: { findings: findings, fixes: fixes, system: a.system, prompt: prompt } }];\n"
+      },
+      "id": "e0584f8c-aa24-4206-9369-6e020aa0d88e",
+      "name": "Polish Findings",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2768,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Keeps only the page break after the cover. Every other section flows on naturally,\n// so the PDF has no pages with just a few lines on them.\nconst PB = '<p style=\"page-break-before:always;margin:0;\"></p>';\nconst it = $input.first();\nconst parts = String(it.json.multipart || '').split(PB);\nconst multipart = parts.length > 1 ? parts[0] + PB + parts.slice(1).join('') : parts[0];\nreturn [{ json: Object.assign({}, it.json, { multipart: multipart }), binary: it.binary }];\n"
+      },
+      "id": "ef56aff7-1578-47a5-bc0d-396bf1044816",
+      "name": "Tidy Page Breaks",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3392,
+        464
+      ]
+    }
+  ],
+  "connections": {
+    "Settings": {
+      "main": [
+        [
+          {
+            "node": "Fetch robots.txt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch robots.txt": {
+      "main": [
+        [
+          {
+            "node": "Fetch Sitemap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Sitemap": {
+      "main": [
+        [
+          {
+            "node": "Pick Pages To Audit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Pages To Audit": {
+      "main": [
+        [
+          {
+            "node": "DataForSEO: Audit Pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DataForSEO: Audit Pages": {
+      "main": [
+        [
+          {
+            "node": "PageSpeed: Mobile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PageSpeed: Mobile": {
+      "main": [
+        [
+          {
+            "node": "PageSpeed: Desktop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PageSpeed: Desktop": {
+      "main": [
+        [
+          {
+            "node": "DataForSEO: Domain Overview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DataForSEO: Domain Overview": {
+      "main": [
+        [
+          {
+            "node": "DataForSEO: Ranked Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DataForSEO: Ranked Keywords": {
+      "main": [
+        [
+          {
+            "node": "DataForSEO: Competitors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DataForSEO: Competitors": {
+      "main": [
+        [
+          {
+            "node": "DataForSEO: Google Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DataForSEO: Google Search": {
+      "main": [
+        [
+          {
+            "node": "DataForSEO: Google Business Profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DataForSEO: Google Business Profile": {
+      "main": [
+        [
+          {
+            "node": "DataForSEO: Backlinks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DataForSEO: Backlinks": {
+      "main": [
+        [
+          {
+            "node": "Analyze Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "kie GPT: Audit Strategist": {
+      "main": [
+        [
+          {
+            "node": "Clean AI Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean AI Reply": {
+      "main": [
+        [
+          {
+            "node": "Build Report File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit Form": {
+      "main": [
+        [
+          {
+            "node": "Read URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read URL": {
+      "main": [
+        [
+          {
+            "node": "Fetch Homepage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Homepage": {
+      "main": [
+        [
+          {
+            "node": "Detection Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detection Prompt": {
+      "main": [
+        [
+          {
+            "node": "kie GPT: Detect Business",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "kie GPT: Detect Business": {
+      "main": [
+        [
+          {
+            "node": "Clean Reply: Detect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean Reply: Detect": {
+      "main": [
+        [
+          {
+            "node": "Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drive: Create Doc From Report": {
+      "main": [
+        [
+          {
+            "node": "Drive: Export PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drive: Export PDF": {
+      "main": [
+        [
+          {
+            "node": "Drive: Upload PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drive: Upload PDF": {
+      "main": [
+        [
+          {
+            "node": "Drive: Name & File PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drive: Name & File PDF": {
+      "main": [
+        [
+          {
+            "node": "Drive: Delete Temp Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drive: Delete Temp Doc": {
+      "main": [
+        [
+          {
+            "node": "Attach Report File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Report File": {
+      "main": [
+        [
+          {
+            "node": "Download Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Website": {
+      "main": [
+        [
+          {
+            "node": "Polish Findings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Polish Findings": {
+      "main": [
+        [
+          {
+            "node": "kie GPT: Audit Strategist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Report File": {
+      "main": [
+        [
+          {
+            "node": "Tidy Page Breaks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tidy Page Breaks": {
+      "main": [
+        [
+          {
+            "node": "Drive: Create Doc From Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": true,
+    "binaryMode": "separate"
+  },
+  "pinData": {},
+  "nodeGroups": [
+    {
+      "id": "c34ada4a-5ccd-4d0e-9db6-31d86dcceda0",
+      "name": "1. Read the site + detect the business",
+      "nodeNames": [
+        "Read URL",
+        "Fetch Homepage",
+        "Detection Prompt",
+        "kie GPT: Detect Business",
+        "Clean Reply: Detect",
+        "Settings"
+      ],
+      "description": "Reads the URL and homepage, AI finds the business name, city and main keyword"
+    },
+    {
+      "id": "f7d923b6-a46a-466b-b0e1-2ff9728eb6fd",
+      "name": "2. Site files + page crawl + speed",
+      "nodeNames": [
+        "Fetch robots.txt",
+        "Fetch Sitemap",
+        "Pick Pages To Audit",
+        "DataForSEO: Audit Pages",
+        "PageSpeed: Mobile",
+        "PageSpeed: Desktop"
+      ],
+      "description": "robots.txt, sitemap, DataForSEO crawl of up to 6 pages, PageSpeed mobile + desktop"
+    },
+    {
+      "id": "cecc2e0c-0fb2-4df2-acaf-f929b57753cb",
+      "name": "3. Google visibility + local",
+      "nodeNames": [
+        "DataForSEO: Domain Overview",
+        "DataForSEO: Ranked Keywords",
+        "DataForSEO: Competitors",
+        "DataForSEO: Google Search",
+        "DataForSEO: Google Business Profile",
+        "DataForSEO: Backlinks"
+      ],
+      "description": "Rankings, competitors, live Google search + map pack, Business Profile, backlinks"
+    },
+    {
+      "id": "43bf4438-6743-46ad-9d87-8c7d99ea15f4",
+      "name": "4. Analyze + write",
+      "nodeNames": [
+        "Analyze Website",
+        "Polish Findings",
+        "kie GPT: Audit Strategist",
+        "Clean AI Reply",
+        "Build Report File",
+        "Tidy Page Breaks"
+      ],
+      "description": "Code scores and builds the fix list, AI writes a plain-English plan, designed PDF report built"
+    },
+    {
+      "id": "1b312241-bfad-45dd-8f13-29d9190a5494",
+      "name": "5. Save PDF to Google Drive",
+      "nodeNames": [
+        "Drive: Create Doc From Report",
+        "Drive: Export PDF",
+        "Drive: Upload PDF",
+        "Drive: Name & File PDF",
+        "Drive: Delete Temp Doc"
+      ],
+      "description": "Google Doc from the report, export PDF named Business SEO Audit date, delete temp doc"
+    },
+    {
+      "id": "23558201-10de-4473-aa40-84a4b56f8864",
+      "name": "6. Deliver",
+      "nodeNames": [
+        "Attach Report File",
+        "Download Report"
+      ],
+      "description": "Form downloads the PDF (or Markdown if Drive is not set up)"
+    }
+  ]
+}

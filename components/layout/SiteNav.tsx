@@ -63,14 +63,14 @@ export function SiteNav({ items, labels, drawerFooter }: Props) {
 
   return (
     <>
-      <nav aria-label={labels.label} className="hidden lg:block">
+      <nav aria-label={labels.label} className="hidden xl:block">
         <ul className="flex items-center gap-2">
           {items.map((item) => (
             <li key={item.href}>
               <Link
                 href={item.href}
                 prefetch={false}
-                className="rz-nav-link flex min-h-11 items-center whitespace-nowrap px-2 font-display text-sm font-medium underline-offset-4 transition-colors duration-fast display-ui hover:text-accent hover:underline hover:decoration-2 xl:px-3"
+                className="rz-nav-link flex min-h-11 items-center whitespace-nowrap px-2 font-display text-sm font-medium underline-offset-4 transition-colors duration-fast display-ui hover:text-accent hover:underline hover:decoration-2"
               >
                 {item.label}
               </Link>
@@ -89,7 +89,7 @@ export function SiteNav({ items, labels, drawerFooter }: Props) {
           setOpenedAt(pathname);
           setOpen((v) => !v);
         }}
-        className="rz-menu-btn flex min-h-11 min-w-11 items-center justify-center rounded-ui border-2 border-ink px-2 font-display text-sm font-bold display-ui lg:hidden"
+        className="rz-menu-btn flex min-h-11 min-w-11 items-center justify-center rounded-ui border-2 border-ink px-2 font-display text-sm font-bold display-ui xl:hidden"
       >
         <span aria-hidden="true">{open ? labels.close : labels.menu}</span>
       </button>
@@ -98,7 +98,7 @@ export function SiteNav({ items, labels, drawerFooter }: Props) {
         ref={panelRef}
         id={panelId}
         hidden={!open}
-        className="rz-drawer fixed inset-x-0 bottom-0 top-14 z-drawer overflow-y-auto overscroll-contain border-t-2 border-ink bg-canvas pb-[env(safe-area-inset-bottom)] md:top-16 lg:hidden"
+        className="rz-drawer fixed inset-x-0 bottom-0 top-14 z-drawer overflow-y-auto overscroll-contain border-t-2 border-ink bg-canvas pb-[env(safe-area-inset-bottom)] md:top-16 xl:hidden"
       >
         <nav aria-label={labels.label} className="px-4 py-6 short:py-3 short:grid short:grid-cols-2 short:items-start short:gap-x-8">
           <ul className="border-t-2 border-ink">

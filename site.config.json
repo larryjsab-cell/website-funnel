@@ -147,6 +147,10 @@
       "href": "/blog"
     },
     {
+      "label": "Templates",
+      "href": "/templates"
+    },
+    {
       "label": "Contact",
       "href": "/#contact"
     }

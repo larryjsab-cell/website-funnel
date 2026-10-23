@@ -68,6 +68,7 @@ ${steps}
 - [FAQ](${url("/#faq")}): Answers about the offer, the free demo and life after launch.
 - [Contact](${url("/#contact")}): Phone, email, hours, address and a short message form.
 - [Blog](${url("/blog")}): Guides for small business owners on website costs, what to include, and getting found locally.
+- [Free n8n templates](${url("/templates")}): Free n8n workflow downloads, starting with an SEO website audit that outputs a PDF report.
 - [Privacy policy](${url("/privacy")}): What we collect through the forms and how we use it.
 - [Terms of service](${url("/terms")}): Plans, billing, cancellation, ownership and changes.
 
