@@ -9,7 +9,7 @@ export function Wordmark({ onInk = false }: Props) {
   return (
     <Link
       href="/"
-      className={`rz-wordmark inline-flex min-h-11 min-w-11 items-center gap-2 font-display ${onInk ? "text-on-band" : "text-ink"}`}
+      className={`rz-wordmark inline-flex shrink-0 min-h-11 min-w-11 items-center gap-2 font-display ${onInk ? "text-on-band" : "text-ink"}`}
     >
       <span
         aria-hidden="true"

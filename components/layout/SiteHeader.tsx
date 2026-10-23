@@ -1,5 +1,4 @@
 import { CtaButton } from "@/components/ui/CtaButton";
-import { Container } from "@/components/ui/Container";
 import { Wordmark } from "@/components/ui/Wordmark";
 import { HeaderAutoHide } from "@/components/layout/HeaderAutoHide";
 import { SiteNav } from "@/components/layout/SiteNav";
@@ -10,9 +9,10 @@ export function SiteHeader() {
   return (
     <header className="rz-header sticky top-0 z-header border-b-2 border-ink bg-canvas">
       <HeaderAutoHide />
-      <Container className="flex h-14 items-center justify-between gap-3 md:h-16">
+      {/* Full width; the wordmark and CTA never shrink, so the nav can't slide under them. */}
+      <div className="flex h-14 w-full items-center justify-between gap-6 px-4 md:h-16 md:px-8">
         <Wordmark />
-        <div className="flex items-center gap-2 lg:gap-4">
+        <div className="flex min-w-0 items-center gap-2 lg:gap-4">
           <SiteNav
             items={site.nav}
             labels={ui.nav}
@@ -25,9 +25,9 @@ export function SiteHeader() {
               </div>
             }
           />
-          <CtaButton location="header" size="sm" className="max-md:hidden md:min-h-12 md:px-4" />
+          <CtaButton location="header" size="sm" className="shrink-0 max-md:hidden md:min-h-12 md:px-4" />
         </div>
-      </Container>
+      </div>
     </header>
   );
 }

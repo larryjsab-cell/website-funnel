@@ -118,7 +118,7 @@ export function HeroMockup() {
         </div>
       </div>
 
-      <figcaption className="mt-4 font-display text-sm text-muted display-ui xl:mt-16">{m.label}</figcaption>
+      <figcaption className="sr-only">{m.label}</figcaption>
     </figure>
   );
 }
