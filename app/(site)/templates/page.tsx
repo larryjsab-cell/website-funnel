@@ -30,7 +30,7 @@ const TEMPLATES: Template[] = [
     summary:
       "Type in any website. About 2 to 3 minutes later you get an in-depth SEO audit as a PDF, saved to Google Drive and ready to download, with a checklist of what to fix first.",
     file: "/templates/seo-website-auditor.json",
-    size: "116 KB",
+    size: "118 KB",
     checks: [
       "Homepage and up to 5 key pages: titles, descriptions, headings, content, links, images and 40+ technical checks",
       "Mobile and desktop speed scores with Core Web Vitals and the biggest speed fixes",

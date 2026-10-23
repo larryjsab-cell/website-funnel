@@ -1164,75 +1164,75 @@
     {
       "id": "c34ada4a-5ccd-4d0e-9db6-31d86dcceda0",
       "name": "1. Read the site + detect the business",
-      "nodeNames": [
-        "Read URL",
-        "Fetch Homepage",
-        "Detection Prompt",
-        "kie GPT: Detect Business",
-        "Clean Reply: Detect",
-        "Settings"
-      ],
-      "description": "Reads the URL and homepage, AI finds the business name, city and main keyword"
+      "description": "Reads the URL and homepage, AI finds the business name, city and main keyword",
+      "nodeIds": [
+        "042ab668-aae1-4cce-b696-b97a33447645",
+        "2723589e-0c1d-49b6-9bca-a9390b3b6016",
+        "5dc425c9-dc2a-4599-98b3-d898ab98e4a5",
+        "df0588f0-967a-4a59-a735-4f467465b745",
+        "269f1ed3-28f3-4c1a-b433-8b205f77dbf7",
+        "e9e90ceb-3e7c-4bc9-8eed-27f25f3313e2"
+      ]
     },
     {
       "id": "f7d923b6-a46a-466b-b0e1-2ff9728eb6fd",
       "name": "2. Site files + page crawl + speed",
-      "nodeNames": [
-        "Fetch robots.txt",
-        "Fetch Sitemap",
-        "Pick Pages To Audit",
-        "DataForSEO: Audit Pages",
-        "PageSpeed: Mobile",
-        "PageSpeed: Desktop"
-      ],
-      "description": "robots.txt, sitemap, DataForSEO crawl of up to 6 pages, PageSpeed mobile + desktop"
+      "description": "robots.txt, sitemap, DataForSEO crawl of up to 6 pages, PageSpeed mobile + desktop",
+      "nodeIds": [
+        "a59938bd-d8e4-4e0a-9316-5be028f863ae",
+        "2e48ae3d-d58a-4907-9a0d-822c979432f3",
+        "768e3677-4825-4ae5-8bf7-51e753d378ab",
+        "51505258-c1b0-4b6a-bf75-0c64bf0b81f8",
+        "ec623a70-c610-4527-aa5d-756d0735e61d",
+        "54c0016b-2c26-4f27-832d-98c20be57d85"
+      ]
     },
     {
       "id": "cecc2e0c-0fb2-4df2-acaf-f929b57753cb",
       "name": "3. Google visibility + local",
-      "nodeNames": [
-        "DataForSEO: Domain Overview",
-        "DataForSEO: Ranked Keywords",
-        "DataForSEO: Competitors",
-        "DataForSEO: Google Search",
-        "DataForSEO: Google Business Profile",
-        "DataForSEO: Backlinks"
-      ],
-      "description": "Rankings, competitors, live Google search + map pack, Business Profile, backlinks"
+      "description": "Rankings, competitors, live Google search + map pack, Business Profile, backlinks",
+      "nodeIds": [
+        "bc014e81-3df7-4d8f-bc6a-d5d1e1884bb7",
+        "9ed0f3e7-7bf0-43b0-a754-9c89f0da992c",
+        "ab1a9ff7-0733-4463-ad09-a4a2b0898d3a",
+        "96cec85c-b0a7-4e93-8c59-74be63a4e62f",
+        "5822911b-a463-4b2f-9655-3cc5cb07484e",
+        "844dbc50-a4d0-4bc8-afdd-9936cf61c5c3"
+      ]
     },
     {
       "id": "43bf4438-6743-46ad-9d87-8c7d99ea15f4",
       "name": "4. Analyze + write",
-      "nodeNames": [
-        "Analyze Website",
-        "Polish Findings",
-        "kie GPT: Audit Strategist",
-        "Clean AI Reply",
-        "Build Report File",
-        "Tidy Page Breaks"
-      ],
-      "description": "Code scores and builds the fix list, AI writes a plain-English plan, designed PDF report built"
+      "description": "Code scores and builds the fix list, AI writes a plain-English plan, designed PDF report built",
+      "nodeIds": [
+        "e5159678-1af2-4859-87b4-ac1835d508a4",
+        "e0584f8c-aa24-4206-9369-6e020aa0d88e",
+        "395c8d7b-7f15-48ae-8bfd-75135f0b7f6d",
+        "5010ae5e-9848-41b4-a8d2-3f13b2d6d8ad",
+        "a97b5850-33b3-4e83-add8-d0a2fd42b2cd",
+        "ef56aff7-1578-47a5-bc0d-396bf1044816"
+      ]
     },
     {
       "id": "1b312241-bfad-45dd-8f13-29d9190a5494",
       "name": "5. Save PDF to Google Drive",
-      "nodeNames": [
-        "Drive: Create Doc From Report",
-        "Drive: Export PDF",
-        "Drive: Upload PDF",
-        "Drive: Name & File PDF",
-        "Drive: Delete Temp Doc"
-      ],
-      "description": "Google Doc from the report, export PDF named Business SEO Audit date, delete temp doc"
+      "description": "Google Doc from the report, export PDF named Business SEO Audit date, delete temp doc",
+      "nodeIds": [
+        "87f65608-8633-4ee0-baa3-088a680b9f6b",
+        "3edfb84c-fe26-4c08-bc53-8f0f15c7fd86",
+        "b091fa72-4aca-4b6d-916b-b86192d8dfb2",
+        "a9cae51a-6a20-44db-b114-2f215b190989",
+        "7c74a855-7957-4d61-b7b5-bdb5a8e59ca9"
+      ]
     },
     {
       "id": "23558201-10de-4473-aa40-84a4b56f8864",
       "name": "6. Deliver",
-      "nodeNames": [
-        "Attach Report File",
-        "Download Report"
-      ],
-      "description": "Form downloads the PDF (or Markdown if Drive is not set up)"
+      "description": "Form downloads the PDF (or Markdown if Drive is not set up)",
+      "nodeIds": [
+        "94dac1b6-60a9-47c4-b7f5-3425838ebbc3",
+        "68e2467f-ca38-47d1-bf2a-af13971006f6"
+      ]
     }
   ]
 }
