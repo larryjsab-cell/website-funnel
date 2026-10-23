@@ -120,7 +120,7 @@ export default function TemplatesPage() {
                   <a href={t.file} download className={primaryButton}>
                     Download the Template (JSON, {t.size})
                   </a>
-                  <a href="#footer-contact" className={secondaryButton}>
+                  <a href="/#contact" className={secondaryButton}>
                     Want It Set Up for You?
                   </a>
                 </div>
