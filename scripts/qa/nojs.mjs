@@ -4,7 +4,7 @@ const t = (c) => c.repeat(48);
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 const problems = [];
 const row = (k, v) => console.log(k.padEnd(48), v);
-const FACTS = ["$40", "$0 design fee", "free demo", "(248) 974-4220", "larryjsab@gmail.com", "3230 Glen Iris Drive", "Commerce Township", "9am–10pm", "Nationwide", "Starter Website", "Growth Package", "Complete Package", "$100", "$200", "$400", "No credit card"];
+const FACTS = ["$40", "$0 design fee", "free demo", "(248) 974-4220", "contact@ryzonautomationllc.com", "3230 Glen Iris Drive", "Commerce Township", "9am–10pm", "Nationwide", "Starter Website", "Growth Package", "Complete Package", "$100", "$200", "$400", "No credit card"];
 for (const width of [1280, 375]) {
   const ctx = await browser.newContext({ javaScriptEnabled: false, viewport: { width, height: 900 } });
   const p = await ctx.newPage();

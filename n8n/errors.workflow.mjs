@@ -1,6 +1,6 @@
 // Generates n8n Workflow SDK code for "Ryzon Landing – Errors".
 // Usage: node n8n/errors.workflow.mjs > out.js, then validate/create with the n8n MCP tools.
-const ADMIN = process.env.RYZON_ADMIN_EMAIL || "larryjsab@gmail.com";
+const ADMIN = process.env.RYZON_ADMIN_EMAIL || "contact@ryzonautomationllc.com";
 
 const throttle = `// One alert per workflow and failing node per hour, so a broken credential
 // doesn't flood the inbox while the database keeps retrying every minute.
