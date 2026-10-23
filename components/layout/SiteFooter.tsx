@@ -36,7 +36,7 @@ export function SiteFooter() {
           </ul>
         </nav>
 
-        <div className="md:col-span-5">
+        <div id="footer-contact" className="scroll-mt-24 md:col-span-5">
           <h2 className="font-display text-sm font-bold display-ui">{ui.footer.contactHeading}</h2>
           <address className="mt-3 grid gap-2 text-base not-italic">
             <span>{site.business.name}</span>

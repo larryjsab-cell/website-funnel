@@ -120,9 +120,9 @@ export default function TemplatesPage() {
                   <a href={t.file} download className={primaryButton}>
                     Download the Template (JSON, {t.size})
                   </a>
-                  <Link href="/#demo" className={secondaryButton}>
+                  <a href="#footer-contact" className={secondaryButton}>
                     Want It Set Up for You?
-                  </Link>
+                  </a>
                 </div>
 
                 <div className="mt-10 grid gap-10 lg:grid-cols-2">
