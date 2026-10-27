@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "legal-tos-privacy": {
+      "source": "aibot88/sec_skill_store",
+      "sourceType": "github",
+      "skillPath": "skills/claudskills/legal-tos-privacy/SKILL.md",
+      "computedHash": "f0054e4c534876fa152bdaf812bc92ec0684602fdc44cd78c7ecc2ee30a5f40a"
+    }
+  }
+}
