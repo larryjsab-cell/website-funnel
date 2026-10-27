@@ -1,65 +1,123 @@
 {
-  "draftNotice": "Draft written from Ryzon Automation’s stated terms. Have it reviewed by a lawyer before launch.",
   "updatedLabel": "Last updated",
-  "updated": "October 12, 2026",
-  "contactLabel": "Questions about this page? Email",
+  "updated": "October 27, 2026",
+  "contactLabel": "Questions about this page, or want your information deleted? Email",
   "privacy": {
     "title": "Privacy policy",
-    "description": "What Ryzon Automation collects when you request a demo or contact us, why, and how to ask us to delete it.",
-    "intro": "This page explains what information Ryzon Automation (“we”, “us”) collects through this website, what we do with it, and the choices you have.",
+    "description": "What Ryzon Automation collects through this website, why, who helps us process it, how long we keep it, and how to have it deleted.",
+    "intro": "This policy explains what information Ryzon Automation (“we”, “us”) collects when you use ryzonautomationllc.com, request a demo, contact us, become a customer, refer someone or answer a review request, what we do with it, and the choices you have. We’re a small website design company based at 3230 Glen Iris Drive, Commerce Township, MI 48382, serving businesses across the United States.",
     "sections": [
       {
-        "heading": "What we collect",
+        "heading": "Information you give us",
         "blocks": [
           {
-            "body": [
-              "We only collect what you type into our forms:"
-            ]
-          },
-          {
             "list": [
-              "Demo request: your name, email, business name, phone number, industry, the website style you picked, your current website (optional), and any notes you add (optional).",
-              "Contact form: your name, email, and your message.",
-              "With each form we also record which form you used, the page it came from, and the time it was sent."
+              "Demo request: your name, email, phone number, business name, industry, the website style you picked, your current website, your goals and any notes you add.",
+              "Contact form: your name, email and message.",
+              "Change requests and calls: the changes you describe, and for a booked call the time you picked, whether it’s a video call or phone call, and the phone number to call.",
+              "Review requests: the star rating you choose, any feedback you write, whether you’d like us to contact you, and which review site you click through to.",
+              "Referral program: if you join as a referrer, your name, email, phone number and business name, and notes we keep about the referrals you send.",
+              "If you tell us about your business by phone or email, we may add those details to our records ourselves, for example when you were already a customer before this website existed."
             ]
           }
         ]
       },
       {
-        "heading": "Why we collect it",
+        "heading": "Information we collect automatically",
+        "blocks": [
+          {
+            "list": [
+              "Where you came from: the page you sent a form from, the website that linked you to us, and any campaign tags in the link (such as utm_source). If you arrive through a referral link, we note the referral code so the person who sent you gets credit.",
+              "Your time zone, so our emails and call times arrive at sensible hours for you.",
+              "Website analytics: we use Google Analytics to understand how visitors use the site, such as pages viewed, buttons clicked, the type of device and browser, and approximate location (city level). It uses cookies, described below.",
+              "Basic technical logs kept by our hosting provider, such as IP address and browser type, to keep the site running and secure."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Payments",
+        "blocks": [
+          {
+            "body": [
+              "Payments are handled by Stripe. You enter your card details on Stripe’s checkout page, not ours, so we never see or store your full card number. Stripe tells us which plan you bought, the amount, the billing interval and your Stripe customer and subscription IDs, and we keep that with your account. Stripe’s own privacy policy applies to the information you give them."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "How we use your information",
         "blocks": [
           {
             "list": [
               "To design your free demo and send it to you.",
-              "To answer your questions.",
-              "To follow up about the demo or a plan you asked about."
+              "To answer your questions and handle your change requests and booked calls.",
+              "To set up, run, bill and support your website plan.",
+              "To send the emails described below.",
+              "To run the referral program and give referrers their credit.",
+              "To ask how we did, and to follow up if you tell us something went wrong.",
+              "To understand which pages and campaigns work, so we can improve the site.",
+              "To protect against fraud and misuse, and to meet legal, tax and accounting obligations."
             ]
           },
           {
             "body": [
-              "We don’t sell your information, and we don’t share it with anyone for their own marketing."
+              "We don’t sell your personal information, and we don’t share it with anyone for their own marketing or for targeted advertising."
             ]
           }
         ]
       },
       {
-        "heading": "How it’s handled",
+        "heading": "Emails we send",
         "blocks": [
           {
             "body": [
-              "When you send a form, it goes through an automation service (n8n) that emails it to our team (Gmail). Those services process the information only to deliver it to us.",
-              "If we turn on website analytics, it measures things like page visits and button clicks to help us improve the site. [CONFIRM: analytics provider, once chosen]"
+              "After you request a demo we send emails about it: when it’s ready, reminders, and limited-time offers on our plans. These stop when you pick a plan or when you unsubscribe. Every offer email has an unsubscribe link, and you can also reply and ask us to stop.",
+              "Customers also get emails about their account: payment confirmations, change requests, booked calls, launch updates and a short review request. These are part of the service, so they don’t have an unsubscribe link, but you can always ask us to stop the review request."
             ]
           }
         ]
       },
       {
-        "heading": "Your choices",
+        "heading": "Who helps us process your information",
         "blocks": [
           {
             "body": [
-              "You can ask us to see, correct, or delete the information you sent us. Email us at the address below and we’ll take care of it.",
-              "Your browser stores the website style you pick so the page remembers it next time. That stays on your device, and clearing your browser data removes it."
+              "We use a few trusted service providers to run the business. They only use your information to provide their service to us:"
+            ]
+          },
+          {
+            "list": [
+              "Supabase: our database and file storage.",
+              "Netlify: hosts this website.",
+              "n8n: the automation service that sends our emails and notifications.",
+              "Google Workspace (Gmail and Google Meet): sending and receiving email, and video calls you book with us.",
+              "Stripe: payments and subscriptions.",
+              "Google Analytics: website analytics."
+            ]
+          },
+          {
+            "body": [
+              "If you click through to post a review on Google, Facebook or another site, that site’s own privacy policy applies to what you post there.",
+              "We may also share information if the law requires it, to protect our rights or someone’s safety, or as part of selling or transferring the business, in which case this policy would continue to apply to your information."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Cookies and browser storage",
+        "blocks": [
+          {
+            "list": [
+              "Google Analytics cookies (_ga and _ga_Q3MP008QJ4) tell visits apart and measure how the site is used. They last up to 2 years.",
+              "The website style you pick is saved in your browser so the page remembers it. It stays on your device until you clear your browser data.",
+              "Where you came from is saved for your current browser session, so it’s still attached if you browse around before sending a form. It’s cleared when you close the tab.",
+              "A referral code is saved in your browser for 30 days, so the person who referred you still gets credit if you come back later."
+            ]
+          },
+          {
+            "body": [
+              "You can block or delete cookies in your browser settings, or install Google’s Analytics Opt-out Browser Add-on. The site works the same without them. We don’t currently respond to browser “Do Not Track” signals."
             ]
           }
         ]
@@ -68,8 +126,53 @@
         "heading": "How long we keep it",
         "blocks": [
           {
+            "list": [
+              "Demo requests and messages: as long as we need them to follow up with you, or until you ask us to delete them.",
+              "Customer records: for as long as you’re a customer, and afterwards for as long as we need them for tax, accounting and legal reasons, typically up to 7 years for payment records.",
+              "Design files we prepare for you: until you ask us to delete them. The download link we email you stops working after 7 days.",
+              "Analytics data: kept by Google according to our account’s retention setting, which is between 2 and 14 months."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Your choices and rights",
+        "blocks": [
+          {
             "body": [
-              "[CONFIRM: how long demo and contact submissions are kept]"
+              "You can ask us to show you the information we have about you, correct it, or delete it. When we delete your information, we remove everything stored under your email address: your requests, messages, email history, change requests, calls, payment records, review requests, referral record and any files. Payment records kept by Stripe, and emails already delivered to an inbox, aren’t affected.",
+              "To make a request, email us at the address at the bottom of this page. We’ll confirm the request comes from you, usually by replying to the email address we have on file, and respond within 30 days. You won’t be treated differently for using these rights.",
+              "Depending on where you live (for example California or another state with a privacy law), you may have additional rights, such as the right to know what categories of information we collect and why. This policy describes those categories. We don’t sell personal information or share it for targeted advertising, so there’s nothing to opt out of there."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "How we protect it",
+        "blocks": [
+          {
+            "body": [
+              "Information travels over encrypted connections (HTTPS) and is stored with our service providers, who protect it with their own security measures. Only our team can see it, after signing in. No website or service can be completely secure, so we can’t guarantee absolute security, but we’ll let you know as the law requires if your information is ever involved in a breach."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Children",
+        "blocks": [
+          {
+            "body": [
+              "This website and our services are for businesses and adults. We don’t knowingly collect information from anyone under 18. If you think a child has sent us information, email us and we’ll delete it."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Where your information is stored",
+        "blocks": [
+          {
+            "body": [
+              "We’re based in the United States, and our service providers may store and process information in the United States and other countries."
             ]
           }
         ]
@@ -79,7 +182,7 @@
         "blocks": [
           {
             "body": [
-              "If we change this policy, we’ll update this page and the date at the top."
+              "If we change this policy, we’ll update this page and the date at the top. If a change significantly affects how we use information we already have, we’ll also email customers about it."
             ]
           }
         ]
@@ -88,8 +191,8 @@
   },
   "terms": {
     "title": "Terms of service",
-    "description": "The terms for Ryzon Automation’s website plans: the free demo, pricing, cancellation, site ownership, and edits.",
-    "intro": "These terms cover Ryzon Automation’s website design plans. By requesting a demo or starting a plan, you agree to them.",
+    "description": "The terms for Ryzon Automation’s free demo, website plans, billing, cancellation, site ownership, edits, the referral program and free templates.",
+    "intro": "These terms are an agreement between you and Ryzon Automation (“we”, “us”), based at 3230 Glen Iris Drive, Commerce Township, MI 48382. They cover our website, the free demo, our website plans and our free templates. By requesting a demo, starting a plan, joining the referral program or downloading a template, you agree to them. You need to be at least 18 and, if you sign up for a business, allowed to agree on its behalf.",
     "sections": [
       {
         "heading": "The free demo",
@@ -98,7 +201,8 @@
             "list": [
               "The demo is free, with no obligation to buy anything.",
               "We design a preview of your site, which can be ready as soon as the next day.",
-              "Once your demo is sent, changes start when you pick a plan. If you’d like to see a completely different design before you decide, just ask."
+              "Once your demo is sent, changes start when you pick a plan. If you’d like to see a completely different design before you decide, just ask.",
+              "The demo design stays ours until you pick a plan. Please don’t copy it or have someone else build it."
             ]
           }
         ]
@@ -108,7 +212,7 @@
         "blocks": [
           {
             "body": [
-              "What each plan includes is listed on the pricing section of our home page. [CONFIRM: billing method and renewal terms]"
+              "What each plan includes is listed in the pricing section of our home page. Current prices:"
             ]
           },
           {
@@ -117,7 +221,25 @@
               "Growth Package: $100/month or $1,000/year.",
               "Complete Package: $200/month or $2,000/year.",
               "Paying yearly gets you 2 months free on every plan.",
-              "For a limited time, every plan is $0 upfront."
+              "For a limited time, every plan is $0 upfront, with no design fee."
+            ]
+          },
+          {
+            "body": [
+              "Discounts we email you, such as a reduced first month or first year, are only valid during the window stated in that email. If we change our prices, current customers get at least 30 days’ notice by email before the new price applies to them."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Billing",
+        "blocks": [
+          {
+            "list": [
+              "Payments are processed by Stripe. By starting a plan you authorize us to charge your payment method each month or each year, depending on the billing you chose.",
+              "Plans renew automatically until you cancel.",
+              "Prices don’t include any sales tax that applies; if tax applies, it’s added at checkout.",
+              "If a payment fails, we’ll let you know. If it isn’t sorted out within 14 days, we may pause your site until it is."
             ]
           }
         ]
@@ -127,7 +249,18 @@
         "blocks": [
           {
             "body": [
-              "You can cancel anytime. If you cancel before your first year is up, the design files are not included."
+              "You can cancel anytime by emailing us or replying to any of our emails. Cancelling stops future charges, and your site stays up until the end of the period you’ve already paid for. We don’t refund the part of a period you’ve already paid for, unless the law requires it.",
+              "If you cancel before your first year is up, the design files are not included."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Design files ($99)",
+        "blocks": [
+          {
+            "body": [
+              "If you buy only the design files for your demo, you pay once and we email you a download link. The link works for 7 days; if it expires, ask and we’ll send a new one. The files are yours to use for your own business once paid. Because the files are delivered right away, this purchase is final."
             ]
           }
         ]
@@ -137,7 +270,8 @@
         "blocks": [
           {
             "body": [
-              "We own and manage the site for the first year. After that, if you decide to leave, we export your site files and deliver them to you to manage."
+              "We own and manage the site for the first year. After that, if you decide to leave, we export your site files and deliver them to you to manage.",
+              "Your logo, photos, text and other materials you give us stay yours. You let us use them to build, host and show your site, and to show it as an example of our work unless you ask us not to."
             ]
           }
         ]
@@ -154,21 +288,114 @@
         ]
       },
       {
-        "heading": "Your content",
+        "heading": "Your content and how you use the site",
         "blocks": [
           {
             "body": [
-              "You’re responsible for the text, photos, and logos you give us, and for having the right to use them. We use them only to build and run your site."
+              "You’re responsible for the materials you give us and for having the right to use them. You agree not to use your site or our services for anything illegal, misleading, harmful or that infringes someone else’s rights, and not to try to break into or disrupt our systems. We can refuse to publish content that breaks these rules, and we can suspend or end a plan that does."
             ]
           }
         ]
       },
       {
-        "heading": "Governing law",
+        "heading": "No guaranteed results",
         "blocks": [
           {
             "body": [
-              "These terms are governed by the laws of the State of Michigan. [CONFIRM]"
+              "We build every site with search engine basics and analytics, and we’ll always do our best work. But we can’t control search engines, your market or your customers, so we don’t guarantee any particular ranking, amount of traffic, number of leads or sales. Examples and figures on our site and in our articles are for illustration and general information, not promises or professional advice."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Referral program",
+        "blocks": [
+          {
+            "list": [
+              "If you’re a referrer, you earn a $50 credit toward new services from us for each business you refer that becomes a paying customer.",
+              "Credit isn’t cash, can’t be transferred, and has no value outside our services.",
+              "A referral counts when the new customer comes through your referral link or names you, and isn’t already in our records. Referring yourself or your own business doesn’t count.",
+              "We may change or end the program at any time. Credit you’ve already earned stays usable."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Free templates",
+        "blocks": [
+          {
+            "body": [
+              "The automation templates on our Templates page are free to download and use. They’re provided as is, without support or any warranty. You’re responsible for the accounts you connect to them, for any fees those services charge (such as API usage), and for how you use their results."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Services from other companies",
+        "blocks": [
+          {
+            "body": [
+              "Your site and our services rely on other companies, such as our hosting, payment and email providers, and services like Google. We aren’t responsible for their outages, changes or policies, though we’ll help you work around problems where we can."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Warranty disclaimer",
+        "blocks": [
+          {
+            "body": [
+              "Except as these terms say otherwise, our website, demos, plans and templates are provided “as is” and “as available”. To the fullest extent the law allows, we disclaim all other warranties, including warranties of merchantability, fitness for a particular purpose and non-infringement, and we don’t promise the site will always be available or error-free."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Limitation of liability",
+        "blocks": [
+          {
+            "body": [
+              "To the fullest extent the law allows, we aren’t liable for indirect, incidental, special, consequential or punitive damages, or for lost profits, revenue, data or business opportunities, even if we were told they were possible. Our total liability for any claim related to our services is limited to the amount you paid us in the 12 months before the claim, or $100 if that’s more. Some places don’t allow these limits, so they may not all apply to you."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Indemnification",
+        "blocks": [
+          {
+            "body": [
+              "If someone makes a claim against us because of the content you gave us, your use of your site or our services, or your breaking these terms, you agree to cover our reasonable costs and losses from that claim, including reasonable legal fees."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Ending our service",
+        "blocks": [
+          {
+            "body": [
+              "We can suspend or end your plan if you don’t pay, break these terms, or use our services in a way that could harm us or others. Where it’s reasonable, we’ll warn you first and give you a chance to fix it. The sections on ownership, limits of liability, indemnification and governing law still apply after a plan ends."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Governing law and disputes",
+        "blocks": [
+          {
+            "body": [
+              "These terms are governed by the laws of the State of Michigan. If a problem comes up, please contact us first and we’ll try to sort it out. If we can’t, any dispute will be handled by the state or federal courts in Oakland County, Michigan, and you and we agree to that location."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "General",
+        "blocks": [
+          {
+            "body": [
+              "These terms, together with our privacy policy and anything we agree in writing for your plan, are the full agreement between us. If any part is found unenforceable, the rest still applies. We aren’t responsible for delays caused by events outside our reasonable control, such as outages, natural disasters or internet failures. If we don’t enforce a part of these terms right away, we can still enforce it later."
             ]
           }
         ]
@@ -178,7 +405,7 @@
         "blocks": [
           {
             "body": [
-              "If we change these terms, we’ll update this page and the date at the top."
+              "If we change these terms, we’ll update this page and the date at the top. For changes that affect paid plans, we’ll email customers at least 30 days before they take effect. Continuing to use our services after that means you accept the new terms."
             ]
           }
         ]

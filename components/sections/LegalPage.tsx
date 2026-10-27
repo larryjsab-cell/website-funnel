@@ -71,9 +71,6 @@ export function LegalPage({ doc }: { doc: Doc }) {
               {legal.updatedLabel}: {legal.updated}
             </p>
           </div>
-          <p className="mt-6 rounded-card border-2 border-dashed border-accent bg-surface p-4 font-display text-sm text-accent display-ui">
-            {legal.draftNotice}
-          </p>
           <p className="mt-8 max-w-measure text-lg">{page.intro}</p>
 
           {page.sections.map((s) => (
