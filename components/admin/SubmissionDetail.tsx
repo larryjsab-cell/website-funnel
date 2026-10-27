@@ -231,7 +231,7 @@ function DeletePanel({ s }: { s: Submission }) {
         Delete this person
       </h2>
       <p className="mt-2 text-sm">
-        Permanently removes everything stored about <strong className="break-all">{s.email}</strong>. This can&rsquo;t be undone.
+        Permanently removes everything stored about <strong className="break-words">{s.email}</strong>. This can&rsquo;t be undone.
       </p>
       {!summary ? (
         <Button tone="danger" className="mt-4" busy={busy === "check"} onClick={check}>
