@@ -337,6 +337,7 @@ const TABLE_PAGE = 100;
 function TableView({ subs }: { subs: Submission[] }) {
   // Filters start from the URL and write back to it, so a filtered list can be bookmarked or shared.
   const params = useSearchParams();
+  const deleted = params.get("deleted");
   const [q, setQ] = useState(() => params.get("q") ?? "");
   const [status, setStatus] = useState(() => params.get("status") ?? "");
   const [plan, setPlan] = useState(() => params.get("plan") ?? "");
@@ -416,6 +417,7 @@ function TableView({ subs }: { subs: Submission[] }) {
         </div>
       </div>
 
+      {deleted && <Notice message={`Deleted ${deleted} and everything stored about them.`} />}
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm tabular-nums">
           {rows.length} of {subs.length} submissions
@@ -445,11 +447,12 @@ function TableView({ subs }: { subs: Submission[] }) {
               {s.paid_at ? ` · paid ${day(s.paid_at)}` : ""}
               {` · ${s.utm_source || host(s.referrer) || "direct"}`}
             </p>
-            {s.automations_paused && (
-              <p className="mt-1">
-                <Tag>Paused</Tag>
-              </p>
-            )}
+            <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
+              {s.automations_paused ? <Tag>Paused</Tag> : <span />}
+              <Link href={`/admin/s/${s.id}#delete`} className="inline-flex min-h-11 items-center text-sm text-danger underline underline-offset-4">
+                Delete<span className="sr-only"> {displayName(s)}</span>
+              </Link>
+            </div>
           </li>
         ))}
       </ul>
@@ -458,9 +461,9 @@ function TableView({ subs }: { subs: Submission[] }) {
         <table className="w-full min-w-[56rem] border-collapse text-left text-sm tabular-nums">
           <thead>
             <tr className="border-b-2 border-ink font-display">
-              {["Received", "Business", "Contact", "Status", "Plan", "Offer", "Paid", "Source"].map((h) => (
-                <th key={h} scope="col" className="px-3 py-2">
-                  {h}
+              {["Received", "Business", "Contact", "Status", "Plan", "Offer", "Paid", "Source", ""].map((h) => (
+                <th key={h || "actions"} scope="col" className="px-3 py-2">
+                  {h || <span className="sr-only">Actions</span>}
                 </th>
               ))}
             </tr>
@@ -487,6 +490,11 @@ function TableView({ subs }: { subs: Submission[] }) {
                 <td className="px-3 py-2">{s.offer ? OFFERS[s.offer] ?? s.offer : ""}</td>
                 <td className="whitespace-nowrap px-3 py-2">{day(s.paid_at)}</td>
                 <td className="px-3 py-2">{s.utm_source || host(s.referrer) || "direct"}</td>
+                <td className="px-3 py-2">
+                  <Link href={`/admin/s/${s.id}#delete`} className="inline-flex min-h-11 items-center text-danger underline underline-offset-4">
+                    Delete<span className="sr-only"> {displayName(s)}</span>
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>

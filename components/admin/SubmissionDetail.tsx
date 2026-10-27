@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { Button, inputClass, labelClass, Notice, Panel, StatusBadge, Tag } from "@/components/admin/ui";
 import {
@@ -147,9 +148,141 @@ export function SubmissionDetail({ id }: { id: string }) {
           <NotesPanel s={s} action={action} />
           <PaymentsPanel payments={detail.payments} />
           <HistoryPanel history={detail.history} />
+          <DeletePanel s={s} />
         </div>
       </div>
     </div>
+  );
+}
+
+type PersonSummary = {
+  email: string;
+  submission_ids: string[];
+  submissions: number;
+  history: number;
+  change_requests: number;
+  payments: number;
+  reviews: number;
+  referrer: boolean;
+  emails: number;
+};
+
+const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+
+/** Removes the person's uploaded design files, one folder per submission. */
+async function deleteFiles(ids: string[]) {
+  const store = supabase().storage.from(FILES_BUCKET);
+  for (const id of ids) {
+    const { data, error } = await store.list(id, { limit: 1000 });
+    if (error) throw new Error(`Couldn’t list their files: ${error.message}`);
+    const paths = (data ?? []).map((f) => `${id}/${f.name}`);
+    if (paths.length) {
+      const { error: rmError } = await store.remove(paths);
+      if (rmError) throw new Error(`Couldn’t delete their files: ${rmError.message}`);
+    }
+  }
+}
+
+/** Permanently deletes everyone with this email and everything stored about them. */
+function DeletePanel({ s }: { s: Submission }) {
+  const router = useRouter();
+  const [summary, setSummary] = useState<PersonSummary | null>(null);
+  const [confirm, setConfirm] = useState("");
+  const [busy, setBusy] = useState<"" | "check" | "delete">("");
+  const [error, setError] = useState("");
+
+  const check = async () => {
+    setBusy("check");
+    setError("");
+    try {
+      setSummary(await adminRpc<PersonSummary>("ryzon_landing_admin_person_summary", { p_id: s.id }));
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy("");
+    }
+  };
+
+  const remove = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!summary) return;
+    setBusy("delete");
+    setError("");
+    try {
+      await deleteFiles(summary.submission_ids);
+      await adminRpc("ryzon_landing_admin_delete_person", { p_id: s.id, p_confirm: confirm });
+      router.replace(`/admin?view=table&deleted=${encodeURIComponent(summary.email)}`);
+    } catch (err) {
+      setError((err as Error).message);
+      setBusy("");
+    }
+  };
+
+  // The table's Delete links open this page at #delete; the panel only exists once the data loads.
+  useEffect(() => {
+    if (window.location.hash === "#delete") document.getElementById("delete")?.scrollIntoView({ block: "center" });
+  }, []);
+
+  const matches = !!summary && confirm.trim().toLowerCase() === summary.email;
+
+  return (
+    <section id="delete" aria-labelledby="delete-heading" className="scroll-mt-24 rounded-card border-2 border-danger bg-surface p-4 sm:p-5">
+      <h2 id="delete-heading" className="font-display text-lg font-heavy text-danger display-tight">
+        Delete this person
+      </h2>
+      <p className="mt-2 text-sm">
+        Permanently removes everything stored about <strong className="break-all">{s.email}</strong>. This can&rsquo;t be undone.
+      </p>
+      {!summary ? (
+        <Button tone="danger" className="mt-4" busy={busy === "check"} onClick={check}>
+          Delete Person…
+        </Button>
+      ) : (
+        <form onSubmit={remove} className="mt-4 grid gap-4">
+          <div>
+            <p className="font-display text-sm font-bold">This deletes:</p>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+              <li>{plural(summary.submissions, "submission")} with this email{summary.submissions > 1 ? " (all of them, not only this one)" : ""}</li>
+              <li>{plural(summary.history, "status history entry", "status history entries")}</li>
+              <li>{plural(summary.emails, "scheduled or sent email record")}</li>
+              {summary.change_requests > 0 && <li>{plural(summary.change_requests, "change request or call", "change requests and calls")}</li>}
+              {summary.payments > 0 && <li>{plural(summary.payments, "payment record")} (Stripe keeps its own copy)</li>}
+              {summary.reviews > 0 && <li>{plural(summary.reviews, "review request")}</li>}
+              {summary.referrer && <li>Their referrer record and referral link</li>}
+              <li>Any design files you uploaded for them</li>
+            </ul>
+          </div>
+          <div>
+            <label htmlFor="delete-confirm" className={labelClass}>
+              Type their email to confirm
+            </label>
+            <input
+              id="delete-confirm"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              autoComplete="off"
+              spellCheck={false}
+              placeholder={summary.email}
+              className={`${inputClass} mt-2`}
+            />
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Button type="submit" tone="danger" busy={busy === "delete"} disabled={!matches}>
+              Delete Everything
+            </Button>
+            <Button
+              onClick={() => {
+                setSummary(null);
+                setConfirm("");
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </form>
+      )}
+      <Notice error={error} />
+    </section>
   );
 }
 
