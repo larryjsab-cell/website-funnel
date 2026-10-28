@@ -23,6 +23,17 @@
         ]
       },
       {
+        "heading": "Affiliate applications",
+        "feature": "affiliates",
+        "blocks": [
+          {
+            "body": [
+              "If you apply to our affiliate program, we collect what you put in the form: your name, email, phone, business or brand, website or social profile, who you reach and how you plan to share your link. We use it to review your application, contact you, track the customers you refer and pay your commissions. If you're approved we also keep your payout details and a record of your referrals and commissions for as long as you're in the program and as long as tax and accounting rules require after that."
+            ]
+          }
+        ]
+      },
+      {
         "heading": "Information we collect automatically",
         "blocks": [
           {
@@ -118,6 +129,19 @@
           {
             "body": [
               "You can block or delete cookies in your browser settings, or install Google’s Analytics Opt-out Browser Add-on. The site works the same without them. We don’t currently respond to browser “Do Not Track” signals."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Affiliate links",
+        "feature": "affiliates",
+        "blocks": [
+          {
+            "body": [
+              "If you reach our site through an affiliate's link (an address that starts with /a/ or includes ?aff=), we set small first-party cookies that remember which affiliate sent you and when. They hold the affiliate's code, the time of the visit, up to the last 10 affiliate codes you arrived through, and a random visitor ID so repeat visits are only counted once. They don't contain your name or contact details.",
+              "These cookies last for our affiliate window (currently 60 days) and can only be read by our server. If you request a demo or send us a message while they're active, we save which affiliate referred you with your request so we can pay them. We also keep a simple log of affiliate link visits (the affiliate, the page, the website that linked to us and the time) to show affiliates how their links perform.",
+              "You can delete these cookies at any time in your browser settings. Doing so doesn't change anything about our service to you."
             ]
           }
         ]
@@ -316,6 +340,27 @@
               "Credit isn’t cash, can’t be transferred, and has no value outside our services.",
               "A referral counts when the new customer comes through your referral link or names you, and isn’t already in our records. Referring yourself or your own business doesn’t count.",
               "We may change or end the program at any time. Credit you’ve already earned stays usable."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Affiliate program",
+        "feature": "affiliates",
+        "blocks": [
+          {
+            "body": [
+              "Our affiliate program is separate from the referral program above. Affiliates apply on our Affiliate Program page and we approve each one by hand. We can decline any application."
+            ]
+          },
+          {
+            "list": [
+              "Commission: approved affiliates earn 25% of the monthly hosting a referred customer pays and 50% of the upfront design cost they pay, at the rates shown on the Affiliate Program page when the customer pays. Commission is based on what the customer actually pays, after any discounts, and doesn't include taxes, fees or refunds. While our $0-upfront offer runs there is no upfront design cost to earn on, except the $99 design files purchase, which counts as a design payment.",
+              "Who counts: a customer is credited to you when they open your link and then request a demo or contact us within our affiliate window (currently 60 days) on the same browser. If they open another affiliate's link later, the most recent link gets the credit. Customers we were already talking to, and anyone who refers themselves, aren't eligible. We can also credit a customer to you by hand when it's clear you sent them.",
+              "Payment: commissions are confirmed once the customer's payment clears and is past our refund window, then paid monthly to the payout method we agree with you. Refunded, disputed or charged-back payments aren't paid, and if a commission was already paid we can take it out of a later payout. You're responsible for any taxes on what you earn, and we may ask for tax information (such as a W-9) before paying.",
+              "Fair play: don't spam, don't make claims about our prices or service that aren't on our site, don't bid on our business name in paid search ads, don't use our name or logo in a way that looks like you are us, and follow the laws for disclosing that you earn a commission (for example the FTC's endorsement rules). We may withhold commissions and end your participation for breaking these rules.",
+              "Other services: commissions currently apply to website hosting and design. Other services, like graphic design, may be added later at rates we'll publish when they are.",
+              "Changes: we can change the rates, the window or these rules, or end the program, by updating the Affiliate Program page. Changes apply to customers referred after the change; commissions you already earned under the old terms are still paid. Being an affiliate doesn't make you our employee, partner or agent."
             ]
           }
         ]

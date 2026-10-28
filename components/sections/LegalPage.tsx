@@ -4,6 +4,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { TextLink } from "@/components/ui/TextLink";
+import { affiliatesEnabled } from "@/lib/affiliate";
 import { site } from "@/lib/site";
 import { legal } from "@/lib/content";
 import { pageGraph } from "@/lib/schema";
@@ -41,6 +42,11 @@ function LegalBlock({ block }: { block: Block }) {
   );
 }
 
+const anchor = (heading: string) => heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+/** Sections tagged with a feature only show while that feature is on. */
+const shown = (s: { feature?: string }) => s.feature !== "affiliates" || affiliatesEnabled();
+
 /** Plain, readable legal text. Content lives in content/legal.json. */
 export function LegalPage({ doc }: { doc: Doc }) {
   const page = legal[doc];
@@ -73,8 +79,8 @@ export function LegalPage({ doc }: { doc: Doc }) {
           </div>
           <p className="mt-8 max-w-measure text-lg">{page.intro}</p>
 
-          {page.sections.map((s) => (
-            <section key={s.heading} className="mt-10 border-t-2 border-ink pt-6">
+          {page.sections.filter(shown).map((s) => (
+            <section key={s.heading} id={anchor(s.heading)} className="scroll-mt-24 mt-10 border-t-2 border-ink pt-6">
               <h2 className="font-display text-xl font-heavy display-tight md:text-2xl">{s.heading}</h2>
               {s.blocks.map((b: Block, i) => (
                 <LegalBlock key={i} block={b} />

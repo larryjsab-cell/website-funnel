@@ -36,6 +36,14 @@
     "analyticsId": "G-Q3MP008QJ4",
     "formEndpoint": "/api/lead"
   },
+  "affiliates": {
+    "enabled": false,
+    "path": "/affiliates",
+    "label": "Affiliate program",
+    "hostingRate": 25,
+    "designRate": 50,
+    "cookieDays": 60
+  },
   "offer": {
     "startingPrice": "$40/month",
     "designFee": "$0 design fee",

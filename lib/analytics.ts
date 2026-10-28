@@ -5,6 +5,7 @@ export type AnalyticsEvent =
   | { name: "cta_click"; location: string; label?: string; href?: string }
   | { name: "demo_submit"; step?: number }
   | { name: "contact_submit" }
+  | { name: "affiliate_apply" }
   | { name: "style_select"; style: string };
 
 type DataLayerWindow = Window & {

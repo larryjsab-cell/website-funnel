@@ -1,23 +1,29 @@
 import { NextResponse } from "next/server";
-import { recordSession, retrieveEvent, StripeError } from "@/lib/server/stripe";
+import { affiliatesEnabled } from "@/lib/affiliate";
+import { recordInvoice, recordSession, retrieveEvent, StripeError, type Invoice, type Session } from "@/lib/server/stripe";
 
 /**
  * Backup for the success page: if a customer closes the tab after paying, Stripe
  * still tells us. The payload is not trusted: the event is fetched back from
  * Stripe by id with the secret key, which proves it is real. Recording is
  * idempotent on the checkout session id, so retries are harmless.
+ *
+ * With the affiliate program on, renewal invoices (invoice.paid) are recorded too, so
+ * affiliates earn on every month a customer pays, not just the first.
  */
-const HANDLED = new Set(["checkout.session.completed", "checkout.session.async_payment_succeeded"]);
+const CHECKOUT = ["checkout.session.completed", "checkout.session.async_payment_succeeded"];
+const handled = () => new Set(affiliatesEnabled() ? [...CHECKOUT, "invoice.paid"] : CHECKOUT);
 
 export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as { id?: string; type?: string } | null;
   if (!body?.id || !/^evt_\w+$/.test(body.id)) return NextResponse.json({ error: "invalid" }, { status: 400 });
+  const HANDLED = handled();
   if (body.type && !HANDLED.has(body.type)) return NextResponse.json({ ignored: true });
 
   try {
     const event = await retrieveEvent(body.id);
     if (!HANDLED.has(event.type)) return NextResponse.json({ ignored: true });
-    const result = await recordSession(event.data.object);
+    const result = event.type === "invoice.paid" ? await recordInvoice(event.data.object as Invoice) : await recordSession(event.data.object as Session);
     return NextResponse.json(result);
   } catch (e) {
     // Stripe doesn't know this event: it didn't come from Stripe.

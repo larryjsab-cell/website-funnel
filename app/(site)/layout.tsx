@@ -1,6 +1,8 @@
+import { AffiliateCapture } from "@/components/layout/AffiliateCapture";
 import { MobileCtaBar } from "@/components/layout/MobileCtaBar";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { affiliatesEnabled } from "@/lib/affiliate";
 
 /** Full sales layout: sticky nav, footer, sticky mobile CTA bar. */
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
@@ -12,6 +14,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       </main>
       <SiteFooter />
       <MobileCtaBar />
+      {affiliatesEnabled() && <AffiliateCapture />}
     </div>
   );
 }

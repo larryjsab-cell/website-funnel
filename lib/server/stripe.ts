@@ -3,6 +3,7 @@
  * Prices and coupons are created on first use (found again by lookup key / id),
  * so a fresh Stripe account needs no manual setup.
  */
+import { affiliatesEnabled } from "@/lib/affiliate";
 import { tierById, type Interval, type OfferCode } from "@/lib/offers";
 import { edge } from "@/lib/server/edge";
 
@@ -181,7 +182,7 @@ export async function createCheckout(input: CheckoutInput) {
   });
 }
 
-type Session = {
+export type Session = {
   id: string;
   status: string;
   payment_status: string;
@@ -218,18 +219,46 @@ export async function recordSession(s: Session): Promise<Recorded> {
   return { recorded: true, duplicate: res.duplicate, token: m.token, offer: m.offer };
 }
 
+/** A paid Stripe invoice. Newer API versions moved the subscription under parent. */
+export type Invoice = {
+  id: string;
+  subscription?: string | null;
+  parent?: { subscription_details?: { subscription?: string | null } | null } | null;
+  billing_reason?: string | null;
+  amount_paid?: number | null;
+  currency?: string | null;
+};
+
+/** Save a subscription renewal for affiliate commissions. Safe to call twice for the same invoice. */
+export async function recordInvoice(inv: Invoice) {
+  const subscription = inv.subscription ?? inv.parent?.subscription_details?.subscription ?? "";
+  if (!subscription) return { recorded: false, reason: "not_a_subscription" };
+  return edge("record_invoice", {
+    data: {
+      stripe_invoice_id: inv.id,
+      stripe_subscription_id: subscription,
+      billing_reason: inv.billing_reason ?? "",
+      amount_paid: inv.amount_paid ?? 0,
+      currency: inv.currency ?? "usd",
+    },
+  });
+}
+
 // ---------------------------------------------------------------- webhook
 
 export async function retrieveEvent(id: string) {
-  return stripe<{ id: string; type: string; data: { object: Session } }>("GET", `/events/${encodeURIComponent(id)}`);
+  return stripe<{ id: string; type: string; data: { object: Session | Invoice } }>("GET", `/events/${encodeURIComponent(id)}`);
 }
 
 /** Registers the webhook endpoint once and warms the prices and coupons. */
 export async function setup(origin: string) {
   const url = `${origin}/api/stripe/webhook`;
-  const events = ["checkout.session.completed", "checkout.session.async_payment_succeeded"];
-  const list = await stripe<{ data: { id: string; url: string; status: string }[] }>("GET", "/webhook_endpoints", { limit: 100 });
+  const events = ["checkout.session.completed", "checkout.session.async_payment_succeeded", ...(affiliatesEnabled() ? ["invoice.paid"] : [])];
+  const list = await stripe<{ data: { id: string; url: string; status: string; enabled_events: string[] }[] }>("GET", "/webhook_endpoints", { limit: 100 });
   let endpoint = list.data.find((e) => e.url === url);
+  if (endpoint && !events.every((ev) => endpoint!.enabled_events?.includes(ev) || endpoint!.enabled_events?.includes("*"))) {
+    endpoint = await stripe("POST", `/webhook_endpoints/${endpoint.id}`, { enabled_events: events });
+  }
   if (!endpoint) {
     endpoint = await stripe("POST", "/webhook_endpoints", { url, enabled_events: events, description: "Ryzon landing: record demo payments", metadata: { source: SOURCE } });
   }

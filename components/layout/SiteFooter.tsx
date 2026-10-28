@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { Wordmark } from "@/components/ui/Wordmark";
+import { affiliatesEnabled } from "@/lib/affiliate";
 import { site, formatAddress } from "@/lib/site";
 import { ui } from "@/lib/content";
 
@@ -33,6 +34,13 @@ export function SiteFooter() {
                 </Link>
               </li>
             ))}
+            {affiliatesEnabled() && (
+              <li>
+                <Link href={site.affiliates.path} prefetch={false} className={linkClass}>
+                  {site.affiliates.label}
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
 

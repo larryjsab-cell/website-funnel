@@ -1,4 +1,6 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { affiliatePayload, affiliatesEnabled } from "@/lib/affiliate";
 import { checkAll, contactFields, demoFields, HONEYPOT, limits, type FieldErrorKind, type FormType } from "@/lib/forms";
 import { edge, edgeConfigured, EdgeError } from "@/lib/server/edge";
 import { originOf } from "@/lib/server/origin";
@@ -68,6 +70,8 @@ async function handle(body: Record<string, unknown>, formType: FormType): Promis
     utm_term: text(body.utm_term, 200),
     utm_content: text(body.utm_content, 200),
     form_answers: { landing_page: text(body.landing_page, 300) },
+    // Affiliate link history from the visitor's cookies; the database picks who gets credit.
+    affiliate: affiliatesEnabled() ? await affiliateFromCookies() : null,
   };
 
   try {
@@ -76,4 +80,9 @@ async function handle(body: Record<string, unknown>, formType: FormType): Promis
     return { error: e instanceof EdgeError && e.status === 503 ? "not_configured" : "upstream" };
   }
   return {};
+}
+
+async function affiliateFromCookies() {
+  const jar = await cookies();
+  return affiliatePayload((n) => jar.get(n)?.value);
 }

@@ -98,6 +98,9 @@ Deno.serve(async (req) => {
         return json(await rpc("ryzon_landing_unsubscribe", { p_token: str(body.token, 100) }));
       case "record_payment":
         return json(await rpc("ryzon_landing_record_payment", { p: body.data ?? {} }));
+      case "record_invoice":
+        // Subscription renewals (Stripe invoice.paid), for recurring affiliate commissions.
+        return json(await rpc("ryzon_landing_record_invoice", { p: body.data ?? {} }));
 
       // n8n email sender
       case "claim_due":

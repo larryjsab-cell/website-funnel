@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { AffiliateCredit } from "@/components/admin/Affiliates";
 import { Button, inputClass, labelClass, Notice, Panel, StatusBadge, Tag } from "@/components/admin/ui";
 import {
   daysSince,
@@ -147,6 +148,7 @@ export function SubmissionDetail({ id }: { id: string }) {
           <StatusPanel key={`${s.status}-${s.live_url ?? ""}`} s={s} action={action} />
           <NotesPanel s={s} action={action} />
           <PaymentsPanel payments={detail.payments} />
+          <AffiliateCredit submissionId={s.id} />
           <HistoryPanel history={detail.history} />
           <DeletePanel s={s} />
         </div>

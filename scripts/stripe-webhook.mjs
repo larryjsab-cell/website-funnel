@@ -11,14 +11,16 @@ import fs from "node:fs";
 
 const SOURCE = "ryzon-landing";
 const DESCRIPTION = "Ryzon landing: record demo payments";
-const EVENTS = ["checkout.session.completed", "checkout.session.async_payment_succeeded"];
+const CONFIG = JSON.parse(fs.readFileSync(new URL("../site.config.json", import.meta.url), "utf8"));
+// Renewal invoices only matter for affiliate commissions.
+const EVENTS = ["checkout.session.completed", "checkout.session.async_payment_succeeded", ...(CONFIG.affiliates?.enabled ? ["invoice.paid"] : [])];
 
 async function main() {
   if (process.env.CONTEXT && process.env.CONTEXT !== "production") return console.log("[stripe-webhook] not a production build, skipped");
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) return console.log("[stripe-webhook] STRIPE_SECRET_KEY not available to the build, skipped");
 
-  const configured = JSON.parse(fs.readFileSync(new URL("../site.config.json", import.meta.url), "utf8")).site.url;
+  const configured = CONFIG.site.url;
   const base = (/^\[.*\]$/.test(configured) ? process.env.URL : configured)?.replace(/\/$/, "");
   if (!base?.startsWith("https://")) return console.log(`[stripe-webhook] no https site URL (${base}), skipped`);
   const target = `${base}/api/stripe/webhook`;
@@ -47,6 +49,11 @@ async function main() {
   } else if (current.status !== "enabled") {
     await call("POST", `/webhook_endpoints/${current.id}`, { disabled: "false" });
     console.log(`[stripe-webhook] re-enabled ${current.id} -> ${target}`);
+  } else if (!EVENTS.every((ev) => current.enabled_events?.includes(ev) || current.enabled_events?.includes("*"))) {
+    const params = {};
+    EVENTS.forEach((ev, i) => (params[`enabled_events[${i}]`] = ev));
+    await call("POST", `/webhook_endpoints/${current.id}`, params);
+    console.log(`[stripe-webhook] updated events on ${current.id}: ${EVENTS.join(", ")}`);
   } else {
     console.log(`[stripe-webhook] ok: ${current.id} -> ${target}`);
   }
