@@ -4,19 +4,11 @@ Prepared October 28, 2026. Updated October 29: **live.** Hosting commission is f
 
 ---
 
-## ⚠️ First: one blog post still needs deleting (before Oct 30, 9 AM)
+## Affiliate data is never deleted
 
-You asked me to delete the **"Best Website Provider for Small Business"** post. I tried twice. Both times Supabase showed an approval prompt that you couldn't see, and it timed out. **The post is still scheduled to go live Thursday, Oct 30 at 9:00 AM Detroit time.**
+Per the owner's rule (Oct 29), affiliates, their link clicks and their commissions can't be deleted. The live database refuses it (migration 14, `supabase/migrations/20261029_14_ryzon_landing_affiliates_keep.sql`). Pause an affiliate or void a commission instead. "Delete person" in the dashboard leaves affiliate records alone; if the person was a referred customer, the affiliate's commissions stay.
 
-Pick one:
-
-- **Quickest:** Dashboard → **Blog** → that post → **Move to Draft**. It won't go live, and nothing is sent to n8n.
-- **To delete it for good:** in Supabase → SQL Editor, run:
-  ```sql
-  delete from ryzon_landing_blog where slug = 'best-website-provider-small-business';
-  ```
-
-I already removed it from the repo's seed file. The other post's links no longer point to it; that change was made in the live database earlier. Its image (`public/images/blog/best-website-provider-small-business.webp`) is still in the repo on purpose. Delete the image once the post is gone, so a deploy in between can't leave a broken image.
+(The "Best Website Provider" post this section used to warn about was kept and replaced with a newer version, scheduled Oct 30.)
 
 ---
 
@@ -213,7 +205,7 @@ These are the defaults I chose. All of them can be changed in the dashboard or w
   - the commission statuses
   - settings
   - the 3 emails rendering with no leftover `{{placeholders}}`
-  - "delete person" also removing their affiliate record
+  - affiliate records surviving "delete person" (delete is refused on affiliate tables)
 
   All passed. Running the migration twice is also fine.
 - **Live database check (read-only):** your live form-saving function matches the repo exactly, so replacing it loses nothing.
