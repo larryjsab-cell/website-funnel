@@ -36,6 +36,10 @@ export default async function AffiliatesPage() {
   const lifetime = !t.hosting_months;
   const per = (amount: number, rate: number) => formatPrice(Math.round(amount * rate) / 100);
   const term = t.hosting_months % 12 === 0 ? (t.hosting_months === 12 ? "year" : `${t.hosting_months / 12} years`) : `${t.hosting_months} months`;
+  const fees = site.affiliates.designFees as Record<string, number>;
+  const feeTiers = site.pricing.tiers.filter((tier) => fees[tier.id]);
+  const designFeeList = feeTiers.map((tier) => formatPrice(fees[tier.id])).join(", ").replace(/, ([^,]*)$/, " or $1");
+  const designEarnList = feeTiers.map((tier) => `${per(fees[tier.id], design)} on ${tier.name}`).join(", ").replace(/, ([^,]*)$/, " and $1");
   const durationText = lifetime ? "for as long as they stay a customer" : `for their first ${term}`;
 
   const steps = [
@@ -59,7 +63,7 @@ export default async function AffiliatesPage() {
     {
       id: "aff-design",
       q: "What is the upfront design cost?",
-      a: `It's the one-time amount a customer pays for their site to be designed and built, and you earn ${design}% of it. Right now we're running a limited-time offer where every plan is $0 upfront, so most customers won't pay a design fee while it lasts. One exception: customers who buy just their design files for ${formatPrice(FILES_PRICE)} count as a design payment, so you'd earn ${per(FILES_PRICE, design)}.`,
+      a: `It's the one-time amount a customer pays for their site to be designed and built: ${designFeeList}, depending on the plan. You earn ${design}% of it, so ${designEarnList}. Right now we're running a limited-time offer where the design fee is waived, and it won't last long. Customers who buy just their design files for ${formatPrice(FILES_PRICE)} also count as a design payment (${per(FILES_PRICE, design)} to you).`,
     },
     {
       id: "aff-window",
@@ -180,7 +184,7 @@ export default async function AffiliatesPage() {
       <Section id="earnings" tone="surface">
         <Heading id="earnings-heading">What you earn per customer</Heading>
         <p className="mt-4 max-w-measure text-lg">
-          Your share is based on what the customer actually pays. Here&rsquo;s what {hosting}% of hosting works out to on each plan.
+          Your share is based on what the customer actually pays. Here&rsquo;s what {hosting}% of hosting works out to on each plan, every month {lifetime ? "they stay" : `for ${term}`}.
         </p>
         <div className="mt-10 overflow-x-auto rounded-card border-2 border-ink">
           <table className="w-full border-collapse bg-surface text-left text-base">
@@ -205,6 +209,30 @@ export default async function AffiliatesPage() {
             </tbody>
           </table>
         </div>
+
+        <h3 className="mt-12 font-display text-xl font-heavy display-tight md:text-2xl">Plus {design}% of the design fee</h3>
+        <p className="mt-2 max-w-measure text-base">Design fees start at {formatPrice(Math.min(...feeTiers.map((tier) => fees[tier.id])))}. You earn half, paid once, when the customer pays it.</p>
+        <div className="mt-6 overflow-x-auto rounded-card border-2 border-ink">
+          <table className="w-full border-collapse bg-surface text-left text-base">
+            <caption className="sr-only">Design fee commission by plan</caption>
+            <thead className="bg-band text-on-band">
+              <tr>
+                <th scope="col" className="px-4 py-3 font-display text-sm font-bold display-ui md:px-6">Plan</th>
+                <th scope="col" className="px-4 py-3 font-display text-sm font-bold display-ui md:px-6">Design fee</th>
+                <th scope="col" className="px-4 py-3 font-display text-sm font-bold display-ui md:px-6">You earn once</th>
+              </tr>
+            </thead>
+            <tbody>
+              {feeTiers.map((tier) => (
+                <tr key={tier.id} className="border-t-2 border-ink">
+                  <th scope="row" className="px-4 py-4 font-display font-bold display-ui md:px-6">{tier.name}</th>
+                  <td className="px-4 py-4 md:px-6">{formatPrice(fees[tier.id])}</td>
+                  <td className="px-4 py-4 font-display text-lg font-heavy display-tight md:px-6">{per(fees[tier.id], design)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <div className="mt-8 grid gap-6 md:grid-cols-2">
           <div className="rounded-card border-2 border-ink p-6">
             <h3 className="font-display text-lg font-heavy display-tight">It adds up</h3>
@@ -214,10 +242,11 @@ export default async function AffiliatesPage() {
             </p>
           </div>
           <div className="rounded-card border-2 border-ink p-6">
-            <h3 className="font-display text-lg font-heavy display-tight">About design fees right now</h3>
+            <h3 className="font-display text-lg font-heavy display-tight">About the $0 design offer</h3>
             <p className="mt-2 text-base">
-              We&rsquo;re running a limited-time $0-upfront offer, so most customers don&rsquo;t pay a design fee at the moment. When they do, you get{" "}
-              {design}%. Customers who buy only their design files ({formatPrice(FILES_PRICE)}) earn you {per(FILES_PRICE, design)}.
+              Right now we&rsquo;re waiving the design fee for a limited time, and it won&rsquo;t last long. Once it ends, every new customer you send pays
+              a design fee and you earn {design}% of it. Customers who buy only their design files ({formatPrice(FILES_PRICE)}) earn you{" "}
+              {per(FILES_PRICE, design)} today.
             </p>
           </div>
         </div>

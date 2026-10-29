@@ -43,6 +43,11 @@
     "hostingRate": 25,
     "designRate": 50,
     "hostingMonths": 24,
+    "designFees": {
+      "starter": 299,
+      "growth": 399,
+      "complete": 499
+    },
     "cookieDays": 60
   },
   "offer": {

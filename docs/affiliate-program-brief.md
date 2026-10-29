@@ -185,7 +185,7 @@ These are the defaults I chose. All of them can be changed in the dashboard or w
 2. **60-day credit window.** Common range is 30 to 90 days.
 3. **Last click wins** when two affiliates touched the same person. The first-click affiliate is recorded too, in case you want to change the rule later.
 4. **Commission is on what the customer actually pays** (after the 50%-off offers), not list price.
-5. **Design fee is $0 right now** under the limited-time offer, so the 50% mostly applies to the $99 design-files purchase. The page says this plainly so nobody feels misled.
+5. **Design fees are $299 / $399 / $499** (Starter / Growth / Complete), shown on the affiliate page with the 50% earnings ($149.50 / $199.50 / $249.50). The page says the $0 design offer is temporary. When checkout starts charging the fee, pass it as `design_fee_cents` on the payment so it's split out at 50%; until then plan payments count as hosting.
 6. **Payouts:** the page says "paid monthly, once the payment clears and is past our refund window." You still need to pick:
    - the refund window (I'd suggest 30 days)
    - the payout method (PayPal, Venmo, ACH)
