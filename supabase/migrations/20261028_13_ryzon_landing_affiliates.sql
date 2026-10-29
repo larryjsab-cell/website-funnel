@@ -3,9 +3,9 @@
 -- How it fits together:
 --   1. Someone applies on /affiliates (ryzon_landing_affiliate_apply). You approve them in the
 --      dashboard, which gives them a code and emails their link (ryzon_landing_admin_affiliate_update).
---   2. Visitors arrive on any page with ?aff=<code> or on /a/<code>. The site's proxy sets first-party
---      cookies (last touch, first touch, and a short touch history) that last affiliate_cookie_days, and
---      logs the click (ryzon_landing_affiliate_click).
+--   2. Visitors arrive on any page with ?aff=<code> or on /a/<code>. The site (lib/affiliate.ts) logs the
+--      click (ryzon_landing_affiliate_click, which returns affiliate_cookie_days) and sets first-party
+--      cookies (last touch, first touch, and a short touch history) that last that many days.
 --   3. When that visitor sends a demo or contact form inside the window, the cookie travels with the
 --      form and ryzon_landing_submit credits the lead to the most recent valid affiliate (last click).
 --   4. Payments by a credited customer create commission rows: hosting at affiliate_rate_hosting of
@@ -14,14 +14,14 @@
 --      or design-files purchase. Commissions start 'pending'; you approve and mark them paid.
 --
 -- Settings (ryzon_landing_config): affiliate_cookie_days, affiliate_rate_hosting, affiliate_rate_design,
--- affiliate_hosting_months (empty = for as long as the customer pays). Keep affiliate_cookie_days
--- in step with site.config.json "affiliates.cookieDays", which the site uses for the cookies.
+-- affiliate_hosting_months (24 = the first 2 years of a customer's plan; empty = for as long as they pay).
+-- All four are editable in the dashboard (Affiliates > Program settings).
 
 insert into public.ryzon_landing_config (key, value) values
   ('affiliate_cookie_days', '60'),
   ('affiliate_rate_hosting', '0.25'),
   ('affiliate_rate_design', '0.50'),
-  ('affiliate_hosting_months', '')
+  ('affiliate_hosting_months', '24')
 on conflict (key) do nothing;
 
 -- ---------------------------------------------------------------- tables
@@ -169,6 +169,10 @@ language sql stable security definer set search_path = '' as $fn$
     'cookie_days', public.ryzon_landing_affiliate_cookie_days()::text,
     'rate_hosting', round(coalesce(nullif(public.ryzon_landing_cfg('affiliate_rate_hosting'), '')::numeric, 0.25) * 100)::text,
     'rate_design', round(coalesce(nullif(public.ryzon_landing_cfg('affiliate_rate_design'), '')::numeric, 0.50) * 100)::text,
+    'hosting_term', (select case when m is null then 'for as long as they stay'
+                                  when m % 12 = 0 then 'for their first ' || case m / 12 when 1 then 'year' else (m / 12)::text || ' years' end
+                                  else 'for their first ' || m::text || ' months' end
+                       from (select nullif(public.ryzon_landing_cfg('affiliate_hosting_months'), '')::int m) x),
     'admin_url', rtrim(coalesce(public.ryzon_landing_cfg('site_url'), ''), '/') || '/admin/affiliates',
     'site_url', rtrim(coalesce(public.ryzon_landing_cfg('site_url'), ''), '/'),
     'business_address', coalesce(public.ryzon_landing_cfg('business_address'), ''),
@@ -397,7 +401,6 @@ begin
   return jsonb_build_object('ok', true, 'new', v_new);
 end $fn$;
 
-drop function if exists public.ryzon_landing_affiliate_click(text, text, text, text);
 -- Logs an affiliate link visit. Returns the cookie window in days when the code belongs to an
 -- active affiliate (null otherwise), so the site only keeps cookies for real codes and the
 -- window set in the dashboard is the one the browser uses. Repeat visits within 30 minutes count once.
@@ -878,7 +881,7 @@ Review application: {{admin_url}}$t$
 'We got your affiliate application, {{first_name}}',
 'We review every application by hand and usually reply within two business days.',
 'Sent to someone right after they apply to the affiliate program.',
-$t$<h1 style="{{st_h1}}">Thanks for applying</h1><p style="{{st_p}}">Hi {{first_name}},</p><p style="{{st_p}}">We got your application to the Ryzon Automation affiliate program. We review every one by hand and usually reply within two business days.</p><p style="{{st_p}}"><strong>What happens next</strong></p><ol style="margin:0 0 16px;padding-left:22px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#0B1220;"><li style="margin:0 0 8px;">We look over what you sent and may reply with a question or two.</li><li style="margin:0 0 8px;">Once you're approved, we email you your personal link.</li><li style="margin:0 0 8px;">You earn {{rate_hosting}}% of monthly hosting and {{rate_design}}% of the upfront design cost for every customer who comes through your link.</li></ol><p style="{{st_p}}">Questions in the meantime? Just reply to this email.</p>$t$,
+$t$<h1 style="{{st_h1}}">Thanks for applying</h1><p style="{{st_p}}">Hi {{first_name}},</p><p style="{{st_p}}">We got your application to the Ryzon Automation affiliate program. We review every one by hand and usually reply within two business days.</p><p style="{{st_p}}"><strong>What happens next</strong></p><ol style="margin:0 0 16px;padding-left:22px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#0B1220;"><li style="margin:0 0 8px;">We look over what you sent and may reply with a question or two.</li><li style="margin:0 0 8px;">Once you're approved, we email you your personal link.</li><li style="margin:0 0 8px;">You earn {{rate_hosting}}% of monthly hosting {{hosting_term}} and {{rate_design}}% of the upfront design cost for every customer who comes through your link.</li></ol><p style="{{st_p}}">Questions in the meantime? Just reply to this email.</p>$t$,
 $t$Hi {{first_name}},
 
 We got your application to the Ryzon Automation affiliate program. We review every one by hand and usually reply within two business days.
@@ -886,7 +889,7 @@ We got your application to the Ryzon Automation affiliate program. We review eve
 What happens next
 1. We look over what you sent and may reply with a question or two.
 2. Once you're approved, we email you your personal link.
-3. You earn {{rate_hosting}}% of monthly hosting and {{rate_design}}% of the upfront design cost for every customer who comes through your link.
+3. You earn {{rate_hosting}}% of monthly hosting {{hosting_term}} and {{rate_design}}% of the upfront design cost for every customer who comes through your link.
 
 Questions in the meantime? Just reply to this email.
 
@@ -901,7 +904,7 @@ Ryzon Automation · {{owner_phone}}
 'You''re in: your Ryzon affiliate link, {{first_name}}',
 'Share it anywhere. Every customer who comes through it is credited to you for {{cookie_days}} days.',
 'Sent when an affiliate is approved (or when you press Send link).',
-$t$<h1 style="{{st_h1}}">Welcome to the affiliate program</h1><p style="{{st_p}}">Hi {{first_name}},</p><p style="{{st_p}}">You're approved. Here is your personal link. Anyone who opens it and then becomes a customer is credited to you.</p><p style="{{st_box}}"><a href="{{affiliate_url}}" style="{{st_link}}">{{affiliate_url}}</a></p><table role="presentation" cellpadding="0" cellspacing="0" border="0" style="{{st_btn_tbl}}"><tr><td bgcolor="#2F6BFF" style="{{st_btn_td}}"><a href="{{affiliate_url}}" style="{{st_btn_a}}">Open my link</a></td></tr></table><p style="{{st_p}}"><strong>What you earn</strong></p><ul style="margin:0 0 16px;padding-left:22px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#0B1220;"><li style="margin:0 0 8px;"><strong>{{rate_hosting}}% of monthly hosting</strong> for every customer you send.</li><li style="margin:0 0 8px;"><strong>{{rate_design}}% of the upfront design cost</strong> they pay.</li></ul><p style="{{st_p}}"><strong>How credit works</strong></p><p style="{{st_p}}">When someone opens your link we remember it on their device for {{cookie_days}} days. If they ask for a demo in that time, they're yours. If they open someone else's link later, the most recent link gets the credit.</p><p style="{{st_p}}"><strong>Not sure what to say? Copy this:</strong></p><p style="{{st_box}}">If your business needs a new website, Ryzon Automation will design a free demo of it before you pay anything. Take a look: {{affiliate_url}}</p><p style="{{st_small}}">Your code is {{code}}. Questions or payout details? Just reply to this email.</p>$t$,
+$t$<h1 style="{{st_h1}}">Welcome to the affiliate program</h1><p style="{{st_p}}">Hi {{first_name}},</p><p style="{{st_p}}">You're approved. Here is your personal link. Anyone who opens it and then becomes a customer is credited to you.</p><p style="{{st_box}}"><a href="{{affiliate_url}}" style="{{st_link}}">{{affiliate_url}}</a></p><table role="presentation" cellpadding="0" cellspacing="0" border="0" style="{{st_btn_tbl}}"><tr><td bgcolor="#2F6BFF" style="{{st_btn_td}}"><a href="{{affiliate_url}}" style="{{st_btn_a}}">Open my link</a></td></tr></table><p style="{{st_p}}"><strong>What you earn</strong></p><ul style="margin:0 0 16px;padding-left:22px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#0B1220;"><li style="margin:0 0 8px;"><strong>{{rate_hosting}}% of monthly hosting</strong> for every customer you send, {{hosting_term}}.</li><li style="margin:0 0 8px;"><strong>{{rate_design}}% of the upfront design cost</strong> they pay.</li></ul><p style="{{st_p}}"><strong>How credit works</strong></p><p style="{{st_p}}">When someone opens your link we remember it on their device for {{cookie_days}} days. If they ask for a demo in that time, they're yours. If they open someone else's link later, the most recent link gets the credit.</p><p style="{{st_p}}"><strong>Not sure what to say? Copy this:</strong></p><p style="{{st_box}}">If your business needs a new website, Ryzon Automation will design a free demo of it before you pay anything. Take a look: {{affiliate_url}}</p><p style="{{st_small}}">Your code is {{code}}. Questions or payout details? Just reply to this email.</p>$t$,
 $t$Hi {{first_name}},
 
 You're approved. Here is your personal link. Anyone who opens it and then becomes a customer is credited to you.
@@ -909,7 +912,7 @@ You're approved. Here is your personal link. Anyone who opens it and then become
 Your link: {{affiliate_url}}
 
 What you earn
-- {{rate_hosting}}% of monthly hosting for every customer you send.
+- {{rate_hosting}}% of monthly hosting for every customer you send, {{hosting_term}}.
 - {{rate_design}}% of the upfront design cost they pay.
 
 How credit works

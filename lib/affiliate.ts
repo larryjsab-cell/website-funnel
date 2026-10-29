@@ -142,7 +142,7 @@ export type AffiliateTerms = { cookie_days: number; rate_hosting: number; rate_d
 
 /** The live program terms from the dashboard settings, falling back to site.config.json. */
 export async function getAffiliateTerms(): Promise<AffiliateTerms> {
-  const fallback = { cookie_days: site.affiliates.cookieDays, rate_hosting: site.affiliates.hostingRate, rate_design: site.affiliates.designRate, hosting_months: 0 };
+  const fallback = { cookie_days: site.affiliates.cookieDays, rate_hosting: site.affiliates.hostingRate, rate_design: site.affiliates.designRate, hosting_months: site.affiliates.hostingMonths };
   try {
     const t = await rpc<AffiliateTerms>("ryzon_landing_affiliate_terms", {}, { next: { revalidate: 300, tags: ["affiliate-terms"] } });
     return t && typeof t.cookie_days === "number" ? { ...fallback, ...t } : fallback;

@@ -37,11 +37,12 @@
     "formEndpoint": "/api/lead"
   },
   "affiliates": {
-    "enabled": false,
+    "enabled": true,
     "path": "/affiliates",
     "label": "Affiliate program",
     "hostingRate": 25,
     "designRate": 50,
+    "hostingMonths": 24,
     "cookieDays": 60
   },
   "offer": {

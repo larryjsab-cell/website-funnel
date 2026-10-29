@@ -21,7 +21,7 @@ export const revalidate = 300;
 
 const path = site.affiliates.path;
 const title = `Affiliate Program: Earn 25% Monthly | ${site.business.name}`;
-const description = `Refer local businesses to ${site.business.name} and earn ${site.affiliates.hostingRate}% of their monthly hosting for as long as they stay, plus ${site.affiliates.designRate}% of the upfront design cost. Free to join.`;
+const description = `Refer local businesses to ${site.business.name} and earn ${site.affiliates.hostingRate}% of their monthly hosting for their first 2 years, plus ${site.affiliates.designRate}% of the upfront design cost. Free to join.`;
 
 export const metadata = pageMeta({ title, description, path, image: { alt: `${site.business.name} affiliate program` } });
 
@@ -35,7 +35,8 @@ export default async function AffiliatesPage() {
   const days = t.cookie_days;
   const lifetime = !t.hosting_months;
   const per = (amount: number, rate: number) => formatPrice(Math.round(amount * rate) / 100);
-  const durationText = lifetime ? "for as long as they stay a customer" : `for their first ${t.hosting_months} months`;
+  const term = t.hosting_months % 12 === 0 ? (t.hosting_months === 12 ? "year" : `${t.hosting_months / 12} years`) : `${t.hosting_months} months`;
+  const durationText = lifetime ? "for as long as they stay a customer" : `for their first ${term}`;
 
   const steps = [
     { title: "Apply", body: "Fill in the short form below. It takes about two minutes and it's free. We review every application by hand." },
@@ -139,7 +140,7 @@ export default async function AffiliatesPage() {
             <div className="lg:col-span-7">
               <p className="font-display text-sm font-bold uppercase display-ui">Affiliate Program</p>
               <h1 id="affiliates-heading" className="mt-3 font-display text-3xl font-heavy text-balance display-tight sm:text-4xl md:text-5xl lg:text-6xl">
-                Send us local businesses. Get paid every month they stay.
+                Send us local businesses. Get paid every month {lifetime ? "they stay" : `for ${term}`}.
               </h1>
               <p className="mt-6 max-w-measure text-lg">
                 Earn {hosting}% of every customer&rsquo;s monthly hosting {durationText}, plus {design}% of the upfront design cost. It&rsquo;s an easy
@@ -160,7 +161,7 @@ export default async function AffiliatesPage() {
                 <dt className="font-display text-sm font-bold uppercase display-ui">Monthly hosting</dt>
                 <dd className="mt-2">
                   <span className="block font-display text-6xl font-heavy leading-none display-tight">{hosting}%</span>
-                  <span className="mt-2 block text-base">of what they pay, every month {lifetime ? "they stay" : `for ${t.hosting_months} months`}</span>
+                  <span className="mt-2 block text-base">of what they pay, every month {lifetime ? "they stay" : `for ${term}`}</span>
                 </dd>
               </div>
               <div className="rounded-card border-2 border-ink bg-surface p-6 text-ink shadow-hard">
@@ -209,7 +210,7 @@ export default async function AffiliatesPage() {
             <h3 className="font-display text-lg font-heavy display-tight">It adds up</h3>
             <p className="mt-2 text-base">
               Ten customers on the Growth plan pay you {formatPrice(Math.round(10 * 100 * hosting) / 100)} every month, which is{" "}
-              {formatPrice(Math.round(10 * 1200 * hosting) / 100)} a year, from ten introductions.
+              {formatPrice(Math.round(10 * 1200 * hosting) / 100)} a year{lifetime ? "" : ` for ${term}`}, from ten introductions.
             </p>
           </div>
           <div className="rounded-card border-2 border-ink p-6">

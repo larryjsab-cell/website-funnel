@@ -1,6 +1,6 @@
 # Affiliate Program: Build Brief
 
-Prepared October 28, 2026. **Status: built and tested, turned off, not deployed.** Nothing about the affiliate program is visible on the live site, and the live database hasn't been touched.
+Prepared October 28, 2026. Updated October 29: **live.** Hosting commission is for the first **2 years** (24 months) of each customer's plan, per the owner.
 
 ---
 
@@ -26,7 +26,7 @@ I already removed it from the repo's seed file. The other post's links no longer
 
 It's linked from the footer only, not the main nav. Sections, top to bottom:
 
-- **Hero:** "Send us local businesses. Get paid every month they stay." Two big cards: **25% of monthly hosting** and **50% of upfront design cost**.
+- **Hero:** "Send us local businesses. Get paid every month for 2 years." Two big cards: **25% of monthly hosting** and **50% of upfront design cost**.
 - **What you earn per customer:** a table for each plan:
   - Starter: $10/mo
   - Growth: $25/mo
@@ -146,9 +146,9 @@ Hidden until the program is on:
 
 ---
 
-## How it's switched off right now
+## The on/off switch
 
-`site.config.json` has an `"affiliates"` block with `"enabled": false`. While it's false:
+`site.config.json` has an `"affiliates"` block, now `"enabled": true`. Setting it back to false (and deploying) hides everything again:
 
 - `/affiliates` and its thank-you page show "page not found"
 - No footer link, no sitemap entry, no extra legal sections
@@ -160,9 +160,9 @@ I checked every one of these on a local copy of the site.
 
 ---
 
-## Turning it on (about 15 minutes)
+## Turning it on (done Oct 29)
 
-Do these in order:
+All done:
 
 1. **Database:** Supabase → SQL Editor → paste and run the whole file `supabase/migrations/20261028_13_ryzon_landing_affiliates.sql`.
    - It's safe to run twice.
@@ -181,7 +181,7 @@ Do these in order:
 
 These are the defaults I chose. All of them can be changed in the dashboard or with a quick edit.
 
-1. **Hosting commission lasts for the life of the customer.** Your wording was "25% of monthly hosting", so I made it recurring with no end. If you'd rather cap it (say 12 months), enter 12 in Program settings and the page wording changes itself.
+1. **Hosting commission lasts 2 years** (24 months from the customer's first payment), as you decided. It's the "Pay hosting commission for (months)" setting; change it there and the page, emails and terms wording follow.
 2. **60-day credit window.** Common range is 30 to 90 days.
 3. **Last click wins** when two affiliates touched the same person. The first-click affiliate is recorded too, in case you want to change the rule later.
 4. **Commission is on what the customer actually pays** (after the 50%-off offers), not list price.
