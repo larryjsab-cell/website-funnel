@@ -1,5 +1,5 @@
 -- Posts from the blog queue CSV (week of 2026-10-22), scheduled one a day at 9:00 AM Detroit time.
--- The best-website-provider post was removed at the owner's request (its image stays until the live row is deleted).
+-- The best-website-provider post here was replaced by the newer version in ryzon_landing_blog_posts_5.sql.
 -- Content kept as written; added: section ids, FAQ id, internal links, category/tags, SEO and author fields.
 -- Re-runnable: each insert skips a slug that already exists. promo_status stays null so each is sent to the social kit when it goes live.
 
