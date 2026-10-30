@@ -31,7 +31,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const post = await getPostBySlug((await params).slug);
   if (!post) return { title: "Article not found", robots: { index: false } };
-  const title = `${post.meta_title || post.title} | ${site.business.name}`;
+  // Google shows about 60 characters; the brand suffix only goes on when it still fits.
+  const base = post.meta_title || post.title;
+  const withBrand = `${base} | ${site.business.name}`;
+  const title = withBrand.length <= 60 ? withBrand : base;
   const description = post.meta_description || post.excerpt || "";
   const image = post.og_image || post.featured_image_url;
   const url = postUrl(post);

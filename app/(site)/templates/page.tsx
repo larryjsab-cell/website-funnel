@@ -6,7 +6,7 @@ import { site, siteUrl } from "@/lib/site";
 import { breadcrumbs } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
 
-const title = `Free n8n Workflow Templates | ${site.business.name}`;
+const title = `Free n8n Templates to Download | ${site.business.name}`;
 const description =
   "Free n8n automation templates you can import in one click. Start with the SEO Website Auditor: enter a website, get an in-depth audit as a PDF.";
 

@@ -79,7 +79,7 @@ export function SiteFooter() {
         {/* Phones: extra bottom room so the fixed demo bar never covers the legal links. */}
         <div className="flex flex-col gap-2 border-t border-muted pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-6 font-display text-sm sm:flex-row sm:items-center sm:justify-between md:pb-6">
         <p>
-          © {year} {site.business.name}. {ui.footer.rights}
+          © {year} {site.business.name} LLC. {ui.footer.rights}
         </p>
         <nav aria-label={ui.footer.legalLabel}>
           <ul className="flex gap-4">

@@ -16,6 +16,10 @@ function business() {
     "@type": "ProfessionalService",
     "@id": id("business"),
     name: b.name,
+    // The registered name, so searches for "Ryzon Automation LLC" connect to this site.
+    legalName: `${b.name} LLC`,
+    alternateName: [`${b.name} LLC`, b.shortName],
+    logo: `${siteUrl}/icon-512.png`,
     description: landing.meta.description,
     slogan: b.tagline,
     url: `${siteUrl}/`,
