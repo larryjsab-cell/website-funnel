@@ -13,13 +13,13 @@ export function SiteFooter() {
   return (
     <footer className="rz-footer relative z-content border-t-2 border-ink bg-band text-on-band">
       <Container className="grid gap-10 py-16 md:grid-cols-12 md:gap-8">
-        <div className="md:col-span-4">
+        <div className="md:col-span-6 lg:col-span-3">
           <Wordmark onInk />
           <p className="mt-4 max-w-measure text-base">{site.business.tagline}</p>
           <p className="mt-2 text-base">{ui.footer.serviceArea}</p>
         </div>
 
-        <nav aria-label={ui.footer.pagesHeading} className="md:col-span-3">
+        <nav aria-label={ui.footer.pagesHeading} className="md:col-span-6 lg:col-span-3">
           <h2 className="font-display text-sm font-bold display-ui">{ui.footer.pagesHeading}</h2>
           <ul className="mt-3 font-display text-sm">
             <li>
@@ -44,7 +44,20 @@ export function SiteFooter() {
           </ul>
         </nav>
 
-        <div id="footer-contact" className="scroll-mt-24 md:col-span-5">
+        <nav aria-label="Popular guides" className="md:col-span-6 lg:col-span-3">
+          <h2 className="font-display text-sm font-bold display-ui">Popular guides</h2>
+          <ul className="mt-3 grid gap-3 font-display text-sm">
+            {site.guides.map((g) => (
+              <li key={g.href}>
+                <Link href={g.href} prefetch={false} className={`${linkClass} leading-snug`}>
+                  {g.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div id="footer-contact" className="scroll-mt-24 md:col-span-6 lg:col-span-3">
           <h2 className="font-display text-sm font-bold display-ui">{ui.footer.contactHeading}</h2>
           <address className="mt-3 grid gap-2 text-base not-italic">
             <span>{site.business.name}</span>

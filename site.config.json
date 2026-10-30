@@ -179,6 +179,24 @@
       "href": "/terms"
     }
   ],
+  "guides": [
+    {
+      "label": "Contractor website design",
+      "href": "/blog/contractor-website-design"
+    },
+    {
+      "label": "Website maintenance cost",
+      "href": "/blog/website-maintenance-cost"
+    },
+    {
+      "label": "Small business website cost",
+      "href": "/blog/how-much-does-a-small-business-website-cost"
+    },
+    {
+      "label": "Local SEO for small business",
+      "href": "/blog/local-seo-for-small-business"
+    }
+  ],
   "pages": [
     {
       "route": "/",
