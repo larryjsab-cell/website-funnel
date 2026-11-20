@@ -239,7 +239,7 @@
   },
   "social": [],
   "locations": {
-    "enabled": false,
+    "enabled": true,
     "path": "/website-design",
     "label": "Websites by industry and city"
   }
