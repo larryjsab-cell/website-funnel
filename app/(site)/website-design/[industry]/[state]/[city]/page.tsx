@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Block, LinkGrid, LocationCta, LocationHero, PlanStrip } from "@/components/locations/LocationParts";
+import { LocationMap } from "@/components/locations/LocationMap";
 import { FaqList } from "@/components/sections/FaqList";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
@@ -119,9 +120,16 @@ export default async function CityLocationPage({ params }: Params) {
 
         <Container className="grid gap-12 py-12 md:py-16">
           <Block id="local" title={`Getting found by customers in ${page.city_name}`}>
-            <div className="grid max-w-measure gap-4 text-lg">
-              <p>{page.city_context}</p>
-              <p>{page.search_note}</p>
+            <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
+              <div className="grid max-w-measure gap-4 text-lg">
+                <p>{page.city_context}</p>
+                <p>{page.search_note}</p>
+              </div>
+              <LocationMap
+                query={page.lat != null && page.lng != null ? `${page.lat},${page.lng}` : `${page.city_name}, ${page.state_name}`}
+                zoom={12}
+                title={`Map of ${place}`}
+              />
             </div>
           </Block>
 

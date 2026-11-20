@@ -34,7 +34,7 @@ export function LocationHero({ trail, title, intro, location }: { trail: Crumb[]
     <header className="border-b-2 border-ink bg-band text-on-band">
       <Container className="py-12 md:py-16">
         <Breadcrumbs trail={trail} />
-        <h1 className="mt-6 max-w-4xl font-display text-3xl font-heavy text-balance display-tight sm:text-4xl md:text-5xl">{title}</h1>
+        <h1 className="mt-6 max-w-4xl font-display text-3xl font-heavy text-balance !leading-[1.15] display-tight sm:text-4xl md:text-5xl">{title}</h1>
         <p className="mt-6 max-w-measure text-lg md:text-xl">{intro}</p>
         <div className="mt-8 flex max-w-xl flex-col gap-4">
           <OfferLine onInk />
@@ -52,7 +52,7 @@ export function LocationHero({ trail, title, intro, location }: { trail: Crumb[]
 export function Block({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
     <section aria-labelledby={`${id}-heading`} className="border-t-2 border-ink pt-10">
-      <h2 id={`${id}-heading`} className="font-display text-2xl font-heavy display-tight md:text-3xl">
+      <h2 id={`${id}-heading`} className="font-display text-2xl font-heavy !leading-[1.2] display-tight md:text-3xl">
         {title}
       </h2>
       <div className="mt-6">{children}</div>
@@ -92,7 +92,7 @@ export function LocationCta({ heading, location }: { heading: string; location: 
     <section aria-labelledby="location-cta-heading" className="border-t-2 border-ink bg-band py-16 text-on-band">
       <Container className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
         <div className="max-w-measure">
-          <h2 id="location-cta-heading" className="font-display text-2xl font-heavy display-tight sm:text-3xl">
+          <h2 id="location-cta-heading" className="font-display text-2xl font-heavy !leading-[1.2] display-tight sm:text-3xl">
             {heading}
           </h2>
           <p className="mt-3 text-lg">

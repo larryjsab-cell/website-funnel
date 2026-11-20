@@ -16,7 +16,8 @@ const csp = [
   "img-src 'self' data: blob: https:",
   "font-src 'self'",
   `connect-src 'self' ${SUPABASE} ${GA_CONNECT.join(" ")}`,
-  "frame-src 'none'",
+  // Google Maps embeds on the industry location pages; nothing else may be framed.
+  "frame-src https://www.google.com https://maps.google.com",
   "frame-ancestors 'none'",
   "object-src 'none'",
   "base-uri 'self'",

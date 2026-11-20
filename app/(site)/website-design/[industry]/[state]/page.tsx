@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { CityList } from "@/components/locations/CityList";
 import { Block, LinkGrid, LocationCta, LocationHero, PlanStrip } from "@/components/locations/LocationParts";
+import { LocationMap } from "@/components/locations/LocationMap";
 import { FaqList } from "@/components/sections/FaqList";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
@@ -90,19 +92,18 @@ export default async function StateLocationPage({ params }: Params) {
 
         <Container className="grid gap-12 py-12 md:py-16">
           <Block id="cities" title={`${page.state_name} cities and towns`}>
-            <p className="max-w-measure text-lg">{page.state_context}</p>
-            <div className="mt-8 grid gap-8">
-              {byLetter(cities).map(([letter, group]) => (
-                <div key={letter}>
-                  <h3 className="font-display text-xl font-heavy display-tight">{letter}</h3>
-                  <div className="mt-2">
-                    <LinkGrid
-                      label={`${page.state_name} cities starting with ${letter}`}
-                      links={group.map((c) => ({ href: cityPath(industry.slug, page.state_slug, c.city_slug), text: c.city_name }))}
-                    />
-                  </div>
-                </div>
-              ))}
+            <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
+              <p className="max-w-measure text-lg">{page.state_context}</p>
+              <LocationMap query={page.state_name} zoom={6} title={`Map of ${page.state_name}`} />
+            </div>
+            <div className="mt-10">
+              <CityList
+                label={`${page.state_name} cities`}
+                groups={byLetter(cities).map(([letter, group]) => ({
+                  letter,
+                  links: group.map((c) => ({ href: cityPath(industry.slug, page.state_slug, c.city_slug), text: c.city_name })),
+                }))}
+              />
             </div>
           </Block>
 

@@ -1,5 +1,4 @@
 import type { MetadataRoute } from "next";
-import { getIndustries, locationsEnabled } from "@/lib/locations";
 import { siteUrl } from "@/lib/site";
 
 /** Private, per-customer and API paths. Everything else is open to search and AI crawlers. */
@@ -24,15 +23,14 @@ const AI_CRAWLERS = [
   "CCBot",
 ];
 
-export default async function robots(): Promise<MetadataRoute.Robots> {
-  // Location pages have one sitemap per industry (each under Google's 50,000-URL limit).
-  const industries = locationsEnabled() ? await getIndustries() : [];
+export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       { userAgent: "*", allow: "/", disallow: PRIVATE },
       { userAgent: AI_CRAWLERS, allow: "/", disallow: PRIVATE },
     ],
-    sitemap: [`${siteUrl}/sitemap.xml`, ...industries.map((i) => `${siteUrl}/sitemaps/website-design/sitemap/${i.slug}.xml`)],
+    // An index: /sitemaps/main.xml plus one file per industry (see lib/sitemaps.ts).
+    sitemap: `${siteUrl}/sitemap.xml`,
     host: siteUrl,
   };
 }
