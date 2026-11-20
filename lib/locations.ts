@@ -185,13 +185,3 @@ export function faqSchema(faqs: Faq[]) {
     mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer } })),
   };
 }
-
-/** Groups cities under their first letter, for the state page's A-Z list. */
-export function byLetter(cities: CityLink[]): [string, CityLink[]][] {
-  const groups = new Map<string, CityLink[]>();
-  for (const c of cities) {
-    const letter = c.city_name.charAt(0).toUpperCase();
-    groups.set(letter, [...(groups.get(letter) ?? []), c]);
-  }
-  return [...groups.entries()];
-}

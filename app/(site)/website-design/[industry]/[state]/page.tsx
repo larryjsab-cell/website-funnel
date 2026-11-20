@@ -8,7 +8,6 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
 import {
   absolute,
-  byLetter,
   cityPath,
   faqItems,
   faqSchema,
@@ -99,10 +98,7 @@ export default async function StateLocationPage({ params }: Params) {
             <div className="mt-10">
               <CityList
                 label={`${page.state_name} cities`}
-                groups={byLetter(cities).map(([letter, group]) => ({
-                  letter,
-                  links: group.map((c) => ({ href: cityPath(industry.slug, page.state_slug, c.city_slug), text: c.city_name })),
-                }))}
+                links={cities.map((c) => ({ href: cityPath(industry.slug, page.state_slug, c.city_slug), text: c.city_name }))}
               />
             </div>
           </Block>
