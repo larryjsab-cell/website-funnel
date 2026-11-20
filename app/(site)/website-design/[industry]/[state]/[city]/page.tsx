@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Block, LinkGrid, LocationCta, LocationHero, PlanStrip } from "@/components/locations/LocationParts";
+import { Block, IncludesList, IndustryCards, LinkGrid, LocationCta, LocationHero, PlanStrip } from "@/components/locations/LocationParts";
 import { LocationMap } from "@/components/locations/LocationMap";
 import { FaqList } from "@/components/sections/FaqList";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -116,34 +116,55 @@ export default async function CityLocationPage({ params }: Params) {
       <JsonLd data={faqSchema(page.faqs)} />
 
       <article>
-        <LocationHero trail={trail} title={title} intro={page.unique_intro} location={location} />
+        <LocationHero
+          trail={trail}
+          title={title}
+          intro={page.unique_intro}
+          location={location}
+          aside={
+            <LocationMap
+              query={page.lat != null && page.lng != null ? `${page.lat},${page.lng}` : `${page.city_name}, ${page.state_name}`}
+              zoom={12}
+              title={`Map of ${place}`}
+              onInk
+            />
+          }
+        />
 
         <Container className="grid gap-12 py-12 md:py-16">
           <Block id="local" title={`Getting found by customers in ${page.city_name}`}>
-            <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
-              <div className="grid max-w-measure gap-4 text-lg">
+            <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
+              <div className="grid max-w-measure gap-4 text-lg lg:col-span-7">
                 <p>{page.city_context}</p>
                 <p>{page.search_note}</p>
               </div>
-              <LocationMap
-                query={page.lat != null && page.lng != null ? `${page.lat},${page.lng}` : `${page.city_name}, ${page.state_name}`}
-                zoom={12}
-                title={`Map of ${place}`}
-              />
+              <aside aria-labelledby="service-area-heading" className="rounded-card border-2 border-ink bg-surface p-5 shadow-hard lg:col-span-5">
+                <h3 id="service-area-heading" className="font-display text-lg font-heavy !leading-[1.2] display-tight">
+                  Service area around {page.city_name}
+                </h3>
+                <p className="mt-2 text-base">
+                  {page.city_name} is in {page.area_label}. Your site can name every town you cover, like these nearby:
+                </p>
+                {nearby.length > 0 && (
+                  <div className="mt-4">
+                    <LinkGrid
+                      columns={2}
+                      label={`Nearby ${page.state_name} towns`}
+                      links={nearby.map((c) => ({ href: cityPath(industry.slug, page.state_slug, c.city_slug), text: c.city_name }))}
+                    />
+                  </div>
+                )}
+                <p className="mt-4 text-base">
+                  <Link href={statePath(industry.slug, page.state_slug)} prefetch={false} className="font-display text-sm font-bold underline underline-offset-4 display-ui hover:text-accent">
+                    All {page.state_name} cities →
+                  </Link>
+                </p>
+              </aside>
             </div>
           </Block>
 
           <Block id="includes" title={`What a ${industry.singular} website in ${page.city_name} should include`}>
-            <ul className="grid gap-3 md:grid-cols-2">
-              {splitList(page.site_includes).map((item) => (
-                <li key={item} className="flex gap-3 rounded-ui border-2 border-ink bg-surface p-4 text-base">
-                  <span aria-hidden="true" className="font-display font-bold text-accent">
-                    ✓
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <IncludesList items={splitList(page.site_includes)} />
             <p className="mt-6 max-w-measure text-base">
               Every plan includes a professional, mobile-friendly site with SEO and analytics. Growth adds business automations, custom dashboards and traffic
               tracking, so a new request from a {page.city_name} customer can reach your phone right away.
@@ -158,26 +179,9 @@ export default async function CityLocationPage({ params }: Params) {
             <FaqList items={faqItems(page.faqs)} />
           </Block>
 
-          {nearby.length > 0 && (
-            <Block id="nearby" title={`Also serving ${industry.plural} near ${page.city_name}`}>
-              <LinkGrid
-                label={`Nearby ${page.state_name} towns`}
-                links={nearby.map((c) => ({ href: cityPath(industry.slug, page.state_slug, c.city_slug), text: `${c.city_name}, ${page.state_code}` }))}
-              />
-              <p className="mt-4 text-base">
-                <Link href={statePath(industry.slug, page.state_slug)} prefetch={false} className="underline underline-offset-4 hover:text-accent">
-                  See every {page.state_name} city we build {industry.trade} websites for
-                </Link>
-              </p>
-            </Block>
-          )}
-
           {others.length > 0 && (
             <Block id="industries" title={`Other businesses we build websites for in ${page.city_name}`}>
-              <LinkGrid
-                label="Other industries"
-                links={others.map((i) => ({ href: cityPath(i.slug, page.state_slug, page.city_slug), text: `${i.name} in ${page.city_name}` }))}
-              />
+              <IndustryCards cards={others.map((i) => ({ href: cityPath(i.slug, page.state_slug, page.city_slug), name: i.name, note: `in ${page.city_name}` }))} />
             </Block>
           )}
         </Container>

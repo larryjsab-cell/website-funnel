@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Block, LinkGrid, LocationCta, LocationHero } from "@/components/locations/LocationParts";
+import { Block, IndustryCards, LocationCta, LocationHero } from "@/components/locations/LocationParts";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
 import { absolute, getIndustries, industryPath, LOCATIONS_PATH, locationsEnabled, pageTitle } from "@/lib/locations";
@@ -48,7 +48,7 @@ export default async function LocationsHub() {
         />
         <Container className="grid gap-12 py-12 md:py-16">
           <Block id="industries" title="Pick your industry">
-            <LinkGrid label="Industries" links={industries.map((i) => ({ href: industryPath(i.slug), text: `Website design for ${i.plural}` }))} />
+            <IndustryCards cards={industries.map((i) => ({ href: industryPath(i.slug), name: i.name, note: "Every state and city" }))} />
           </Block>
         </Container>
       </article>

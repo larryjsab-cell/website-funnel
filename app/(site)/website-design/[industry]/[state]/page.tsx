@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CityList } from "@/components/locations/CityList";
-import { Block, LinkGrid, LocationCta, LocationHero, PlanStrip } from "@/components/locations/LocationParts";
+import { Block, IncludesList, IndustryCards, LocationCta, LocationHero, PlanStrip } from "@/components/locations/LocationParts";
 import { LocationMap } from "@/components/locations/LocationMap";
 import { FaqList } from "@/components/sections/FaqList";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -87,33 +87,42 @@ export default async function StateLocationPage({ params }: Params) {
       <JsonLd data={faqSchema(page.faqs)} />
 
       <article>
-        <LocationHero trail={trail} title={page.hero_title} intro={page.intro} location={location} />
+        <LocationHero
+          trail={trail}
+          title={page.hero_title}
+          intro={page.intro}
+          location={location}
+          aside={<LocationMap query={page.state_name} zoom={6} title={`Map of ${page.state_name}`} onInk />}
+        />
 
         <Container className="grid gap-12 py-12 md:py-16">
-          <Block id="cities" title={`${page.state_name} cities and towns`}>
-            <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
-              <p className="max-w-measure text-lg">{page.state_context}</p>
-              <LocationMap query={page.state_name} zoom={6} title={`Map of ${page.state_name}`} />
-            </div>
-            <div className="mt-10">
-              <CityList
-                label={`${page.state_name} cities`}
-                links={cities.map((c) => ({ href: cityPath(industry.slug, page.state_slug, c.city_slug), text: c.city_name }))}
-              />
-            </div>
+          <Block
+            id="cities"
+            title={`Find your city in ${page.state_name}`}
+            // The stored sentence has the bare count ("1081"); show it with a comma.
+            lead={page.state_context.replace(String(page.city_count), page.city_count.toLocaleString("en-US"))}
+          >
+            <CityList
+              label={`${page.state_name} cities`}
+              links={cities.map((c) => ({ href: cityPath(industry.slug, page.state_slug, c.city_slug), text: c.city_name }))}
+            />
+          </Block>
+
+          <Block id="includes" title={`What a ${industry.singular} website should include`}>
+            <IncludesList items={industry.site_includes} />
           </Block>
 
           <Block id="plans" title="Simple monthly plans, no big design bill">
             <PlanStrip location={location} />
           </Block>
 
-          <Block id="faq" title="Questions">
+          <Block id="faq" title={`${industry.label} website questions in ${page.state_name}`}>
             <FaqList items={faqItems(page.faqs)} />
           </Block>
 
           {others.length > 0 && (
             <Block id="industries" title={`Other businesses we build websites for in ${page.state_name}`}>
-              <LinkGrid label="Other industries" links={others.map((i) => ({ href: statePath(i.slug, page.state_slug), text: `${i.name} in ${page.state_name}` }))} />
+              <IndustryCards cards={others.map((i) => ({ href: statePath(i.slug, page.state_slug), name: i.name, note: `in ${page.state_name}` }))} />
             </Block>
           )}
         </Container>

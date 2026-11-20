@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Block, LinkGrid, LocationCta, LocationHero, PlanStrip } from "@/components/locations/LocationParts";
+import { Block, IncludesList, IndustryCards, LinkGrid, LocationCta, LocationHero, PlanStrip } from "@/components/locations/LocationParts";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
 import { absolute, getIndustries, getStatePages, industryPath, LOCATIONS_PATH, locationsEnabled, pageTitle, statePath } from "@/lib/locations";
@@ -74,16 +74,7 @@ export default async function IndustryLocationPage({ params }: Params) {
 
         <Container className="grid gap-12 py-12 md:py-16">
           <Block id="includes" title={`What a ${industry.singular} website should include`}>
-            <ul className="grid gap-3 md:grid-cols-2">
-              {industry.site_includes.map((item) => (
-                <li key={item} className="flex gap-3 rounded-ui border-2 border-ink bg-surface p-4 text-base">
-                  <span aria-hidden="true" className="font-display font-bold text-accent">
-                    ✓
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <IncludesList items={industry.site_includes} />
           </Block>
 
           <Block id="states" title="Pick your state">
@@ -96,7 +87,7 @@ export default async function IndustryLocationPage({ params }: Params) {
 
           {others.length > 0 && (
             <Block id="industries" title="Other businesses we build websites for">
-              <LinkGrid label="Other industries" links={others.map((i) => ({ href: industryPath(i.slug), text: i.name }))} />
+              <IndustryCards cards={others.map((i) => ({ href: industryPath(i.slug), name: i.name, note: "All states" }))} />
             </Block>
           )}
         </Container>
