@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getAllPublishedPosts } from "@/lib/blog";
 import { legal } from "@/lib/content";
 import { affiliatesEnabled } from "@/lib/affiliate";
+import { LOCATIONS_PATH, locationsEnabled } from "@/lib/locations";
 import { site, siteUrl } from "@/lib/site";
 
 export const revalidate = 1800;
@@ -16,6 +17,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/blog`, lastModified: posts[0] ? new Date(posts[0].updated_at) : new Date(), changeFrequency: "weekly", priority: 0.7 },
     ...posts.map((p) => ({ url: `${siteUrl}/blog/${p.slug}`, lastModified: new Date(p.updated_at), changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${siteUrl}/templates`, lastModified: new Date("2026-10-23"), changeFrequency: "monthly", priority: 0.6 },
+    // The industry, state and city pages are in their own sitemaps (see robots.txt).
+    ...(locationsEnabled() ? [{ url: `${siteUrl}${LOCATIONS_PATH}`, changeFrequency: "monthly" as const, priority: 0.6 }] : []),
     ...(affiliatesEnabled() ? [{ url: `${siteUrl}${site.affiliates.path}`, lastModified: new Date("2026-10-28"), changeFrequency: "monthly" as const, priority: 0.5 }] : []),
     { url: `${siteUrl}/privacy`, lastModified: updated, changeFrequency: "yearly", priority: 0.2 },
     { url: `${siteUrl}/terms`, lastModified: updated, changeFrequency: "yearly", priority: 0.2 },

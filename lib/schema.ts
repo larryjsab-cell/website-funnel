@@ -8,6 +8,9 @@ import { formatPrice, site, siteUrl } from "@/lib/site";
 const b = site.business;
 const id = (frag: string) => `${siteUrl}/#${frag}`;
 
+/** The business node's @id, for pages that point back to it (location pages). */
+export const businessId = id("business");
+
 const DAY = { Monday: "Mo", Tuesday: "Tu", Wednesday: "We", Thursday: "Th", Friday: "Fr", Saturday: "Sa", Sunday: "Su" } as const;
 
 function business() {

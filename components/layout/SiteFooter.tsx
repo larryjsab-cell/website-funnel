@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { Wordmark } from "@/components/ui/Wordmark";
 import { affiliatesEnabled } from "@/lib/affiliate";
+import { locationsEnabled } from "@/lib/locations";
 import { site, formatAddress } from "@/lib/site";
 import { ui } from "@/lib/content";
 
@@ -47,7 +48,7 @@ export function SiteFooter() {
         <nav aria-label="Popular guides" className="md:col-span-6 lg:col-span-3">
           <h2 className="font-display text-sm font-bold display-ui">Popular guides</h2>
           <ul className="mt-3 grid gap-3 font-display text-sm">
-            {site.guides.map((g) => (
+            {[...site.guides, ...(locationsEnabled() ? [{ href: site.locations.path, label: site.locations.label }] : [])].map((g) => (
               <li key={g.href}>
                 <Link href={g.href} prefetch={false} className={`${linkClass} leading-snug`}>
                   {g.label}

@@ -237,5 +237,10 @@
     "blueprint": "#1A33E8",
     "signal": "#FF4F00"
   },
-  "social": []
+  "social": [],
+  "locations": {
+    "enabled": false,
+    "path": "/website-design",
+    "label": "Websites by industry and city"
+  }
 }
