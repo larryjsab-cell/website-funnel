@@ -251,7 +251,10 @@ end $$;
 create or replace function public.ryzon_landing_fill(t text, i public.ryzon_landing_industries, l record)
 returns text language plpgsql immutable as $$
 begin
-  return replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(t,
+  -- "an electrician", "an HVAC company": vowel sounds take "an".
+  return replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(t,
+    'a {singular}', case when i.singular ~ '^([aeiouAEIOU]|H[A-Z])' then 'an {singular}' else 'a {singular}' end),
+    'A {singular}', case when i.singular ~ '^([aeiouAEIOU]|H[A-Z])' then 'An {singular}' else 'A {singular}' end),
     '{City}', l.city_name), '{city}', l.city_name), '{ST}', coalesce(l.state_code, '')), '{state}', l.state_name),
     '{area}', l.area_label), '{n0}', l.n0), '{n1}', l.n1), '{n2}', l.n2),
     '{plural}', i.plural), '{label}', i.label), '{Singular}', upper(left(i.singular, 1)) || substr(i.singular, 2)), '{singular}', i.singular), '{trade}', i.trade);
